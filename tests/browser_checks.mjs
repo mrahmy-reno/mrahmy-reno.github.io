@@ -684,52 +684,70 @@ async function main() {
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 900 });
     await page.goto(`${origin}/index.html`, { waitUntil: "load" });
-    const design = await page.evaluate(() => {
-      const cs = (el) => getComputedStyle(el);
-      const cards = [...document.querySelectorAll("li.card")];
-      const cardBorder = cards.map((el) => {
-        const s = cs(el);
-        return { top: s.borderBlockStartWidth, start: s.borderInlineStartWidth,
+    // One bounded evaluation over a curated surface list, reading `class` with getAttribute().
+    // Walking every element (document.querySelectorAll("body *")) with
+    // `el.className.toString()` across several successive evaluations wedged Chrome's
+    // Runtime.callFunctionOn in this environment while this card was being built — the failure
+    // mode is an opaque CDP timeout rather than a failed check. The curated list is what the
+    // assertions are actually about; the exhaustive half of the same rules ("no other
+    // box-shadow literal exists at all") is asserted at the source level in
+    // tests/design_checks.py, which is both cheaper and stronger.
+    const SURFACES = ".site-header, .glance-strip, .glance-item, .system-map, .artefact-frame,"
+      + " .evidence-figure, .diagram-panel, .evidence-panel, .empty, .callout, .contact-panel,"
+      + " .card, .card-featured, .tag, .chips li, .cs-stage, .cs-architecture, .section,"
+      + " .hero-aside, .hero-inner, .row-inner, .legend, .prev-next, .exp, .exp-list, .edu,"
+      + " .edu-list, .skill-list, .cards, .cs-stage-inner";
+    const INTERACTIVE = "a, button";
+    const design = await page.evaluate((surfaces, interactive) => {
+      const out = {};
+      const cards = document.querySelectorAll("li.card");
+      out.cardCount = cards.length;
+      out.cardBorder = [];
+      for (let i = 0; i < cards.length; i += 1) {
+        const s = getComputedStyle(cards[i]);
+        out.cardBorder.push({ top: s.borderBlockStartWidth, start: s.borderInlineStartWidth,
           end: s.borderInlineEndWidth, bottom: s.borderBlockEndWidth,
-          radius: s.borderTopLeftRadius };
-      });
-      const shadows = [];
-      const grids = [];
-      const transitions = [];
-      document.querySelectorAll("body *").forEach((el) => {
-        const s = cs(el);
-        const cls = el.className.toString().slice(0, 48);
-        if (s.boxShadow && s.boxShadow !== "none") shadows.push({ cls, shadow: s.boxShadow });
+          radius: s.borderTopLeftRadius });
+      }
+      out.shadows = [];
+      out.grids = [];
+      out.transitions = [];
+      const els = document.querySelectorAll(surfaces);
+      for (let i = 0; i < els.length; i += 1) {
+        const s = getComputedStyle(els[i]);
+        const cls = els[i].getAttribute("class") || "";
+        if (s.boxShadow !== "none") out.shadows.push({ cls, shadow: s.boxShadow });
         if (s.display.indexOf("grid") >= 0 && s.gridTemplateColumns !== "none") {
           const tracks = s.gridTemplateColumns.split(" ").filter((t) => t.length);
-          if (tracks.length > 1) {
-            grids.push({ cls, tracks: tracks.length, tpl: s.gridTemplateColumns });
-          }
+          if (tracks.length > 1) out.grids.push({ cls, tracks: tracks.length });
         }
-        const dur = Math.max(...String(s.transitionDuration).split(",")
-          .map((p) => parseFloat(p) || 0));
+        const parts = String(s.transitionDuration).split(",");
+        let dur = 0;
+        for (let j = 0; j < parts.length; j += 1) {
+          const v = parseFloat(parts[j]) || 0;
+          if (v > dur) dur = v;
+        }
         if (dur > 0) {
-          transitions.push({ cls, prop: s.transitionProperty, dur: s.transitionDuration,
+          out.transitions.push({ cls, prop: s.transitionProperty, dur: s.transitionDuration,
             ease: s.transitionTimingFunction });
         }
-      });
-      const interactive = [...document.querySelectorAll(".btn, .nav-list a, li.card, .arrow")]
-        .map((el) => {
-          const s = cs(el);
-          return { cls: el.className.toString().slice(0, 48), prop: s.transitionProperty,
-            dur: s.transitionDuration };
-        });
+      }
+      out.interactive = [];
+      const acts = document.querySelectorAll(interactive);
+      for (let i = 0; i < acts.length; i += 1) {
+        const s = getComputedStyle(acts[i]);
+        out.interactive.push({ cls: acts[i].getAttribute("class") || "",
+          prop: s.transitionProperty, dur: s.transitionDuration });
+      }
       const h = document.querySelector(".site-header");
-      const hs = cs(h);
-      return {
-        cardCount: cards.length, cardBorder, shadows, grids, transitions, interactive,
-        header: { bg: hs.backgroundColor, filter: hs.backdropFilter,
-          borderBottom: hs.borderBlockEndWidth, position: hs.position },
-        svgTextCount: document.querySelectorAll("svg text").length,
-        revealCount: document.querySelectorAll("[data-reveal]").length,
-        mainText: document.querySelector("main").textContent.replace(/\s+/g, " ").trim().length,
-      };
-    });
+      const hs = getComputedStyle(h);
+      out.header = { bg: hs.backgroundColor, filter: hs.backdropFilter,
+        borderBottom: hs.borderBlockEndWidth, position: hs.position };
+      out.svgTextCount = document.querySelectorAll("svg text").length;
+      out.revealCount = document.querySelectorAll("[data-reveal]").length;
+      out.mainText = document.querySelector("main").textContent.replace(/\s+/g, " ").trim().length;
+      return out;
+    }, SURFACES, INTERACTIVE);
 
     check(design.cardCount === 10, "design: the 10 project rows render as rows, not cards",
       `li.card count=${design.cardCount}`);

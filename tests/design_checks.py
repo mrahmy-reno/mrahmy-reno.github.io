@@ -122,6 +122,22 @@ def check_tokens(css: str) -> None:
           "the layer order is declared once, states after components",
           " > ".join(order))
 
+    # Elevation is a closed set: outside @layer tokens a box-shadow may only be the elevation
+    # token, a zero-offset ring, or the row-rule thickener — so no component can paint a tight,
+    # hard, offset drop shadow anywhere on the site (Q11). This is the exhaustive half of the
+    # DOM sample in tests/browser_checks.mjs.
+    permitted = [
+        re.compile(r"^none$"),
+        re.compile(r"var\(--elev-\d\)"),
+        re.compile(r"^0 0 0 [\d.]+(px|rem)\b"),
+        re.compile(r"^0 1px 0 0 var\(--rule-boundary\)$"),
+    ]
+    shadows = [s.strip() for s in re.findall(r"box-shadow\s*:\s*([^;}]+)", rest)]
+    bad = [s for s in shadows if not any(p.search(s) for p in permitted)]
+    check(not bad, "every box-shadow outside the token layer is an elevation token or a ring",
+          f"unpermitted={bad[:3]}" if bad else
+          f"{len(shadows)} shadow declarations, all from the closed elevation set")
+
 
 # --------------------------------------------------------------------------- 2/3. states & bans
 
@@ -403,10 +419,11 @@ def check_artefacts(docs: Path, ledger: str) -> None:
                 uncaptioned.append(f"{page.name} (system map)")
             audit(f"{page.name} (system map)", fig, "system map")
 
-    check(figures == 12, "12 artefacts render (hero system map + SmartOps band + 10 project pages)",
+    check(figures == 13,
+          "13 artefacts render (hero system map + SmartOps band + 10 project pages + 404 map)",
           f"found {figures}")
     check(not uncaptioned, "every artefact carries the mandatory scope caption",
-          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "12/12 captioned")
+          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "13/13 captioned")
     check(not unapproved,
           "label diff: every word of every diagram label is a ledger word or structural",
           f"{len(unapproved)} unapproved: {unapproved[:6]}" if unapproved else
@@ -417,7 +434,7 @@ def check_artefacts(docs: Path, ledger: str) -> None:
     check(not digit_hits, "digits in diagram labels: only the permitted proper nouns (BM25, E2E)",
           f"hits={digit_hits[:4]}" if digit_hits else "0 quantity-bearing labels")
     check(not parity_fails, "wide and vertical-rail variants carry identical label words",
-          f"{parity_fails[:3]}" if parity_fails else "12/12 artefacts label-identical")
+          f"{parity_fails[:3]}" if parity_fails else "13/13 artefacts label-identical")
     print(f"        distinct diagram labels: {len(all_labels)}")
 
 

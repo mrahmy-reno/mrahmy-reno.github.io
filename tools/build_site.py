@@ -355,7 +355,7 @@ def render_figure(p: Page, uid: str, slug: str, *, refs: list[str] | None = None
             f'        </figure>')
 
 
-def render_system_map(p: Page) -> str:
+def render_system_map(p: Page, link: bool = True) -> str:
     meta = A.ARTEFACT_META["system-map"]
     wide, tall = A.system_map_pair({pr["slug"]: pr["name"]["text"] for pr in C.PROJECTS})
     caption = p.raw(meta["caption"], ["L4.1", "L4.2", "L4.3", "L4.4", "L4.5", "L4.6", "L4.7",
@@ -364,11 +364,13 @@ def render_system_map(p: Page) -> str:
                     "project names; the three group labels are the structural grouping.")
     scope = p.raw(meta["scope"], [], "structural",
                   "Mandatory scope caption (PROOF_PLAN.md section 5 rule 9).")
-    link = f'<a href="#evidence">{p.t(C2.EXTRA["map_link"])}</a>'
+    # The proof affordance points at the index evidence band, which only exists on the index;
+    # the 404 renders the same map as a recovery surface with no in-page link.
+    tail = (f' <a href="#evidence">{p.t(C2.EXTRA["map_link"])}</a> →' if link else "")
     return (f'      <figure class="system-map" data-reveal>\n'
             + "\n".join("        " + line for line in wide.splitlines()) + "\n"
             + "\n".join("        " + line for line in tall.splitlines()) + "\n"
-            f'        <figcaption>{caption} {link} → <span class="scope-caption">{scope}</span></figcaption>\n'
+            f'        <figcaption>{caption}{tail} <span class="scope-caption">{scope}</span></figcaption>\n'
             f'      </figure>')
 
 
@@ -804,11 +806,15 @@ def build_404(cfg: dict, p: Page) -> str:
           <h1>{p.t(C2.EXTRA["nf_h1_v2"])}</h1>
           <p>{p.t(C2.EXTRA["nf_body_v2"])}</p>
           <p><a class="btn" href="/index.html">{p.t(C.L["nf_link"])}</a></p>
+          <h2>{p.t(C2.EXTRA["nf_map"])}</h2>
+{render_system_map(p, link=False)}
           <h2>{p.t(C2.EXTRA["all_projects"])}</h2>
           <ul class="evidence-index">
 {links}
           </ul>
+          <div class="contact-panel">
 {render_contact_block(cfg, p)}
+          </div>
         </div>
       </section>"""
     return page_shell(cfg, p, title_block=title_block, desc_block=desc_block,

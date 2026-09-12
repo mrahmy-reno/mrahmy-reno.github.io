@@ -1388,6 +1388,12 @@
     max-inline-size: 24ch;
   }
 
+  /* the recovery surface is the same artefact, at a reading size */
+  .notfound .system-map {
+    max-inline-size: 46rem;
+    margin-block-start: var(--space-6);
+  }
+
   /* -- schematic artefacts (PROOF_PLAN.md) -------------------------------- */
 
   .artefact {
@@ -1530,6 +1536,20 @@
   .card:focus-within .row-title {
     text-decoration: underline;
     text-decoration-thickness: 2px;
+  }
+
+  /* Links: the underline offset/thickness is the acknowledgement (ART_DIRECTION §7.2). Both are
+     transitioned so no interactive state changes instantly (Q11). */
+  a {
+    transition-property: color, text-decoration-thickness, text-underline-offset, border-color;
+    transition-duration: var(--dur-2);
+    transition-timing-function: var(--ease-out-quart);
+  }
+
+  button {
+    transition-property: background-color, border-color, color, transform;
+    transition-duration: var(--dur-2);
+    transition-timing-function: var(--ease-standard);
   }
 
   .evidence-index a,
