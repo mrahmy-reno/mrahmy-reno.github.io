@@ -151,6 +151,14 @@ REGRESSION_RC=$?
 step 02c_design_checks.txt python3 tests/design_checks.py
 DESIGN_RC=$?
 
+# 2d. pre-push guard regression (B1-11): rename-as-removal, plain deletion, rehearsal message,
+#     clean push, the documented override, the advisory manifest warning, and the new-remote-ref
+#     base (no working-tree diff). git + coreutils only, in a throwaway clone pushing to a
+#     throwaway bare remote under $TMPDIR — never the production remote — so it is wired through
+#     `step` for the same reason as 02b/02c: it runs in every checkout, including a fresh clone.
+step 02d_prepush_guard.txt bash tests/test_prepush_guard.sh
+GUARD_RC=$?
+
 # 3. browser audit: rendered text, axe on all 12 pages, console, overflow, first screen,
 #    keyboard walk, reduced motion, progressive enhancement, print/PDF, screenshots
 run_step 03_browser_checks.log node tests/browser_checks.mjs --out "${OUT}" --port 8099
@@ -202,6 +210,7 @@ echo "published files: $(find docs -type f | wc -l)" >>"${OUT}/10_manifest.txt"
   row 02_static_scans "${STATIC_RC}"
   row 02b_regression_repairs "${REGRESSION_RC}"
   row 02c_design_checks "${DESIGN_RC}"
+  row 02d_prepush_guard "${GUARD_RC}"
   row 03_browser_checks "${BROWSER_RC}"
   row 04_text_scans "${TEXT_RC}"
   row 05_switch_integrity "${SWITCH_RC}"
