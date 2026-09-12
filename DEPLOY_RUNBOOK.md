@@ -300,15 +300,22 @@ against the production repository — and the warning demo likewise; raw output 
 `/root/company/BENCHMARK_01/evidence/B1-10/logs/guard_demo.txt` (scenarios A, B, D), with the clean
 push passing (C) and the documented override working (E).
 
-**The recorded accepted manifest: `tests/accepted_manifest_hashes.txt`.** 22 lines of
+**The guard's regression test: `tests/test_prepush_guard.sh`** — 13 checks (rename-as-removal, plain
+deletion, rehearsal message, clean push, `ALLOW_DOCS_CHANGE=1`, the advisory manifest warning, and the
+new-ref base). It runs in a throwaway clone pushing to a throwaway bare remote — never GitHub or the
+production repository — via `bash tests/test_prepush_guard.sh`, and as **step `02d_prepush_guard`** of
+`tests/run_all.sh`.
+
+**The recorded accepted manifest: `tests/accepted_manifest_hashes.txt`.** 23 lines of
 `sha256  <path relative to docs/>` — the accepted state of the published surface. Regenerate it with:
 ```bash
 (cd docs && find . -type f -print0 | sort -z | xargs -0 sha256sum | sed 's| \./| |' | sort)
 ```
 It is the *reference*, not a convenience: it is regenerated **only after an independent acceptance** of
 a change to `docs/` (full suite green on the new tree, acceptance recorded), in the same commit as
-that change, and **never** just to silence the warning. It is currently **untracked in git** (see the
-repair card below), so a fresh clone does not carry it — copy it in with the guard.
+that change, and **never** just to silence the warning. It is **tracked in git** (versioned by B1-11,
+commit `cd36caa`) together with the guard, so a fresh clone carries both; only `.git/hooks/pre-push`
+has to be installed by hand, because git cannot version hooks.
 
 **The overrides are deliberate and loud.** `ALLOW_DOCS_CHANGE=1` and `ALLOW_DOCS_DELETION=1` exist so
 that a *legitimately accepted* change can be published — every push that changes `docs/` needs one, or
@@ -316,16 +323,22 @@ the guard's target state and the tree will disagree. Using one asserts that the 
 independently accepted: **put the reason in the commit message**, and for a deletion name the file
 that is superseded and why. A silent override is the same defect as no guard at all.
 
-**Known limitations (verified in B1-10; do not treat the guard as complete).** Raw output in
-`/root/company/BENCHMARK_01/evidence/B1-10/logs/`; repair card **B1-11 (`t_2e0396ce`)**.
+**Limitations (verified in B1-10, repaired by B1-11).** Raw output in
+`/root/company/BENCHMARK_01/evidence/B1-10/logs/` (before) and
+`/root/company/BENCHMARK_01/evidence/B1-11/logs/` (after); repair card **B1-11 (`t_2e0396ce`)**,
+commit `cd36caa`.
 
-- A removal expressed as a **rename inside `docs/`** (`git mv docs/a.html docs/b.html`) is reported by
-  git as `R100 …`, whose status is `R`, not `D` — the deletion check does not fire and only the
-  manifest warning is printed, while the file does leave the published surface. Control and repro:
-  `logs/guard_probe_rename.txt`.
-- On the **first push of a brand-new remote ref** the guard evaluates the push against the **working
-  tree**, so it can refuse a push for a deletion the push does not contain: `logs/guard_probe_initialpush.txt`.
-  Every push to `master` has an existing ref, so the publish route itself is unaffected.
+- Fixed in B1-11: a removal expressed as a **rename inside `docs/`** (`git mv docs/a.html
+  docs/b.html`, reported by git as `R100 …`, status `R`, not `D`) is now **BLOCKED** exactly like a
+  plain deletion — rename detection is off for the removal check. Repro (before/after):
+  `B1-11/logs/b1-10_probe_rename_rerun.txt` §G2.
+- Fixed in B1-11: a **brand-new remote ref** is no longer evaluated against the **working tree**. The
+  commits the push introduces are compared with the base they branch from (the parent of the oldest
+  introduced commit, or the empty tree for a root commit). A push that adds no new content is not
+  refused, and a new ref that really removes `docs/` files is still blocked:
+  `B1-11/logs/b1-10_probe_initialpush_rerun.txt`, `B1-11/logs/regression_probe_logs/5_new_ref_no_new_content.log`.
+- The guard and the recorded manifest are **tracked in git** since B1-11, so a fresh clone carries the
+  control and the manifest; `.git/hooks/pre-push` remains the manual install step above.
 - The guard is a **local** hook. It protects pushes made from a clone that has it installed; it is not
   a server-side rule and must not be relied on as the only control.
 
