@@ -1,0 +1,26 @@
+{
+  "$comment": "SINGLE PLACE for the three owner-decision switches (FACTS_LEDGER.md §10). DELIVERED STATE (owner decisions, 2026-09-12): photo = ON, contact = LinkedIn only, Tier-B certifications = none. The delivered state is the shipped default: `photo.enabled: true` is an owner-approved change from the earlier privacy-preserving default (see evidence/B1-03/build_notes.md, Chief-of-Staff directive #3). Change a value here, run `python3 tools/build_site.py`, then `bash tests/run_all.sh`.",
+  "site": {
+    "name": "Mohammed Tawfiq Rahmy",
+    "lang": "en",
+    "base_url": "https://mrahmy-reno.github.io/"
+  },
+  "contact": {
+    "$comment": "strategy: 'linkedin' (delivered state, Tier A) | 'email' | 'email_phone' (both Tier C — require the owner's decision and the exact FACTS_LEDGER §8 strings). No personal email or phone is present anywhere in the delivered build.",
+    "strategy": "linkedin",
+    "email": "",
+    "phone": ""
+  },
+  "photo": {
+    "$comment": "enabled: true — OWNER APPROVED (ledger §10.2). The file is a self-hosted copy of the owner's own photo, captured from the authorized read-only source: /root/company/BENCHMARK_01/sources/linkedin_profile_photo_400.jpg (400x400 JPEG, 60311 bytes, sha256 be1dc0c63f05f60564fa83c4f5abab3f8a8efe69de2211eda66cf814548c89be). Never hot-link the expiring signed CDN URL.",
+    "enabled": true,
+    "path": "assets/profile.jpg",
+    "alt": "Mohammed Tawfiq Rahmy",
+    "width": 400,
+    "height": 400
+  },
+  "certifications": {
+    "$comment": "tier_b: [] — the owner confirmed NO Tier-B certification for publication (§10.3). Tier-B names must not appear anywhere in the deliverable until the owner confirms one and the ledger row is added first.",
+    "tier_b": []
+  }
+}

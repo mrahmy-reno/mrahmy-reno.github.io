@@ -1,0 +1,6 @@
+node_modules/
+docs-unused/
+*.log
+.DS_Store
+.evidence-tmp/
+chrome-profile-*/

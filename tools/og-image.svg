@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0d1b2a"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#0f4c81"/>
+  <g font-family="Helvetica, Arial, sans-serif" fill="#ffffff">
+    <text x="80" y="250" font-size="64" font-weight="700">Mohammed Tawfiq Rahmy</text>
+    <text x="80" y="320" font-size="34" fill="#c9d6e4">Associate Solutions Engineer — AI / GenAI Solutions</text>
+    <text x="80" y="372" font-size="34" fill="#c9d6e4">Renosystems · New Cairo, Egypt</text>
+    <text x="80" y="474" font-size="28" fill="#8fb4d9">Solutions Engineer | Mechatronics × AI Systems</text>
+    <text x="80" y="560" font-size="24" fill="#6f8fae">linkedin.com/in/mohammed-rahmy</text>
+  </g>
+</svg>
