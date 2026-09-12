@@ -106,9 +106,10 @@ pinned to exact versions for reproducibility (see `evidence/B1-03/00_environment
   is part of the suite, because a JS-revealed control must not move the page).
 - Lighthouse mobile against the local server, measured as the **median of three runs per page**
   (this host also runs other benchmark processes, so a single lab run is noisy; every individual
-  run is kept as JSON): index **100 / 100 / 100 / 100** and project detail page
-  **100 / 100 / 100 / 100** (Performance / Accessibility / Best Practices / SEO) — see
-  `evidence/B1-03/08_lighthouse.log` for the per-run spread.
+  run is kept as JSON): recorded evidence run — index **97 / 100 / 100 / 100** (runs 96, 97, 99)
+  and project detail page **100 / 100 / 100 / 100**; medians across the whole session were
+  94–100 for index performance, and the worst *single* run observed on a loaded host was 87.
+  See `evidence/B1-03/08_lighthouse.log` for the per-run spread.
 - Print stylesheet for recruiters (A17): the first printed page shows the name, the current role
   and employer, and the LinkedIn URL as readable text; navigation and other interactive-only
   affordances are not printed.
