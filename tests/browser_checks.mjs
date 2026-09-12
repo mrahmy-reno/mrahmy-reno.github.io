@@ -413,6 +413,36 @@ async function main() {
     await page.close();
   }
 
+  // ---------------------------------------------------------------- layout shift (CLS)
+  {
+    const page = await browser.newPage();
+    await page.evaluateOnNewDocument(() => {
+      window.__cls = 0;
+      window.__shifts = [];
+      try {
+        new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            if (!entry.hadRecentInput) {
+              window.__cls += entry.value;
+              window.__shifts.push({ value: entry.value, sources: (entry.sources || [])
+                .map((s) => (s.node ? s.node.nodeName + "." + (s.node.className || "") : "?")) });
+            }
+          }
+        }).observe({ type: "layout-shift", buffered: true });
+      } catch (e) { window.__clsProbeError = String(e); }
+    });
+    await page.setViewport({ width: 412, height: 823, deviceScaleFactor: 1 });
+    await page.goto(`${origin}/index.html`, { waitUntil: "load" });
+    await new Promise((r) => setTimeout(r, 1500));
+    const cls = await page.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts,
+      error: window.__clsProbeError || null }));
+    check(cls.error === null, "layout-shift observer installed", JSON.stringify(cls.error));
+    check(cls.cls < 0.1, "cumulative layout shift on mobile viewport < 0.1",
+      `CLS=${cls.cls.toFixed(4)} shifts=${JSON.stringify(cls.shifts)}`);
+    fs.writeFileSync(path.join(OUT, "layout-shift.json"), JSON.stringify(cls, null, 2));
+    await page.close();
+  }
+
   // ---------------------------------------------------------------- progressive enhancement
   {
     const page = await browser.newPage();

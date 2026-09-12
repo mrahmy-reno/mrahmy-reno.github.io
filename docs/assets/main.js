@@ -16,6 +16,8 @@
     return;
   }
 
+  // The button lives inside a fixed-size .nav-slot, so revealing it changes no other element's
+  // geometry: no layout shift (CLS 0) and no full-document re-layout on load.
   toggle.hidden = false;
 
   function setOpen(open) {

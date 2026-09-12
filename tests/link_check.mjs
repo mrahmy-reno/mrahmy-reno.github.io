@@ -91,7 +91,11 @@ if (!report.browser || report.browser.error) {
     failures.push(`final URL left linkedin.com: ${finalUrl}`);
   }
   const profilePath = "/in/mohammed-rahmy";
-  if (!finalUrl.includes(profilePath)) {
+  // LinkedIn's authwall keeps the requested profile in sessionRedirect, percent-encoded, so the
+  // final URL is decoded before the destination is judged.
+  let decoded = finalUrl;
+  try { decoded = decodeURIComponent(finalUrl); } catch { /* keep the raw form */ }
+  if (!decoded.includes(profilePath)) {
     failures.push(`final URL does not carry the requested profile path: ${finalUrl}`);
   }
   const status = report.browser.status;

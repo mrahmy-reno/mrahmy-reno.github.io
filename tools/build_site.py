@@ -199,7 +199,7 @@ def render_header(cfg: dict, p: Page, is_index: bool) -> str:
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="wordmark" href="/index.html">{p.t(C.NAME, global_=True)}</a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" hidden>{p.t(C.L["menu"], global_=True)}</button>
+      <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" hidden>{p.t(C.L["menu"], global_=True)}</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
 {items}
