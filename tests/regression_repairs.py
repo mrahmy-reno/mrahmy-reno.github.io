@@ -120,9 +120,13 @@ def test_d02_suite_reports_skipped_steps_and_still_fails():
     script = clone / "tests/run_all.sh"
     lines = script.read_text().splitlines(keepends=True)
     kept = [ln for ln in lines if "02b_regression_repairs" not in ln]
-    check(len(lines) - len(kept) == 1,
+    removed = len(lines) - len(kept)
+    # Two lines carry the regression step: the `run_step` invocation and its summary row. Both are
+    # dropped here - recursing into the suite from inside the suite would be an infinite regress,
+    # and leaving the summary row would trip `set -u` on the now-unset REGRESSION_RC.
+    check(removed >= 1 and not any("02b_regression_repairs" in ln for ln in kept),
           "D-02 run_all.sh wires the regression step (guard against drift in the suite)",
-          f"removed {len(lines) - len(kept)} line(s)")
+          f"removed {removed} line(s)")
     # Recursion guard: the suite must not run the suite again inside the suite.
     kept.append("# recursion guard: regression step removed by tests/regression_repairs.py\n")
     script.write_text("".join(kept))
