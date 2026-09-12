@@ -2,7 +2,9 @@
 # Copies the owner-approved likeness (DIRECTIVE #3 / owner Q6) and rasterises the locally
 # generated favicon + Open Graph card with headless Chrome. No external service is contacted.
 set -euo pipefail
-cd /root/projects/portfolio-benchmark1
+# B1-05 / D-01 repair: operate on the checkout this script lives in, not on a hardcoded authoring
+# path (asset regeneration must never mutate someone else's working copy).
+cd "$(dirname "$0")/.."
 
 SRC_PHOTO=/root/company/BENCHMARK_01/sources/linkedin_profile_photo_400.jpg
 EXPECT_SHA=be1dc0c63f05f60564fa83c4f5abab3f8a8efe69de2211eda66cf814548c89be

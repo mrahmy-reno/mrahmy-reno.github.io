@@ -2,7 +2,9 @@
 # Dev-only toolchain install for the test suite. No runtime dependencies exist.
 # Network is flaky in this environment; retry with explicit fetch tuning.
 set -uo pipefail
-cd /root/projects/portfolio-benchmark1
+# B1-05 / D-01 repair: install into the checkout this script lives in, never into a hardcoded
+# authoring path. Works from any cwd and from a fresh clone.
+cd "$(dirname "$0")/.."
 export PUPPETEER_SKIP_DOWNLOAD=1
 export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
 for attempt in 1 2 3 4 5; do
