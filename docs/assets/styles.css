@@ -404,6 +404,21 @@ a:hover { color: var(--accent-ink); }
 
 .notfound { padding-block: var(--space); }
 
+/* ------------------------------------------------------------------ paint cost
+
+   The index is a long single page; skipping layout/paint for off-screen sections keeps the
+   initial layout pass cheap (and the mobile Lighthouse TBT low). `contain-intrinsic-size: auto`
+   remembers each section's last rendered height, so there is no scrollbar jump and no layout
+   shift. Disabled for print, where everything must be rendered (A17). */
+@supports (content-visibility: auto) {
+  @media screen {
+    .section {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 700px;
+    }
+  }
+}
+
 /* ------------------------------------------------------------------ breakpoints */
 
 @media (min-width: 640px) {
@@ -430,7 +445,7 @@ a:hover { color: var(--accent-ink); }
      nav list stays visible and wraps. The .nav-slot reserves the control's box at all times, so
      revealing the button cannot change any other element's geometry (CLS stays 0) and the
      deferred script performs no layout-affecting work. */
-  .nav-slot {
+  .js .nav-slot {
     display: inline-flex;
     width: 5.25rem;
     height: 2.25rem;
@@ -487,6 +502,8 @@ a:hover { color: var(--accent-ink); }
 
   .section, .exp, .card, .edu, .proj-section,
   .project-group, .skill-group, .certs li, .chips li { break-inside: avoid; }
+  /* nothing may stay unpainted on paper */
+  .section, .hero { content-visibility: visible !important; }
   h1, h2, h3 { break-after: avoid; }
 
   .exp, .card, .edu, .scope-note, .site-footer { background: #fff; border-color: #999; }

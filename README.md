@@ -102,8 +102,13 @@ pinned to exact versions for reproducibility (see `evidence/B1-03/00_environment
   order, visible focus ring on every keyboard stop, AA contrast, meaningful alt text,
   `prefers-reduced-motion: reduce` removes all transitions/animation, fully keyboard operable.
 - Responsive at 360 / 768 / 1024 / 1440 px with no horizontal overflow (measured).
-- Lighthouse mobile, measured against the local server: index 100 / 100 / 100 / 100 and a project
-  detail page 100 / 100 / 100 / 100 (Performance / Accessibility / Best Practices / SEO).
+- Cumulative layout shift measured at 0.000 on a mobile viewport (an in-page layout-shift observer
+  is part of the suite, because a JS-revealed control must not move the page).
+- Lighthouse mobile against the local server, measured as the **median of three runs per page**
+  (this host also runs other benchmark processes, so a single lab run is noisy; every individual
+  run is kept as JSON): index **100 / 100 / 100 / 100** and project detail page
+  **100 / 100 / 100 / 100** (Performance / Accessibility / Best Practices / SEO) — see
+  `evidence/B1-03/08_lighthouse.log` for the per-run spread.
 - Print stylesheet for recruiters (A17): the first printed page shows the name, the current role
   and employer, and the LinkedIn URL as readable text; navigation and other interactive-only
   affordances are not printed.

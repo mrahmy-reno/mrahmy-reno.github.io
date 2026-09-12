@@ -319,11 +319,35 @@ async function main() {
       const page = await browser.newPage();
       await page.setViewport({ width: w, height: 900, deviceScaleFactor: 1 });
       await page.goto(`${origin}/${rel}`, { waitUntil: "load" });
+      // scroll the whole page first: off-screen sections use content-visibility: auto, so this
+      // forces every section to be rendered before the overflow probe and the screenshot (the
+      // screenshots must not contain unpainted regions).
+      await page.evaluate(async () => {
+        const h = document.body.scrollHeight;
+        for (let y = 0; y < h; y += 400) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 25));
+        }
+        window.scrollTo(0, 0);
+        await new Promise((r) => setTimeout(r, 60));
+      });
       const res = await page.evaluate(overflowProbe);
       overflow[rel][w] = res;
       check(!res.horizontalOverflow, `no horizontal overflow: ${rel} @ ${w}px`,
         `scrollWidth=${res.scrollWidth} clientWidth=${res.clientWidth} offenders=${res.offenders.length}`);
       const name = `${rel.replace(/\//g, "_").replace(/\.html$/, "")}-${w}.png`;
+      // content-visibility: auto keeps off-screen sections unpainted in a beyond-viewport
+      // capture; override it for the screenshot so the artefact shows the real layout.
+      await page.addStyleTag({ content: ".section{content-visibility:visible !important}" });
+      await page.evaluate(async () => {
+        const h = document.body.scrollHeight;
+        for (let y = 0; y < h; y += 400) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 15));
+        }
+        window.scrollTo(0, 0);
+        await new Promise((r) => setTimeout(r, 80));
+      });
       await page.screenshot({ path: path.join(OUT, "screenshots", name), fullPage: true });
       await page.close();
     }
@@ -454,7 +478,7 @@ async function main() {
       navItems: document.querySelectorAll(".nav-list a").length,
       toggleShown: (() => {
         const t = document.querySelector(".nav-toggle");
-        return t ? getComputedStyle(t).display !== "none" && !t.hidden : false;
+        return !!t && t.getBoundingClientRect().width > 0;
       })(),
       mainText: document.querySelector("main").textContent.trim().length,
     }));
@@ -462,6 +486,82 @@ async function main() {
       "JS disabled: full nav is visible without the toggle", JSON.stringify(nojs));
     check(!nojs.toggleShown, "JS disabled: the nav toggle stays hidden", JSON.stringify(nojs));
     fs.writeFileSync(path.join(OUT, "progressive-enhancement.json"), JSON.stringify(nojs, null, 2));
+    await page.close();
+  }
+
+  // ---------------------------------------------------------------- mobile nav control
+  {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1 });
+    await page.goto(`${origin}/index.html`, { waitUntil: "load" });
+    const before = await page.evaluate(() => {
+      const t = document.querySelector(".nav-toggle");
+      const list = document.getElementById("primary-nav");
+      return {
+        visible: !!t && t.getBoundingClientRect().width > 0,
+        tag: t ? t.tagName : null,
+        role: t ? t.getAttribute("aria-controls") : null,
+        expanded: t ? t.getAttribute("aria-expanded") : null,
+        listRendered: list ? list.getBoundingClientRect().height > 0 : null,
+      };
+    });
+    check(before.visible && before.tag === "BUTTON" && before.role === "primary-nav",
+      "mobile nav control is a real <button> with aria-controls (ES5 screen)",
+      JSON.stringify(before));
+    await page.evaluate(() => document.querySelector(".nav-toggle").focus());
+    await page.keyboard.press("Enter");
+    await new Promise((r) => setTimeout(r, 120));
+    const opened = await page.evaluate(() => {
+      const t = document.querySelector(".nav-toggle");
+      const list = document.getElementById("primary-nav");
+      return { expanded: t.getAttribute("aria-expanded"),
+        listRendered: list.getBoundingClientRect().height > 0,
+        linkVisible: [...list.querySelectorAll("a")].every((a) => a.getBoundingClientRect().width > 0) };
+    });
+    check(opened.expanded === "true" && opened.listRendered && opened.linkVisible,
+      "keyboard: Enter on the nav control expands the nav (aria-expanded=true)",
+      JSON.stringify(opened));
+    await page.keyboard.press("Escape");
+    await new Promise((r) => setTimeout(r, 120));
+    const closed = await page.evaluate(() => ({
+      expanded: document.querySelector(".nav-toggle").getAttribute("aria-expanded"),
+      focusIsToggle: document.activeElement === document.querySelector(".nav-toggle"),
+      listRendered: document.getElementById("primary-nav").getBoundingClientRect().height > 0,
+    }));
+    check(closed.expanded === "false" && !closed.listRendered && closed.focusIsToggle,
+      "keyboard: Escape collapses the nav and returns focus to the control",
+      JSON.stringify(closed));
+    fs.writeFileSync(path.join(OUT, "mobile-nav.json"),
+      JSON.stringify({ before, opened, closed }, null, 2));
+    await page.close();
+  }
+
+  // ---------------------------------------------------------------- below-fold rendering
+  {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${origin}/index.html`, { waitUntil: "load" });
+    const probe = await page.evaluate(async () => {
+      const selectors = [".cards", ".skill-list", ".certs", ".edu-list", "#contact"];
+      const before = {};
+      for (const sel of selectors) {
+        const el = document.querySelector(sel);
+        before[sel] = el ? Math.round(el.getBoundingClientRect().height) : null;
+      }
+      const el = document.querySelector(".certs");
+      el.scrollIntoView();
+      await new Promise((r) => setTimeout(r, 200));
+      const after = {};
+      for (const sel of selectors) {
+        const node = document.querySelector(sel);
+        after[sel] = node ? Math.round(node.getBoundingClientRect().height) : null;
+      }
+      return { before, after };
+    });
+    const ok = Object.values(probe.after).every((h) => h !== null && h > 0);
+    check(ok, "below-fold sections render (content-visibility does not hide content)",
+      JSON.stringify(probe));
+    fs.writeFileSync(path.join(OUT, "below-fold.json"), JSON.stringify(probe, null, 2));
     await page.close();
   }
 

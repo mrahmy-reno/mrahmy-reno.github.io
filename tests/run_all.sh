@@ -133,9 +133,11 @@ print(f"  browser checks: {d['checks']}  failures: {len(d['failures'])}")
 PY
   fi
   echo
-  echo "lighthouse scores (mobile):"
+  echo "lighthouse scores (mobile, median of 3 runs per page):"
   for n in index sama-soc-triage; do
-    [ -f "${OUT}/lighthouse-${n}.json" ] && echo "  ${n}: $(jq -c '.categories | map_values((.score*100)|round)' "${OUT}/lighthouse-${n}.json")"
+    f="${OUT}/lighthouse-${n}-run1.json"
+    [ -f "${f}" ] || f=$(ls "${OUT}"/lighthouse-${n}-run*.json 2>/dev/null | head -1)
+    [ -n "${f}" ] && echo "  ${n}: $(jq -c '.categories | map_values((.score*100)|round)' "${f}")  (see 08_lighthouse.log for every run)"
   done
 } >"${OUT}/11_summary.txt" 2>&1
 cat "${OUT}/11_summary.txt"

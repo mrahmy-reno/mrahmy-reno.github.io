@@ -6,19 +6,11 @@
 (function () {
   "use strict";
 
-  var root = document.documentElement;
-  root.classList.remove("no-js");
-  root.classList.add("js");
-
   var toggle = document.querySelector(".nav-toggle");
   var list = document.getElementById("primary-nav");
   if (!toggle || !list) {
     return;
   }
-
-  // The button lives inside a fixed-size .nav-slot, so revealing it changes no other element's
-  // geometry: no layout shift (CLS 0) and no full-document re-layout on load.
-  toggle.hidden = false;
 
   function setOpen(open) {
     toggle.setAttribute("aria-expanded", open ? "true" : "false");

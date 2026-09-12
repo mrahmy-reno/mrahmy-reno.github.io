@@ -121,6 +121,11 @@ def render_head(cfg: dict, p: Page, *, title_block: dict, desc_block: dict,
     out = [
         '<meta charset="utf-8">',
         '<meta name="viewport" content="width=device-width, initial-scale=1">',
+        # Runs during head parsing, before the first layout pass: the enhancement class is set
+        # without a post-load style recalculation, and the mobile nav control is only rendered
+        # (by CSS) when JS is available, so the deferred script never mutates layout.
+        '<script>document.documentElement.className='
+        'document.documentElement.className.replace("no-js","js");</script>',
         f"<title>{esc(title)}</title>",
         f'<meta name="description" content="{esc(desc)}">',
         f'<link rel="canonical" href="{esc(canonical)}">',
@@ -199,7 +204,7 @@ def render_header(cfg: dict, p: Page, is_index: bool) -> str:
   <header class="site-header">
     <div class="wrap header-inner">
       <a class="wordmark" href="/index.html">{p.t(C.NAME, global_=True)}</a>
-      <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" hidden>{p.t(C.L["menu"], global_=True)}</button></span>
+      <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">{p.t(C.L["menu"], global_=True)}</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
 {items}
