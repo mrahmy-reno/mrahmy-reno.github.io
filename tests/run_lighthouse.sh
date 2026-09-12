@@ -71,10 +71,11 @@ for name in index sama-soc-triage; do
     med=$(printf '%s\n' ${values} | awk -v n="${n}" 'NR==int((n+1)/2){print; exit}')
     min=$(printf '%s\n' ${values} | head -1)
     max=$(printf '%s\n' ${values} | tail -1)
+    csv=$(printf '%s\n' ${values} | paste -sd, -)
     mark=""
     if [ "${med}" -lt 90 ]; then mark="  <-- BELOW THRESHOLD"; rc=1; fi
     printf '  %-22s median=%s (runs: %s)  min=%s max=%s%s\n' \
-      "${name}/${cat}" "${med}" "$(printf '%s' ${values} | tr '\n' ',' | sed 's/,$//')" "${min}" "${max}" "${mark}"
+      "${name}/${cat}" "${med}" "${csv}" "${min}" "${max}" "${mark}"
   done
   echo "  ${name}: lighthouseVersion=$(jq -r '.lighthouseVersion' $(echo ${files} | awk '{print $1}')) formFactor=$(jq -r '.configSettings.formFactor' $(echo ${files} | awk '{print $1}')) throttling=$(jq -r '.configSettings.throttlingMethod' $(echo ${files} | awk '{print $1}'))"
 done

@@ -57,6 +57,11 @@ echo
   echo "== runtime dependencies =="
   echo "0 (static HTML/CSS/JS; the npm packages above are test-only and are not shipped in docs/)"
   echo
+  echo "== revision under test =="
+  echo "git HEAD      : $(git rev-parse HEAD 2>/dev/null || echo 'no git')"
+  echo "git worktree  : $(git status --porcelain 2>/dev/null | wc -l) uncommitted change(s)"
+  echo "commits       : $(git log --oneline 2>/dev/null | head -5 | tr '\n' '|')"
+  echo
   echo "== published asset hashes (sha256) =="
   find docs -type f | sort | xargs sha256sum
 } >"${OUT}/00_environment.txt" 2>&1
