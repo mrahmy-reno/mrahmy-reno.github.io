@@ -7,7 +7,7 @@
     <title>Tonsy-GPT — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Self-hosted RAG assistant: hybrid BM25 + ChromaDB, RRF, neural reranking, semantic caching, FastAPI/SSE + Next.js.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/tonsy-gpt.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="Tonsy-GPT — Mohammed Tawfiq Rahmy">
@@ -36,51 +36,174 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>Tonsy-GPT</h1>
-          <p class="lede">Self-hosted RAG assistant: hybrid BM25 + ChromaDB, RRF, neural reranking, semantic caching, FastAPI/SSE + Next.js.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>A self-hosted RAG assistant. Retrieval is hybrid BM25 + ChromaDB with RRF (reciprocal-rank fusion), plus neural reranking and semantic caching, behind a FastAPI/SSE + Next.js stack.</p>
-          <p>Retrieval supports parent-setting expansion, and session state is carried by a FastAPI/SSE backend with session persistence.</p>
+          <h1 class="project-title">Tonsy-GPT</h1>
+          <p class="project-lede">Self-hosted RAG assistant: hybrid BM25 + ChromaDB, RRF, neural reranking, semantic caching, FastAPI/SSE + Next.js.</p>
+          <p class="project-meta"><span class="tag">Applied RAG &amp; analytics</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>A self-hosted RAG assistant. Retrieval is hybrid BM25 + ChromaDB with RRF (reciprocal-rank fusion), plus neural reranking and semantic caching, behind a FastAPI/SSE + Next.js stack.</p>
+            <p>Retrieval supports parent-setting expansion, and session state is carried by a FastAPI/SSE backend with session persistence.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Self-hosted RAG assistant</li>
-            <li>Hybrid BM25 + ChromaDB</li>
-            <li>RRF retrieval fusion</li>
-            <li>Neural reranking</li>
-            <li>Semantic caching</li>
-            <li>FastAPI/SSE + Next.js</li>
-            <li>Parent-setting expansion</li>
-            <li>FastAPI/SSE backend with session persistence</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Retrieval quality is the product: one retriever is not enough, and the assistant is self-hosted.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>Hybrid BM25 + ChromaDB retrieval, RRF (reciprocal-rank fusion), neural reranking and semantic caching, behind FastAPI/SSE and Next.js.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-tonsy-gpt-t dg-tonsy-gpt-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-tonsy-gpt-t">Tonsy-GPT — hybrid retrieval pipeline</title>
+              <desc id="dg-tonsy-gpt-d">A query with parent-setting expansion fans out to BM25 and ChromaDB, merges at RRF, passes neural reranking and a semantic caching side channel, then FastAPI/SSE and Next.js, with session persistence on the response leg.</desc>
+              <rect class="dg-box" x="16" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="67.75" y="46.26" text-anchor="middle">query</text>
+              <line class="dg-edge" x1="121.5" y1="41.5" x2="137.5" y2="41.5" />
+              <rect class="dg-box" x="139.5" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="191.25" y="46.26" text-anchor="middle">BM25</text>
+              <line class="dg-edge" x1="245" y1="41.5" x2="261" y2="41.5" />
+              <rect class="dg-box" x="263" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="314.75" y="46.26" text-anchor="middle">ChromaDB</text>
+              <line class="dg-edge" x1="368.5" y1="41.5" x2="384.5" y2="41.5" />
+              <rect class="dg-box" x="386.5" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="438.25" y="46.26" text-anchor="middle">RRF</text>
+              <line class="dg-edge" x1="492" y1="41.5" x2="508" y2="41.5" />
+              <rect class="dg-box" x="510" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="561.75" y="36.76" text-anchor="middle">neural</text>
+              <text class="dg-label" x="561.75" y="55.76" text-anchor="middle">reranking</text>
+              <line class="dg-edge" x1="615.5" y1="41.5" x2="631.5" y2="41.5" />
+              <rect class="dg-box" x="633.5" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="685.25" y="36.76" text-anchor="middle">semantic</text>
+              <text class="dg-label" x="685.25" y="55.76" text-anchor="middle">caching</text>
+              <line class="dg-edge" x1="739" y1="41.5" x2="755" y2="41.5" />
+              <rect class="dg-box" x="757" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="808.75" y="36.76" text-anchor="middle">FastAPI/</text>
+              <text class="dg-label" x="808.75" y="55.76" text-anchor="middle">SSE</text>
+              <line class="dg-edge" x1="862.5" y1="41.5" x2="878.5" y2="41.5" />
+              <rect class="dg-box" x="880.5" y="16" width="103.5" height="51" rx="8" />
+              <text class="dg-label" x="932.25" y="46.26" text-anchor="middle">Next.js</text>
+              <text class="dg-label-meta" x="16" y="93" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="99" width="249.6" height="30" rx="8" />
+              <text class="dg-label-meta" x="140.8" y="118.76" text-anchor="middle">parent-setting expansion</text>
+              <rect class="dg-note" x="277.6" y="99" width="202.6" height="30" rx="8" />
+              <text class="dg-label-meta" x="378.9" y="118.76" text-anchor="middle">session persistence</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 534" role="img" aria-labelledby="dg-tonsy-gpt-v-t dg-tonsy-gpt-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-tonsy-gpt-v-t">Tonsy-GPT — hybrid retrieval pipeline</title>
+              <desc id="dg-tonsy-gpt-v-d">A query with parent-setting expansion fans out to BM25 and ChromaDB, merges at RRF, passes neural reranking and a semantic caching side channel, then FastAPI/SSE and Next.js, with session persistence on the response leg.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">query</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">BM25</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="140.76" text-anchor="middle">ChromaDB</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">RRF</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">neural reranking</text>
+              <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
+              <rect class="dg-box" x="16" y="276" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="296.76" text-anchor="middle">semantic caching</text>
+              <line class="dg-edge" x1="200" y1="310" x2="200" y2="326" />
+              <rect class="dg-box" x="16" y="328" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="348.76" text-anchor="middle">FastAPI/SSE</text>
+              <line class="dg-edge" x1="200" y1="362" x2="200" y2="378" />
+              <rect class="dg-box" x="16" y="380" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="400.76" text-anchor="middle">Next.js</text>
+              <text class="dg-label-meta" x="16" y="428" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="438" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="458.76" text-anchor="middle">parent-setting expansion</text>
+              <rect class="dg-note" x="16" y="478" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="498.76" text-anchor="middle">session persistence</text>
+            </svg>
+          </div>
+          <figcaption>Hybrid retrieval: fan-out, fusion, reranking, caching. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Parent-setting expansion and session state, carried by a FastAPI/SSE backend with session persistence.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Self-hosted RAG assistant</li>
+              <li>Hybrid BM25 + ChromaDB</li>
+              <li>RRF retrieval fusion</li>
+              <li>Neural reranking</li>
+              <li>Semantic caching</li>
+              <li>FastAPI/SSE + Next.js</li>
+              <li>Parent-setting expansion</li>
+              <li>FastAPI/SSE backend with session persistence</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>BM25</li>
-              <li>ChromaDB</li>
-              <li>FastAPI/SSE</li>
-              <li>Next.js</li>
+                <li>BM25</li>
+                <li>ChromaDB</li>
+                <li>FastAPI/SSE</li>
+                <li>Next.js</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>A self-hosted RAG assistant.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/pulsesec.html"><span class="pn-label">Previous project</span><span class="pn-name">PulseSec</span></a>
           <a class="pn-link pn-next" href="/projects/smart-care.html"><span class="pn-label">Next project</span><span class="pn-name">Smart Care</span></a>
@@ -89,10 +212,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

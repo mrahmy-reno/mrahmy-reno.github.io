@@ -7,7 +7,7 @@
     <title>ForWheelz — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Driver-risk intelligence: 28-feature trip pipeline from vehicle telemetry, RF/XGBoost with ablation, output contracts.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/forwheelz.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="ForWheelz — Mohammed Tawfiq Rahmy">
@@ -36,48 +36,166 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>ForWheelz</h1>
-          <p class="lede">Driver-risk intelligence: 28-feature trip pipeline from vehicle telemetry, RF/XGBoost with ablation, output contracts.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>Driver-risk intelligence built on a 28-feature trip pipeline from vehicle telemetry, with RF/XGBoost with ablation and explicit output contracts.</p>
-          <p>Random Forest/XGBoost models were evaluated through feature ablations and error analysis, and production-oriented outputs were defined for confidence, risk contributors, and insurer/API integration.</p>
-          <p>It also exposes a risk-index + DNA-score, developed with feature ablation + error analysis.</p>
+          <h1 class="project-title">ForWheelz</h1>
+          <p class="project-lede">Driver-risk intelligence: 28-feature trip pipeline from vehicle telemetry, RF/XGBoost with ablation, output contracts.</p>
+          <p class="project-meta"><span class="tag">Shipped products &amp; ML systems</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>Driver-risk intelligence built on a 28-feature trip pipeline from vehicle telemetry, with RF/XGBoost with ablation and explicit output contracts.</p>
+            <p>Random Forest/XGBoost models were evaluated through feature ablations and error analysis, and production-oriented outputs were defined for confidence, risk contributors, and insurer/API integration.</p>
+            <p>It also exposes a risk-index + DNA-score, developed with feature ablation + error analysis.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Driver-risk intelligence</li>
-            <li>28-feature trip pipeline from vehicle telemetry</li>
-            <li>RF/XGBoost with ablation</li>
-            <li>Output contracts</li>
-            <li>Feature ablations and error analysis</li>
-            <li>Production-oriented outputs for confidence, risk contributors, and insurer/API integration</li>
-            <li>Risk-index + DNA-score</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Risk has to be read from vehicle telemetry, and the output has to be usable by an insurer&#x27;s API.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>A 28-feature trip pipeline from vehicle telemetry into RF/XGBoost with ablation, behind explicit output contracts.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 130" role="img" aria-labelledby="dg-forwheelz-t dg-forwheelz-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-forwheelz-t">ForWheelz — feature pipeline to output contract</title>
+              <desc id="dg-forwheelz-d">Vehicle telemetry through a trip pipeline to feature ablation and RF/XGBoost, with error analysis as a side branch feeding back to feature ablation, and an output contract block listing confidence, risk contributors, risk-index, DNA-score and insurer/API integration.</desc>
+              <rect class="dg-box" x="16" y="16" width="177.6" height="32" rx="8" />
+              <text class="dg-label" x="104.8" y="36.76" text-anchor="middle">vehicle telemetry</text>
+              <line class="dg-edge" x1="195.6" y1="32" x2="211.6" y2="32" />
+              <rect class="dg-box" x="213.6" y="16" width="177.6" height="32" rx="8" />
+              <text class="dg-label" x="302.4" y="36.76" text-anchor="middle">trip pipeline</text>
+              <line class="dg-edge" x1="393.2" y1="32" x2="409.2" y2="32" />
+              <rect class="dg-box" x="411.2" y="16" width="177.6" height="32" rx="8" />
+              <text class="dg-label" x="500" y="36.76" text-anchor="middle">feature ablation</text>
+              <line class="dg-edge" x1="590.8" y1="32" x2="606.8" y2="32" />
+              <rect class="dg-box" x="608.8" y="16" width="177.6" height="32" rx="8" />
+              <text class="dg-label" x="697.6" y="36.76" text-anchor="middle">RF/XGBoost</text>
+              <line class="dg-edge" x1="788.4" y1="32" x2="804.4" y2="32" />
+              <rect class="dg-box" x="806.4" y="16" width="177.6" height="32" rx="8" />
+              <text class="dg-label" x="895.2" y="36.76" text-anchor="middle">output contract</text>
+              <text class="dg-label-meta" x="16" y="74" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="80" width="155.6" height="30" rx="8" />
+              <text class="dg-label-meta" x="93.8" y="99.76" text-anchor="middle">error analysis</text>
+              <rect class="dg-note" x="183.6" y="80" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="243.6" y="99.76" text-anchor="middle">confidence</text>
+              <rect class="dg-note" x="315.6" y="80" width="183.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="407.5" y="99.76" text-anchor="middle">risk contributors</text>
+              <rect class="dg-note" x="511.4" y="80" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="571.4" y="99.76" text-anchor="middle">risk-index</text>
+              <rect class="dg-note" x="643.4" y="80" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="703.4" y="99.76" text-anchor="middle">DNA-score</text>
+              <rect class="dg-note" x="775.4" y="80" width="240.2" height="30" rx="8" />
+              <text class="dg-label-meta" x="895.5" y="99.76" text-anchor="middle">insurer/API integration</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 538" role="img" aria-labelledby="dg-forwheelz-v-t dg-forwheelz-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-forwheelz-v-t">ForWheelz — feature pipeline to output contract</title>
+              <desc id="dg-forwheelz-v-d">Vehicle telemetry through a trip pipeline to feature ablation and RF/XGBoost, with error analysis as a side branch feeding back to feature ablation, and an output contract block listing confidence, risk contributors, risk-index, DNA-score and insurer/API integration.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">vehicle telemetry</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">trip pipeline</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="140.76" text-anchor="middle">feature ablation</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">RF/XGBoost</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">output contract</text>
+              <text class="dg-label-meta" x="16" y="272" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="282" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="302.76" text-anchor="middle">error analysis</text>
+              <rect class="dg-note" x="16" y="322" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="342.76" text-anchor="middle">confidence</text>
+              <rect class="dg-note" x="16" y="362" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="382.76" text-anchor="middle">risk contributors</text>
+              <rect class="dg-note" x="16" y="402" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="422.76" text-anchor="middle">risk-index</text>
+              <rect class="dg-note" x="16" y="442" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="462.76" text-anchor="middle">DNA-score</text>
+              <rect class="dg-note" x="16" y="482" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="502.76" text-anchor="middle">insurer/API integration</text>
+            </svg>
+          </div>
+          <figcaption>Telemetry to output contract. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Models were evaluated through feature ablations and error analysis.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Driver-risk intelligence</li>
+              <li>28-feature trip pipeline from vehicle telemetry</li>
+              <li>RF/XGBoost with ablation</li>
+              <li>Output contracts</li>
+              <li>Feature ablations and error analysis</li>
+              <li>Production-oriented outputs for confidence, risk contributors, and insurer/API integration</li>
+              <li>Risk-index + DNA-score</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>RF/XGBoost</li>
+                <li>RF/XGBoost</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>Driver-risk intelligence with a risk-index + DNA-score, and production-oriented outputs for confidence and risk contributors.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/halalbot.html"><span class="pn-label">Previous project</span><span class="pn-name">HalalBot</span></a>
           <a class="pn-link pn-next" href="/projects/email-mcp.html"><span class="pn-label">Next project</span><span class="pn-name">email-MCP</span></a>
@@ -86,10 +204,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

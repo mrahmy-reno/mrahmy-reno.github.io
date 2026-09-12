@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Static site generator for the Benchmark #1 portfolio.
+"""Static site generator for the Benchmark #1 portfolio — B2-02 redesign.
 
 No third-party dependencies (stdlib only). Renders the whole publish root (`docs/`) from:
-  * `site.config.json`  - the single place the three owner-decision switches live
-  * `tools/site_content.py` - every string, each tagged with its FACTS_LEDGER row
+  * `site.config.json`        - the single place the owner-decision switches live
+  * `tools/site_content.py`   - every string, each tagged with its FACTS_LEDGER row
+  * `tools/site_content_b2.py`- the redesign's additions (claim, point of view, glance labels, …)
+  * `tools/artefacts.py`      - the original schematic SVG artefacts (PROOF_PLAN.md)
 
 Usage:
     python3 tools/build_site.py                     # render into ./docs
@@ -21,13 +23,19 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+import artefacts as A  # noqa: E402
 import site_content as C  # noqa: E402
+import site_content_b2 as C2  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG = ROOT / "site.config.json"
 
 SITE_NAME_FALLBACK = "Mohammed Tawfiq Rahmy"
 PAGES_INDEX = "index.html"
+
+THEME_COLOR = "#0c0e13"
+
+GROUP_LABELS = {1: "g1", 2: "g2", 3: "g3"}
 
 
 # --------------------------------------------------------------------------- utils
@@ -48,6 +56,10 @@ class Page:
         """Record a content block and return its HTML-escaped text."""
         self.rec.add(self.path, block, global_)
         return esc(block["text"])
+
+    def raw(self, text: str, refs: list[str], mode: str, note: str, *, global_: bool = False) -> str:
+        """Record an ad-hoc block (used for artefact captions owned by tools/artefacts.py)."""
+        return self.t(C.b(text, refs, mode, note), global_=global_)
 
 
 class Recorder:
@@ -101,7 +113,17 @@ def load_config(path: Path) -> dict:
     if not isinstance(certs.get("tier_b", []), list):
         fail("certifications.tier_b must be a list")
 
+    provenance = cfg.setdefault("provenance", {})
+    tags = provenance.get("tags", "tier")
+    if tags not in ("tier", "plain", "off"):
+        fail(f"provenance.tags must be tier|plain|off, got {tags!r}")
+    provenance["tags"] = tags
+
     return cfg
+
+
+def source_tags(cfg: dict) -> str:
+    return cfg["provenance"]["tags"]
 
 
 # --------------------------------------------------------------------------- fragments
@@ -129,7 +151,7 @@ def render_head(cfg: dict, p: Page, *, title_block: dict, desc_block: dict,
         f"<title>{esc(title)}</title>",
         f'<meta name="description" content="{esc(desc)}">',
         f'<link rel="canonical" href="{esc(canonical)}">',
-        f'<meta name="theme-color" content="#0d1b2a">',
+        f'<meta name="theme-color" content="{THEME_COLOR}">',
     ]
     if noindex:
         out.append('<meta name="robots" content="noindex">')
@@ -158,28 +180,22 @@ def render_head(cfg: dict, p: Page, *, title_block: dict, desc_block: dict,
     return "\n".join("    " + line for line in out)
 
 
-def nav_hrefs(is_index: bool) -> dict:
-    if is_index:
-        return {
-            "about": "#about", "experience": "#experience", "work": "#projects",
-            "skills": "#skills", "education": "#education", "contact": "#contact",
-        }
-    return {
-        "about": "/index.html#about", "experience": "/index.html#experience",
-        "work": "/index.html#projects", "skills": "/index.html#skills",
-        "education": "/index.html#education", "contact": "/index.html#contact",
-    }
+def nav_hrefs(is_index: bool) -> list[tuple[str, str, str]]:
+    """(content-key, href, section id for aria-current)."""
+    items = [("nav_about", "about", "about"), ("nav_experience", "experience", "experience"),
+             ("nav_work", "projects", "projects"), ("nav_skills", "skills", "skills"),
+             ("nav_education", "education", "education"), ("nav_contact", "contact", "contact")]
+    out = []
+    for key, frag, sid in items:
+        href = f"#{frag}" if is_index else f"/index.html#{frag}"
+        out.append((key, href, sid))
+    return out
 
 
 def render_header(cfg: dict, p: Page, is_index: bool) -> str:
-    hrefs = nav_hrefs(is_index)
-    nav = [
-        ("nav_about", hrefs["about"]), ("nav_experience", hrefs["experience"]),
-        ("nav_work", hrefs["work"]), ("nav_skills", hrefs["skills"]),
-        ("nav_education", hrefs["education"]), ("nav_contact", hrefs["contact"]),
-    ]
     items = "\n".join(
-        f'            <li><a href="{href}">{p.t(C.L[key])}</a></li>' for key, href in nav
+        f'            <li><a href="{href}" data-nav-section="{sid}">{p.t(C.L[key])}</a></li>'
+        for key, href, sid in nav_hrefs(is_index)
     )
     # Print-only header line (A17). The index carries the role + employer (A17 asks for
     # name, current role + employer and the LinkedIn URL on the first printed page). Detail
@@ -216,16 +232,27 @@ def render_header(cfg: dict, p: Page, is_index: bool) -> str:
 
 
 def render_footer(cfg: dict, p: Page, is_index: bool) -> str:
-    back = ('<p class="to-top"><a href="#top">'
-            + p.t(C.L["back_to_top"], global_=True) + "</a></p>") if is_index else ""
+    legend = "\n".join(
+        f'          <dd>{p.t(C2.EXTRA[key], global_=True)}</dd>'
+        for key in ("legend_s1", "legend_s2", "legend_s3", "legend_s5")
+    )
     allwork = "" if is_index else (
-        '<p class="to-top"><a href="/index.html#projects">'
+        f'      <p class="to-top"><a href="/index.html#projects">'
         + p.t(C.L["all_work"], global_=True) + "</a></p>")
+    back = ('      <p class="to-top"><a href="#top">'
+            + p.t(C.L["back_to_top"], global_=True) + "</a></p>") if is_index else ""
     return f"""  <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>{p.t(C.NAME, global_=True)}</span> · <a href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["header_contact"], global_=True)}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a> · <span>{p.t(C.L["footer_provenance"], global_=True)}</span></p>
       <p class="footer-line muted">{p.t(C.L["copyright"], global_=True)}</p>
-{allwork}{back}
+      <dl class="legend">
+        <div>
+          <dt>{p.t(C2.EXTRA["legend_h"], global_=True)}</dt>
+{legend}
+        </div>
+      </dl>
+{allwork}
+{back}
     </div>
   </footer>"""
 
@@ -255,19 +282,6 @@ def render_contact_block(cfg: dict, p: Page) -> str:
     return "\n".join(rows)
 
 
-def render_facts_list(p: Page) -> str:
-    rows = [
-        (C.L["fact_current"], f'<strong>{p.t(C.CURRENT_ROLE)}</strong> · {p.t(C.CURRENT_EMPLOYER)} · {p.t(C.CURRENT_DATES)}'),
-        (C.L["fact_based"], p.t(C.LOCATION)),
-        (C.L["fact_focus"], p.t(C.FOCUS)),
-        (C.L["fact_languages"], p.t(C.LANGUAGES)),
-    ]
-    out = []
-    for label, value in rows:
-        out.append(f'      <div class="fact"><dt>{p.t(label)}</dt><dd>{value}</dd></div>')
-    return '<dl class="facts">\n' + "\n".join(out) + "\n    </dl>"
-
-
 def render_photo(cfg: dict, p: Page) -> str:
     photo = cfg["photo"]
     if not photo.get("enabled"):
@@ -276,42 +290,104 @@ def render_photo(cfg: dict, p: Page) -> str:
               "Owner-approved likeness (ledger L1.5, Tier C released by the owner's decision). "
               "Alt text is the ledger name; self-hosted copy, never hot-linked.")
     p.rec.add(p.path, alt, True)
-    return (f'      <img class="portrait" src="/{esc(photo["path"])}" alt="{esc(photo["alt"])}" '
-            f'width="{int(photo["width"])}" height="{int(photo["height"])}" '
-            f'decoding="async">')
+    return f"""        <div class="hero-media">
+          <img class="portrait" src="/{esc(photo["path"])}" alt="{esc(photo["alt"])}" width="{int(photo["width"])}" height="{int(photo["height"])}" decoding="async">
+        </div>"""
 
 
-# --------------------------------------------------------------------------- pages
+# --------------------------------------------------------------------------- motif
 
 
-def page_shell(cfg: dict, p: Page, *, title_block: dict, desc_block: dict, path: str,
-               body: str, og_type: str = "website", is_index: bool = False,
-               jsonld: str | None = None, noindex: bool = False) -> str:
-    lang = esc(cfg["site"]["lang"])
-    return f"""<!DOCTYPE html>
-<html lang="{lang}" class="no-js">
-  <head>
-{render_head(cfg, p, title_block=title_block, desc_block=desc_block, path=path,
-             og_type=og_type, jsonld=jsonld, noindex=noindex)}
-  </head>
-  <body>
-{render_header(cfg, p, is_index)}
-    <main id="main">
-{body}
-    </main>
-{render_footer(cfg, p, is_index)}
-  </body>
-</html>
-"""
+def attribution(p: Page, tags: str, tier: str = "S2") -> str:
+    """The attribution rule: a hairline with a mono source tag seated on it (DESIGN_SYSTEM 6.10)."""
+    if tags == "off":
+        return '          <p class="attr-rule" aria-hidden="true"></p>'
+    if tags == "plain":
+        return (f'          <p class="attr-rule"><span class="srctag">'
+                f'{p.t(C2.EXTRA["src_sourced"])}</span></p>')
+    tag_block = C2.SOURCE_TAGS[tier]
+    expansion = p.t(tag_block)
+    return (f'          <p class="attr-rule"><span class="srctag" title="{esc(tag_block["text"].lstrip("— "))}">'
+            f'<abbr>{esc(tier)}</abbr><span class="visually-hidden"> {expansion}</span></span></p>')
+
+
+def section_head(p: Page, serial: dict, h2: dict, deck: dict, anchor: str) -> str:
+    return f"""        <div class="section-head" data-reveal>
+          <p class="serial">{p.t(serial)}</p>
+          <h2 id="{anchor}-h2">{p.t(h2)}</h2>
+          <p class="deck">{p.t(deck)}</p>
+        </div>"""
+
+
+def render_glance_strip(cfg: dict, p: Page) -> str:
+    rows = [
+        ("role", C2.ROLE_LEDGER),
+        ("employer", C.CURRENT_EMPLOYER),
+        ("since", C.CURRENT_DATES),
+        ("based", C.LOCATION),
+        ("focus", C.FOCUS),
+        ("languages", C.LANGUAGES),
+    ]
+    out = []
+    for key, value in rows:
+        out.append(f'          <div class="glance-item"><dt>{p.t(C2.GLANCE[key])}</dt>'
+                   f'<dd>{p.t(value)}</dd></div>')
+    return '<dl class="glance-strip">\n' + "\n".join(out) + "\n        </dl>"
+
+
+def render_figure(p: Page, uid: str, slug: str, *, refs: list[str] | None = None) -> str:
+    """Render one artefact as figure(wide + tall SVG) with its caption and scope caption."""
+    meta = A.ARTEFACT_META[slug]
+    refs = refs or ["L4.1"]
+    caption = p.raw(meta["caption"], refs, "composed",
+                    "Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram "
+                    "draws; asserts nothing beyond the project's ledger row.")
+    scope = p.raw(meta["scope"], [], "structural",
+                  "Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). "
+                  "A statement about the drawing, not about the person.")
+    wide, tall = A.artefact_pair(slug)
+    return (f'        <figure class="artefact">\n'
+            f'          <div class="artefact-frame">\n'
+            + "\n".join("            " + line for line in wide.splitlines()) + "\n"
+            + "\n".join("            " + line for line in tall.splitlines()) + "\n"
+            f'          </div>\n'
+            f'          <figcaption>{caption} <span class="scope-caption">{scope}</span></figcaption>\n'
+            f'        </figure>')
+
+
+def render_system_map(p: Page) -> str:
+    meta = A.ARTEFACT_META["system-map"]
+    wide, tall = A.system_map_pair({pr["slug"]: pr["name"]["text"] for pr in C.PROJECTS})
+    caption = p.raw(meta["caption"], ["L4.1", "L4.2", "L4.3", "L4.4", "L4.5", "L4.6", "L4.7",
+                                      "L4.8", "L4.9", "L4.10"], "composed",
+                    "Structural caption for the system map. The ten node labels are the ledger "
+                    "project names; the three group labels are the structural grouping.")
+    scope = p.raw(meta["scope"], [], "structural",
+                  "Mandatory scope caption (PROOF_PLAN.md section 5 rule 9).")
+    link = f'<a href="#evidence">{p.t(C2.EXTRA["map_link"])}</a>'
+    return (f'      <figure class="system-map" data-reveal>\n'
+            + "\n".join("        " + line for line in wide.splitlines()) + "\n"
+            + "\n".join("        " + line for line in tall.splitlines()) + "\n"
+            f'        <figcaption>{caption} {link} → <span class="scope-caption">{scope}</span></figcaption>\n'
+            f'      </figure>')
+
+
+# --------------------------------------------------------------------------- index
 
 
 def section_about(cfg: dict, p: Page) -> str:
+    tags = source_tags(cfg)
+    pov = C2.POINT_OF_VIEW
+    pov_html = p.raw(pov["text"], pov["refs"], "composed", pov["note"])
     return f"""      <section class="section" id="about" aria-labelledby="about-h2">
         <div class="wrap">
-          <h2 id="about-h2">{p.t(C.L["h2_about"])}</h2>
-          <p class="lede">{p.t(C.S5_SUMMARY)}</p>
+{section_head(p, C2.SERIALS["about"], C.L["h2_about"], C2.EXTRA["about_deck"], "about")}
+        <div class="prose" data-reveal>
+          <p>{p.t(C.S5_SUMMARY)}</p>
           <p>{p.t(C.ABOUT_SUMMARY)}</p>
-{render_facts_list(p)}
+        </div>
+        <p class="band-statement">{pov_html}</p>
+{attribution(p, tags, "S5")}
         </div>
       </section>"""
 
@@ -320,56 +396,95 @@ def section_experience(cfg: dict, p: Page) -> str:
     blocks = []
     for i, role in enumerate(C.EXPERIENCE, start=1):
         bullets = "\n".join(f'              <li>{p.t(b)}</li>' for b in role["bullets"])
+        current = "true" if i == 1 else "false"
+        present = (f' <span class="present">{p.t(C2.EXTRA["present"])}</span>'
+                   if i == 1 else "")
         blocks.append(f"""          <article class="exp" id="exp-{i}">
-            <header class="exp-head">
+            <div class="exp-rail" data-current="{current}">
               <h3>{p.t(role["title"])}</h3>
-              <p class="exp-meta"><span class="employer">{p.t(role["employer"])}</span> · <span class="dates">{p.t(role["dates"])}</span></p>
-            </header>
+              <p class="exp-meta"><span class="employer">{p.t(role["employer"])}</span> · <span class="dates">{p.t(role["dates"])}</span>{present}</p>
+            </div>
             <ul class="bullets">
 {bullets}
             </ul>
           </article>""")
     return f"""      <section class="section" id="experience" aria-labelledby="experience-h2">
         <div class="wrap">
-          <h2 id="experience-h2">{p.t(C.L["h2_experience"])}</h2>
-          <div class="exp-list">
+{section_head(p, C2.SERIALS["experience"], C.L["h2_experience"], C2.EXTRA["experience_deck"], "experience")}
+          <div class="exp-list" data-reveal>
 {chr(10).join(blocks)}
           </div>
+{attribution(p, source_tags(cfg), "S5")}
         </div>
       </section>"""
 
 
-GROUP_LABELS = {1: "g1", 2: "g2", 3: "g3"}
-
-
 def section_projects(cfg: dict, p: Page) -> str:
+    tags = source_tags(cfg)
     groups = []
+    index = 0
     for gid in (1, 2, 3):
         cards = []
         for proj in C.PROJECTS:
             if proj["group"] != gid:
                 continue
+            index += 1
             cls = "card card-featured" if proj["featured"] else "card"
             featured = (f'<span class="tag">{p.t(C.L["featured"])}</span>'
                         if proj["featured"] else "")
             cards.append(
                 f'              <li class="{cls}">\n'
-                f'                <h4><a href="/projects/{proj["slug"]}.html">{p.t(proj["name"])}</a></h4>\n'
-                f'                <p>{p.t(proj["one_liner"])}</p>\n'
-                f'                {featured}\n'
+                f'                <a class="row-inner" href="/projects/{proj["slug"]}.html">\n'
+                f'                  <div class="row-head"><span class="rank">{p.t(C2.RANKS[index])}</span><h4><span class="row-title">{p.t(proj["name"])}</span></h4></div>\n'
+                f'                  <p class="row-one-liner">{p.t(proj["one_liner"])}</p>\n'
+                f'                  <span class="row-foot">{featured}<span class="arrow">{p.t(C.L["row_open"])} →</span></span>\n'
+                f'                </a>\n'
                 f'              </li>'
             )
-        groups.append(f"""          <div class="project-group">
-            <h3>{p.t(C.L[GROUP_LABELS[gid]])}</h3>
+        groups.append(f"""          <div class="work-group" data-reveal>
+            <h3 class="work-group-head">{p.t(C.L[GROUP_LABELS[gid]])}</h3>
             <ul class="cards">
 {chr(10).join(cards)}
             </ul>
           </div>""")
     return f"""      <section class="section" id="projects" aria-labelledby="work-h2">
         <div class="wrap">
-          <h2 id="work-h2">{p.t(C.L["h2_work"])}</h2>
-          <p class="section-intro">{p.t(C.L["projects_intro"])}</p>
+{section_head(p, C2.SERIALS["work"], C.L["h2_work"], C2.EXTRA["work_deck"], "work")}
 {chr(10).join(groups)}
+{attribution(p, tags, "S2")}
+        </div>
+      </section>"""
+
+
+def section_evidence(cfg: dict, p: Page) -> str:
+    tags = source_tags(cfg)
+    if tags == "off":
+        inner = (f'        <div class="empty" data-reveal>\n'
+                 f'          <span class="empty-label">{p.t(C2.EXTRA["empty_label"])}</span>\n'
+                 f'          <p>{p.t(C2.EXTRA["empty_body"])}</p>\n'
+                 f'        </div>')
+    else:
+        featured = next(pr for pr in C.PROJECTS if pr["slug"] == "smartops-soc-app")
+        others = ["milo-ai-employee", "pulsesec", "halalbot", "sama-soc-triage"]
+        items = []
+        for slug in others:
+            proj = next(pr for pr in C.PROJECTS if pr["slug"] == slug)
+            items.append(
+                f'            <li><span class="index-label">{p.t(C2.EXTRA["artefact_label"])}</span>'
+                f'<a href="/projects/{slug}.html">{p.t(proj["name"])}</a></li>')
+        inner = (f'        <div class="evidence-figure" data-reveal>\n'
+                 f'{render_figure(p, "dg-smartops", "smartops-soc-app", refs=featured["name"]["refs"])}\n'
+                 f'        </div>\n'
+                 f'        <h3 class="certs-h3">{p.t(C2.EXTRA["evidence_index_h"])}</h3>\n'
+                 f'        <ul class="evidence-index">\n' + "\n".join(items) + "\n        </ul>")
+    more = (f'        <p class="to-top"><a class="btn btn-secondary" href="#projects">'
+            f'{p.t(C2.EXTRA["evidence_more"])}</a></p>')
+    return f"""      <section class="band band-signal section" id="evidence" aria-labelledby="evidence-h2">
+        <div class="wrap">
+{section_head(p, C2.SERIALS["evidence"], C2.EXTRA["evidence_h2"], C2.EXTRA["evidence_deck"], "evidence")}
+{inner}
+{more}
+{attribution(p, tags, "S2")}
         </div>
       </section>"""
 
@@ -380,7 +495,7 @@ def section_skills(cfg: dict, p: Page) -> str:
         items = "\n".join(
             f'              <li>{p.t(C.b(chip, refs))}</li>' for chip, refs in chips
         )
-        groups.append(f"""          <div class="skill-group">
+        groups.append(f"""          <div class="skill-group" data-reveal>
             <h3>{p.t(C.b(label, [], "structural"))}</h3>
             <ul class="chips">
 {items}
@@ -388,10 +503,11 @@ def section_skills(cfg: dict, p: Page) -> str:
           </div>""")
     return f"""      <section class="section" id="skills" aria-labelledby="skills-h2">
         <div class="wrap">
-          <h2 id="skills-h2">{p.t(C.L["h2_skills"])}</h2>
+{section_head(p, C2.SERIALS["skills"], C.L["h2_skills"], C2.EXTRA["skills_deck"], "skills")}
           <div class="skill-list">
 {chr(10).join(groups)}
           </div>
+{attribution(p, source_tags(cfg), "S5")}
         </div>
       </section>"""
 
@@ -399,7 +515,7 @@ def section_skills(cfg: dict, p: Page) -> str:
 def section_education(cfg: dict, p: Page) -> str:
     edu = []
     for entry in C.EDUCATION:
-        edu.append(f"""          <article class="edu">
+        edu.append(f"""          <article class="edu" data-reveal>
             <h3>{p.t(entry["credential"])}</h3>
             <p class="edu-meta"><span>{p.t(entry["institution"])}</span> · <span>{p.t(entry["detail"])}</span> · <span class="year">{p.t(entry["year"])}</span></p>
           </article>""")
@@ -409,7 +525,7 @@ def section_education(cfg: dict, p: Page) -> str:
             f' <span class="cert-date">{p.t(date)}</span>' if date is not None else ""
         )
         certs.append(
-            f'              <li><span class="cert-name">{p.t(name)}</span> — '
+            f'            <li><span class="cert-name">{p.t(name)}</span> — '
             f'<span class="cert-body">{p.t(body)}</span>{date_html}</li>'
         )
     extra = ""
@@ -429,7 +545,7 @@ def section_education(cfg: dict, p: Page) -> str:
                  '          <ul class="certs">\n' + "\n".join(rows) + "\n          </ul>")
     return f"""      <section class="section" id="education" aria-labelledby="education-h2">
         <div class="wrap">
-          <h2 id="education-h2">{p.t(C.L["h2_education"])}</h2>
+{section_head(p, C2.SERIALS["education"], C.L["h2_education"], C2.EXTRA["education_deck"], "education")}
           <div class="edu-list">
 {chr(10).join(edu)}
           </div>
@@ -438,6 +554,7 @@ def section_education(cfg: dict, p: Page) -> str:
 {chr(10).join(certs)}
           </ul>
 {extra}
+{attribution(p, source_tags(cfg), "S5")}
         </div>
       </section>"""
 
@@ -445,8 +562,10 @@ def section_education(cfg: dict, p: Page) -> str:
 def section_contact(cfg: dict, p: Page) -> str:
     return f"""      <section class="section" id="contact" aria-labelledby="contact-h2">
         <div class="wrap">
-          <h2 id="contact-h2">{p.t(C.L["h2_contact"])}</h2>
+{section_head(p, C2.SERIALS["contact"], C.L["h2_contact"], C2.EXTRA["contact_deck"], "contact")}
+          <div class="contact-panel" data-reveal>
 {render_contact_block(cfg, p)}
+          </div>
         </div>
       </section>"""
 
@@ -456,24 +575,30 @@ def build_index(cfg: dict, p: Page) -> str:
                       "Title composed from the ledger name (L1.1) and role (L3.1).")
     jsonld = render_jsonld(cfg)
     photo = render_photo(cfg, p)
-    hero_media = f"""        <div class="hero-media">
-{photo}
-        </div>""" if photo else ""
-    body = f"""      <section class="hero" id="top" aria-labelledby="hero-h1">
+    body = f"""      <section class="band band-trace hero" id="top" aria-labelledby="hero-h1">
         <div class="wrap hero-inner">
-          <div class="hero-text">
-            <h1 id="hero-h1">{p.t(C.NAME)}</h1>
+          <div class="hero-text" data-reveal="hero">
             <p class="eyebrow">{p.t(C.HEADLINE)}</p>
-            <p class="pitch">{p.t(C.PITCH)}</p>
-{render_facts_list(p)}
-            <p class="cta-row"><a class="btn" href="#projects">{p.t(C.L["cta_work"])}</a> <a class="btn btn-ghost" href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["cta_linkedin"])}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a></p>
+            <h1 id="hero-h1">{p.t(C.NAME)}</h1>
+            <p class="claim">{p.t(C2.CLAIM_LEAD)} <span class="claim-tail">{p.t(C2.CLAIM_TAIL)}</span></p>
           </div>
-{hero_media}
+          <div class="hero-aside" data-reveal>
+{photo}
+{render_glance_strip(cfg, p)}
+          </div>
+          <div class="hero-cta">
+            <p class="cta-row"><a class="btn" href="#projects">{p.t(C.L["cta_work"])}</a> <a class="btn btn-secondary" href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["cta_linkedin"])}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a></p>
+          </div>
+          <div class="hero-pitch">
+            <p class="pitch">{p.t(C.PITCH)}</p>
+          </div>
         </div>
+{render_system_map(p)}
       </section>
 {section_about(cfg, p)}
 {section_experience(cfg, p)}
 {section_projects(cfg, p)}
+{section_evidence(cfg, p)}
 {section_skills(cfg, p)}
 {section_education(cfg, p)}
 {section_contact(cfg, p)}"""
@@ -514,58 +639,150 @@ def render_jsonld(cfg: dict) -> str:
     return f'    <script type="application/ld+json">\n{indented}\n    </script>'
 
 
+# --------------------------------------------------------------------------- case study
+
+
+def page_shell(cfg: dict, p: Page, *, title_block: dict, desc_block: dict, path: str,
+               body: str, og_type: str = "website", is_index: bool = False,
+               jsonld: str | None = None, noindex: bool = False) -> str:
+    lang = esc(cfg["site"]["lang"])
+    return f"""<!DOCTYPE html>
+<html lang="{lang}" class="no-js">
+  <head>
+{render_head(cfg, p, title_block=title_block, desc_block=desc_block, path=path,
+             og_type=og_type, jsonld=jsonld, noindex=noindex)}
+  </head>
+  <body>
+{render_header(cfg, p, is_index)}
+    <main id="main">
+{body}
+    </main>
+{render_footer(cfg, p, is_index)}
+  </body>
+</html>
+"""
+
+
+CASE_STAGE_KEYS = [
+    (1, "cs-problem", "stage_problem", "problem"),
+    (2, "cs-approach", "stage_approach", "approach"),
+    (4, "cs-hard", "stage_hard", "hard"),
+    (6, "cs-outcome", "stage_outcome", "outcome"),
+]
+
+
+def stage_block(p: Page, num: int, cls: str, label_key: str, text: str | None,
+                refs: list[str]) -> str:
+    label = p.t(C2.STAGE_SERIALS[num])
+    head = (f'            <p class="cs-label">{label} · {p.t(C.L[label_key])}</p>')
+    if text is None:
+        empty = (f'            <div class="empty"><span class="empty-label">'
+                 f'{p.t(C2.EXTRA["empty_label"])}</span>'
+                 f'<p>{p.t(C2.EXTRA["empty_body"])}</p></div>')
+        return (f'          <section class="cs-stage {cls}">\n'
+                f'            <div class="cs-stage-inner">\n{head}\n{empty}\n'
+                f'            </div>\n          </section>')
+    note = ("Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / "
+            "approved-extension phrases; connective verbs only.")
+    para = p.raw(text, refs, "composed", note)
+    return (f'          <section class="cs-stage {cls}">\n'
+            f'            <div class="cs-stage-inner">\n{head}\n'
+            f'            <div class="cs-body"><p>{para}</p></div>\n'
+            f'            </div>\n          </section>')
+
+
 def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
+    tags = source_tags(cfg)
     title_block = C.b(f'{proj["name"]["text"]} — Mohammed Tawfiq Rahmy', ["L1.1"],
                       "composed", "Title = the ledger project name plus the ledger name.")
     desc_block = C.b(proj["one_liner"]["text"], [proj["name"]["refs"][0]], "verbatim",
                      "Meta description = the ledger one-liner for this project.")
+    stages = C2.CASE_STAGES[proj["slug"]]
     overview = "\n".join(
-        f'          <p>{p.t(par)}</p>' for par in proj["overview"]
+        f'            <p>{p.t(par)}</p>' for par in proj["overview"]
     )
-    caps = "\n".join(f'            <li>{p.t(cap)}</li>' for cap in proj["capabilities"])
+    caps = "\n".join(f'              <li>{p.t(cap)}</li>' for cap in proj["capabilities"])
     tech = ""
     if proj["tech_line"]:
-        chips = "\n".join(f'              <li>{p.t(t)}</li>' for t in proj["tech_line"])
-        tech = f"""          <div class="tech-row">
+        chips = "\n".join(f'                <li>{p.t(t)}</li>' for t in proj["tech_line"])
+        tech = f"""          <div class="tech-row" data-reveal>
             <h3>{p.t(C.L["tech_line_label"])}</h3>
             <ul class="chips">
 {chips}
             </ul>
           </div>"""
+    problem = stage_block(p, 1, "cs-problem", "stage_problem", stages["problem"][0],
+                          stages["problem"][1])
+    approach = stage_block(p, 2, "cs-approach", "stage_approach", stages["approach"][0],
+                           stages["approach"][1])
+    hard = stage_block(p, 4, "cs-hard", "stage_hard",
+                       stages["hard"][0] if stages["hard"] else None,
+                       stages["hard"][1] if stages["hard"] else [])
+    outcome = stage_block(p, 6, "cs-outcome", "stage_outcome", stages["outcome"][0],
+                          stages["outcome"][1])
+    artefact = render_figure(p, f"dg-{proj['slug']}", proj["slug"], refs=proj["name"]["refs"])
+    domain = C.L[GROUP_LABELS[proj["group"]]]
     prev_slug = C.PROJECT_ORDER[idx - 1] if idx > 0 else None
     next_slug = C.PROJECT_ORDER[idx + 1] if idx < len(C.PROJECT_ORDER) - 1 else None
-    prev_html = ""
-    if prev_slug:
-        prev_proj = next(x for x in C.PROJECTS if x["slug"] == prev_slug)
-        prev_html = (f'          <a class="pn-link pn-prev" href="/projects/{prev_slug}.html">'
-                     f'<span class="pn-label">{p.t(C.L["prev"])}</span>'
-                     f'<span class="pn-name">{p.t(prev_proj["name"])}</span></a>')
-    next_html = ""
-    if next_slug:
-        next_proj = next(x for x in C.PROJECTS if x["slug"] == next_slug)
-        next_html = (f'          <a class="pn-link pn-next" href="/projects/{next_slug}.html">'
-                     f'<span class="pn-label">{p.t(C.L["next"])}</span>'
-                     f'<span class="pn-name">{p.t(next_proj["name"])}</span></a>')
-    body = f"""      <article class="section project-detail">
+    pn = []
+    for slug, key, cls in ((prev_slug, "prev", "pn-prev"), (next_slug, "next", "pn-next")):
+        if not slug:
+            continue
+        other = next(x for x in C.PROJECTS if x["slug"] == slug)
+        pn.append(f'          <a class="pn-link {cls}" href="/projects/{slug}.html">'
+                  f'<span class="pn-label">{p.t(C.L[key])}</span>'
+                  f'<span class="pn-name">{p.t(other["name"])}</span></a>')
+    body = f"""      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">{p.t(C.L["all_work"])}</a></p>
-          <h1>{p.t(proj["name"])}</h1>
-          <p class="lede">{p.t(proj["one_liner"])}</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">{p.t(C.L["overview"])}</h2>
+          <h1 class="project-title">{p.t(proj["name"])}</h1>
+          <p class="project-lede">{p.t(proj["one_liner"])}</p>
+          <p class="project-meta"><span class="tag">{p.t(domain)}</span><span class="cs-label">{p.t(C2.STAGE_SERIALS[3])} · {p.t(C.L["stage_architecture"])}</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">{p.t(C2.EXTRA["overview_label"])}</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">{p.t(C2.EXTRA["overview_label"])}</h2>
 {overview}
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">{p.t(C.L["capabilities"])}</h2>
-            <ul class="bullets">
+{problem}
+{approach}
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">{p.t(C2.STAGE_SERIALS[3])} · {p.t(C.L["stage_architecture"])}</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">{p.t(C.L["stage_architecture"])}</h2>
+                  <div class="diagram-panel" data-reveal>
+{artefact}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+{hard}
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">{p.t(C2.STAGE_SERIALS[5])} · {p.t(C.L["stage_evidence"])}</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">{p.t(C.L["stage_evidence"])}</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>{p.t(C.L["capabilities"])}</h3>
+                  <ul class="bullets">
 {caps}
-            </ul>
-          </section>
+                  </ul>
+                </div>
 {tech}
-          <p class="scope-note">{p.t(C.SCOPE_NOTE)}</p>
+                <p class="callout"><span class="callout-label">{p.t(C2.EXTRA["scope_label"])}</span>{p.t(C.SCOPE_NOTE)}</p>
+              </div>
+            </div>
+          </section>
+{outcome}
+{attribution(p, tags, "S2")}
           <nav class="prev-next" aria-label="Project navigation">
-{prev_html}
-{next_html}
+{chr(10).join(pn)}
           </nav>
         </div>
       </article>"""
@@ -578,11 +795,19 @@ def build_404(cfg: dict, p: Page) -> str:
                       "Composed from the structural string 'Page not found' and the ledger name.")
     desc_block = C.b("The page you were looking for is not on this site.", [], "structural",
                      "Structural; asserts nothing about the person.")
+    links = "\n".join(
+        f'          <li><a href="/projects/{pr["slug"]}.html">{p.t(pr["name"])}</a></li>'
+        for pr in C.PROJECTS
+    )
     body = f"""      <section class="section notfound">
         <div class="wrap">
-          <h1>{p.t(C.L["nf_h1"])}</h1>
-          <p>{p.t(C.L["nf_body"])}</p>
+          <h1>{p.t(C2.EXTRA["nf_h1_v2"])}</h1>
+          <p>{p.t(C2.EXTRA["nf_body_v2"])}</p>
           <p><a class="btn" href="/index.html">{p.t(C.L["nf_link"])}</a></p>
+          <h2>{p.t(C2.EXTRA["all_projects"])}</h2>
+          <ul class="evidence-index">
+{links}
+          </ul>
 {render_contact_block(cfg, p)}
         </div>
       </section>"""
@@ -610,9 +835,11 @@ def robots_txt(cfg: dict) -> str:
 def favicon_svg() -> str:
     return ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" '
             'aria-label="Mohammed Tawfiq Rahmy">\n'
-            '  <rect width="64" height="64" rx="12" fill="#0d1b2a"/>\n'
-            '  <text x="32" y="42" font-family="Georgia, \'Times New Roman\', serif" '
-            'font-size="30" font-weight="700" fill="#ffffff" text-anchor="middle">MR</text>\n'
+            '  <rect width="64" height="64" rx="12" fill="#0c0e13"/>\n'
+            '  <rect x="1" y="1" width="62" height="62" rx="11" fill="none" stroke="#2a313d"/>\n'
+            '  <rect x="12" y="50" width="40" height="2" fill="#58c9be"/>\n'
+            '  <text x="32" y="44" font-family="Georgia, \'Times New Roman\', serif" '
+            'font-size="30" font-weight="700" fill="#f2a93b" text-anchor="middle">MR</text>\n'
             '</svg>\n')
 
 
@@ -663,7 +890,8 @@ def main() -> int:
         print(f"rendered {len(files)} files into {outdir}")
         print(f"contact.strategy={cfg['contact']['strategy']} "
               f"photo.enabled={bool(cfg['photo'].get('enabled'))} "
-              f"tier_b={len(cfg['certifications'].get('tier_b') or [])}")
+              f"tier_b={len(cfg['certifications'].get('tier_b') or [])} "
+              f"provenance.tags={cfg['provenance']['tags']}")
     return 0
 
 

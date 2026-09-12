@@ -7,7 +7,7 @@
     <title>HalalBot — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E).">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/halalbot.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="HalalBot — Mohammed Tawfiq Rahmy">
@@ -36,50 +36,154 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>HalalBot</h1>
-          <p class="lede">Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E).</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>A shipped WhatsApp ordering product with a signed Android APK, an owner dashboard and a 65-test suite.</p>
-          <p>It runs Arabic/English parsing, the end-to-end path was validated over a live tunnel, and the stack spans Python/FastAPI, React and mobile packaging.</p>
-          <p>Two production bugs agents&#x27; own tests blessed — root-caused from live logs, pinned as regression tests.</p>
+          <h1 class="project-title">HalalBot</h1>
+          <p class="project-lede">Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E).</p>
+          <p class="project-meta"><span class="tag">Shipped products &amp; ML systems</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>A shipped WhatsApp ordering product with a signed Android APK, an owner dashboard and a 65-test suite.</p>
+            <p>It runs Arabic/English parsing, the end-to-end path was validated over a live tunnel, and the stack spans Python/FastAPI, React and mobile packaging.</p>
+            <p>Two production bugs agents&#x27; own tests blessed — root-caused from live logs, pinned as regression tests.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Shipped WhatsApp ordering product</li>
-            <li>Signed Android APK</li>
-            <li>Owner dashboard</li>
-            <li>65-test suite</li>
-            <li>Arabic/English parsing</li>
-            <li>Live tunnel E2E</li>
-            <li>Python/FastAPI, React, mobile packaging</li>
-            <li>Two production bugs agents&#x27; own tests blessed — root-caused from live logs, pinned as regression tests</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Ordering happens in WhatsApp, and the product has to ship to a phone.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>A shipped WhatsApp ordering product with a signed Android APK, an owner dashboard and Arabic/English parsing, validated over a live tunnel.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 340" role="img" aria-labelledby="dg-halalbot-t dg-halalbot-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-halalbot-t">HalalBot — shipped surfaces</title>
+              <desc id="dg-halalbot-d">Two abstract surface shapes — a customer conversation surface with Arabic/English parsing, and an operations surface — joined by the live tunnel end-to-end path, plus a release path from mobile packaging to a signed Android APK marked by a tick rule. Abstract shapes, not screenshots.</desc>
+              <text class="dg-label-meta" x="176" y="22" text-anchor="middle">customer conversation surface</text>
+              <rect class="dg-shape" x="26" y="32" width="300" height="90" rx="8" />
+              <text class="dg-label" x="176" y="72.26" text-anchor="middle">shipped WhatsApp ordering</text>
+              <text class="dg-label" x="176" y="91.26" text-anchor="middle">product</text>
+              <text class="dg-label-meta" x="176" y="144" text-anchor="middle">Arabic/English parsing</text>
+              <text class="dg-label-meta" x="500" y="22" text-anchor="middle">operations surface</text>
+              <rect class="dg-shape" x="350" y="32" width="300" height="90" rx="8" />
+              <text class="dg-label" x="500" y="81.76" text-anchor="middle">owner dashboard</text>
+              <text class="dg-label-meta" x="824" y="22" text-anchor="middle">release path</text>
+              <rect class="dg-shape" x="674" y="32" width="300" height="90" rx="8" />
+              <text class="dg-label" x="824" y="72.26" text-anchor="middle">mobile packaging → signed</text>
+              <text class="dg-label" x="824" y="91.26" text-anchor="middle">Android APK</text>
+              <line class="dg-boundary" x1="686" y1="156" x2="962" y2="156" />
+              <line class="dg-boundary" x1="962" y1="156" x2="962" y2="148" />
+              <line class="dg-edge" x1="60" y1="300" x2="940" y2="300" />
+              <text class="dg-label-meta" x="500" y="292" text-anchor="middle">live tunnel E2E</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 447" role="img" aria-labelledby="dg-halalbot-v-t dg-halalbot-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-halalbot-v-t">HalalBot — shipped surfaces</title>
+              <desc id="dg-halalbot-v-d">Two abstract surface shapes — a customer conversation surface with Arabic/English parsing, and an operations surface — joined by the live tunnel end-to-end path, plus a release path from mobile packaging to a signed Android APK marked by a tick rule. Abstract shapes, not screenshots.</desc>
+              <rect class="dg-note" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="36.76" text-anchor="middle">customer conversation surface</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">shipped WhatsApp ordering product</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-note" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="140.76" text-anchor="middle">Arabic/English parsing</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-note" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="192.76" text-anchor="middle">operations surface</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">owner dashboard</text>
+              <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
+              <rect class="dg-note" x="16" y="276" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="296.76" text-anchor="middle">release path</text>
+              <line class="dg-edge" x1="200" y1="310" x2="200" y2="326" />
+              <rect class="dg-box" x="16" y="328" width="368" height="51" rx="8" />
+              <text class="dg-label" x="200" y="348.76" text-anchor="middle">mobile packaging → signed Android</text>
+              <text class="dg-label" x="200" y="367.76" text-anchor="middle">APK</text>
+              <line class="dg-edge" x1="200" y1="381" x2="200" y2="397" />
+              <rect class="dg-note" x="16" y="399" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="419.76" text-anchor="middle">live tunnel E2E</text>
+            </svg>
+          </div>
+          <figcaption>Shipped surfaces: conversation, operations, release path. <span class="scope-caption">Schematic wireframe shapes — not screenshots. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Two production bugs agents&#x27; own tests blessed — root-caused from live logs, pinned as regression tests.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Shipped WhatsApp ordering product</li>
+              <li>Signed Android APK</li>
+              <li>Owner dashboard</li>
+              <li>65-test suite</li>
+              <li>Arabic/English parsing</li>
+              <li>Live tunnel E2E</li>
+              <li>Python/FastAPI, React, mobile packaging</li>
+              <li>Two production bugs agents&#x27; own tests blessed — root-caused from live logs, pinned as regression tests</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>WhatsApp</li>
-              <li>Android APK</li>
+                <li>WhatsApp</li>
+                <li>Android APK</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>A shipped product: signed Android APK, owner dashboard, 65-test suite.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/smart-care.html"><span class="pn-label">Previous project</span><span class="pn-name">Smart Care</span></a>
           <a class="pn-link pn-next" href="/projects/forwheelz.html"><span class="pn-label">Next project</span><span class="pn-name">ForWheelz</span></a>
@@ -88,10 +192,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

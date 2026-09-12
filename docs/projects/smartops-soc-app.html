@@ -7,7 +7,7 @@
     <title>SmartOps SOC App — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Brokered multi-agent investigation platform: task broker, domain analysts, evidence-linked findings, replayable traces.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/smartops-soc-app.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="SmartOps SOC App — Mohammed Tawfiq Rahmy">
@@ -36,42 +36,145 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>SmartOps SOC App</h1>
-          <p class="lede">Brokered multi-agent investigation platform: task broker, domain analysts, evidence-linked findings, replayable traces.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>A brokered multi-agent investigation platform. A task broker coordinates domain analysts, and findings are evidence-linked and carried in replayable traces.</p>
-          <p>It supports hypothesis-blind analysis, replayable traces, and VirusTotal enrichment.</p>
+          <h1 class="project-title">SmartOps SOC App</h1>
+          <p class="project-lede">Brokered multi-agent investigation platform: task broker, domain analysts, evidence-linked findings, replayable traces.</p>
+          <p class="project-meta"><span class="tag">Security operations &amp; agent safety</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>A brokered multi-agent investigation platform. A task broker coordinates domain analysts, and findings are evidence-linked and carried in replayable traces.</p>
+            <p>It supports hypothesis-blind analysis, replayable traces, and VirusTotal enrichment.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Brokered multi-agent investigation platform</li>
-            <li>Task broker</li>
-            <li>Domain analysts</li>
-            <li>Evidence-linked findings</li>
-            <li>Replayable traces</li>
-            <li>Hypothesis-blind analysis</li>
-            <li>VirusTotal enrichment</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Investigation has to be brokered: a task broker coordinates domain analysts.</p></div>
+            </div>
           </section>
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>Findings are evidence-linked and carried in replayable traces, with hypothesis-blind analysis and VirusTotal enrichment.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 400" role="img" aria-labelledby="dg-smartops-soc-app-t dg-smartops-soc-app-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-smartops-soc-app-t">SmartOps SOC App — broker, analysts, evidence bus, trace lane</title>
+              <desc id="dg-smartops-soc-app-d">A task broker coordinating domain analysts, with the analysts band carrying hypothesis-blind analysis and scope constraints; findings flow to an evidence-linked findings bus, with VirusTotal enrichment beside it, and a replayable traces lane beneath. Structure only — no counts, no timestamps.</desc>
+              <rect class="dg-banner" x="16" y="16" width="460" height="32" rx="8" />
+              <text class="dg-label" x="246" y="36.76" text-anchor="middle">domain analysts</text>
+              <rect class="dg-note" x="486" y="16" width="174.4" height="51" rx="8" />
+              <text class="dg-label-meta" x="573.2" y="36.76" text-anchor="middle">hypothesis-blind</text>
+              <text class="dg-label-meta" x="573.2" y="55.76" text-anchor="middle">analysis</text>
+              <rect class="dg-note" x="672.4" y="16" width="150" height="32" rx="8" />
+              <text class="dg-label-meta" x="747.4" y="36.76" text-anchor="middle">scope</text>
+              <line class="dg-edge" x1="500" y1="52" x2="500" y2="100" />
+              <rect class="dg-box" x="370" y="104" width="260" height="62" rx="8" />
+              <text class="dg-label" x="500" y="139.76" text-anchor="middle">task broker</text>
+              <line class="dg-signal" x1="500" y1="170" x2="500" y2="218" />
+              <rect class="dg-box" x="200" y="222" width="420" height="62" rx="8" />
+              <text class="dg-label" x="410" y="257.76" text-anchor="middle">evidence-linked findings</text>
+              <line class="dg-edge" x1="624" y1="245" x2="660" y2="245" />
+              <rect class="dg-note" x="664" y="222" width="240" height="62" rx="8" />
+              <text class="dg-label-meta" x="784" y="248.26" text-anchor="middle">VirusTotal</text>
+              <text class="dg-label-meta" x="784" y="267.26" text-anchor="middle">enrichment</text>
+              <text class="dg-label-meta" x="16" y="290" text-anchor="start">replayable traces</text>
+              <line class="dg-edge" x1="16" y1="304" x2="984" y2="304" />
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 376" role="img" aria-labelledby="dg-smartops-soc-app-v-t dg-smartops-soc-app-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-smartops-soc-app-v-t">SmartOps SOC App — broker, analysts, evidence bus, trace lane</title>
+              <desc id="dg-smartops-soc-app-v-d">A task broker coordinating domain analysts, with the analysts band carrying hypothesis-blind analysis and scope constraints; findings flow to an evidence-linked findings bus, with VirusTotal enrichment beside it, and a replayable traces lane beneath. Structure only — no counts, no timestamps.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">task broker</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">domain analysts</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-note" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="140.76" text-anchor="middle">hypothesis-blind analysis</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-note" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="192.76" text-anchor="middle">scope</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">evidence-linked findings</text>
+              <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
+              <rect class="dg-note" x="16" y="276" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="296.76" text-anchor="middle">VirusTotal enrichment</text>
+              <line class="dg-edge" x1="200" y1="310" x2="200" y2="326" />
+              <rect class="dg-box" x="16" y="328" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="348.76" text-anchor="middle">replayable traces</text>
+            </svg>
+          </div>
+          <figcaption>Brokered investigation: broker, analysts, evidence bus, trace lane. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Hypothesis-blind analysis across domain analysts, with findings that stay evidence-linked.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Brokered multi-agent investigation platform</li>
+              <li>Task broker</li>
+              <li>Domain analysts</li>
+              <li>Evidence-linked findings</li>
+              <li>Replayable traces</li>
+              <li>Hypothesis-blind analysis</li>
+              <li>VirusTotal enrichment</li>
+                  </ul>
+                </div>
 
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>A brokered multi-agent investigation platform whose traces can be replayed.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/sama-soc-triage.html"><span class="pn-label">Previous project</span><span class="pn-name">SAMA — Agentic SOC Triage &amp; Response Automation</span></a>
           <a class="pn-link pn-next" href="/projects/milo-ai-employee.html"><span class="pn-label">Next project</span><span class="pn-name">Milo AI Employee</span></a>
@@ -80,10 +183,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

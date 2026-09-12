@@ -7,7 +7,7 @@
     <title>Milo AI Employee — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Safety-first agentic operations teammate over simulated Splunk/Cribl incidents; approval binding, authority boundaries, redaction, budget/time limits.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/milo-ai-employee.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="Milo AI Employee — Mohammed Tawfiq Rahmy">
@@ -36,49 +36,171 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>Milo AI Employee</h1>
-          <p class="lede">Safety-first agentic operations teammate over simulated Splunk/Cribl incidents; approval binding, authority boundaries, redaction, budget/time limits.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>A safety-first agentic operations teammate that works over simulated Splunk and Cribl incidents. Actions carry approval binding and the agent operates inside authority boundaries with redaction and budget/time limits, so its autonomy is bounded by design rather than assumed.</p>
-          <p>Its actions are idempotent and reconciled, and it runs on versioned agent skills behind evaluation gates.</p>
+          <h1 class="project-title">Milo AI Employee</h1>
+          <p class="project-lede">Safety-first agentic operations teammate over simulated Splunk/Cribl incidents; approval binding, authority boundaries, redaction, budget/time limits.</p>
+          <p class="project-meta"><span class="tag">Security operations &amp; agent safety</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>A safety-first agentic operations teammate that works over simulated Splunk and Cribl incidents. Actions carry approval binding and the agent operates inside authority boundaries with redaction and budget/time limits, so its autonomy is bounded by design rather than assumed.</p>
+            <p>Its actions are idempotent and reconciled, and it runs on versioned agent skills behind evaluation gates.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Safety-first agentic operations teammate</li>
-            <li>Simulated Splunk and Cribl incidents</li>
-            <li>Approval binding</li>
-            <li>Authority boundaries</li>
-            <li>Redaction</li>
-            <li>Budget and time limits</li>
-            <li>Idempotent actions and reconciliation</li>
-            <li>Versioned agent skills, evaluation gates</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>An operations teammate acts, so its autonomy has to be bounded by design rather than assumed.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>Approval binding, authority boundaries, redaction and budget/time limits bound every action; the incidents are simulated Splunk/Cribl.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 187" role="img" aria-labelledby="dg-milo-ai-employee-t dg-milo-ai-employee-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-milo-ai-employee-t">Milo — approval binding and authority boundaries</title>
+              <desc id="dg-milo-ai-employee-d">A request path through a safety-first agentic operations teammate to a proposed action, held at an approval binding gate before controlled write-back, with idempotent actions and reconciliation as the return path. An authority boundaries line crosses the diagram; budget/time limits and redaction constrain it. Source material is simulated.</desc>
+              <rect class="dg-box" x="16" y="16" width="177.6" height="89" rx="8" />
+              <text class="dg-label" x="104.8" y="65.26" text-anchor="middle">request</text>
+              <line class="dg-edge" x1="195.6" y1="60.5" x2="211.6" y2="60.5" />
+              <rect class="dg-box" x="213.6" y="16" width="177.6" height="89" rx="8" />
+              <text class="dg-label" x="302.4" y="36.76" text-anchor="middle">safety-first</text>
+              <text class="dg-label" x="302.4" y="55.76" text-anchor="middle">agentic</text>
+              <text class="dg-label" x="302.4" y="74.76" text-anchor="middle">operations</text>
+              <text class="dg-label" x="302.4" y="93.76" text-anchor="middle">teammate</text>
+              <line class="dg-edge" x1="393.2" y1="60.5" x2="409.2" y2="60.5" />
+              <rect class="dg-box" x="411.2" y="16" width="177.6" height="89" rx="8" />
+              <text class="dg-label" x="500" y="65.26" text-anchor="middle">proposed action</text>
+              <line class="dg-edge" x1="590.8" y1="60.5" x2="606.8" y2="60.5" />
+              <rect class="dg-gate" x="608.8" y="16" width="177.6" height="89" rx="8" />
+              <text class="dg-label" x="697.6" y="65.26" text-anchor="middle">approval binding</text>
+              <line class="dg-edge" x1="788.4" y1="60.5" x2="804.4" y2="60.5" />
+              <rect class="dg-box" x="806.4" y="16" width="177.6" height="89" rx="8" />
+              <text class="dg-label" x="895.2" y="55.76" text-anchor="middle">controlled</text>
+              <text class="dg-label" x="895.2" y="74.76" text-anchor="middle">write-back</text>
+              <text class="dg-label-meta" x="16" y="131" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="137" width="212" height="30" rx="8" />
+              <text class="dg-label-meta" x="122" y="156.76" text-anchor="middle">authority boundaries</text>
+              <rect class="dg-note" x="240" y="137" width="193.2" height="30" rx="8" />
+              <text class="dg-label-meta" x="336.6" y="156.76" text-anchor="middle">budget/time limits</text>
+              <rect class="dg-note" x="445.2" y="137" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="505.2" y="156.76" text-anchor="middle">redaction</text>
+              <rect class="dg-note" x="577.2" y="137" width="230.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="692.6" y="147.26" text-anchor="middle">idempotent actions and</text>
+              <text class="dg-label-meta" x="692.6" y="166.26" text-anchor="middle">reconciliation</text>
+              <rect class="dg-note" x="820" y="137" width="230.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="935.4" y="147.26" text-anchor="middle">simulated Splunk/Cribl</text>
+              <text class="dg-label-meta" x="935.4" y="166.26" text-anchor="middle">incidents</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 536" role="img" aria-labelledby="dg-milo-ai-employee-v-t dg-milo-ai-employee-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-milo-ai-employee-v-t">Milo — approval binding and authority boundaries</title>
+              <desc id="dg-milo-ai-employee-v-d">A request path through a safety-first agentic operations teammate to a proposed action, held at an approval binding gate before controlled write-back, with idempotent actions and reconciliation as the return path. An authority boundaries line crosses the diagram; budget/time limits and redaction constrain it. Source material is simulated.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">request</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="51" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">safety-first agentic operations</text>
+              <text class="dg-label" x="200" y="107.76" text-anchor="middle">teammate</text>
+              <line class="dg-edge" x1="200" y1="121" x2="200" y2="137" />
+              <rect class="dg-box" x="16" y="139" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="159.76" text-anchor="middle">proposed action</text>
+              <line class="dg-edge" x1="200" y1="173" x2="200" y2="189" />
+              <rect class="dg-gate" x="16" y="191" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="211.76" text-anchor="middle">approval binding</text>
+              <line class="dg-edge" x1="200" y1="225" x2="200" y2="241" />
+              <rect class="dg-box" x="16" y="243" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="263.76" text-anchor="middle">controlled write-back</text>
+              <text class="dg-label-meta" x="16" y="291" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="301" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="321.76" text-anchor="middle">authority boundaries</text>
+              <rect class="dg-note" x="16" y="341" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="361.76" text-anchor="middle">budget/time limits</text>
+              <rect class="dg-note" x="16" y="381" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="401.76" text-anchor="middle">redaction</text>
+              <rect class="dg-note" x="16" y="421" width="368" height="51" rx="8" />
+              <text class="dg-label-meta" x="200" y="441.76" text-anchor="middle">idempotent actions and</text>
+              <text class="dg-label-meta" x="200" y="460.76" text-anchor="middle">reconciliation</text>
+              <rect class="dg-note" x="16" y="480" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="500.76" text-anchor="middle">simulated Splunk/Cribl incidents</text>
+            </svg>
+          </div>
+          <figcaption>Approval binding and the authority boundary. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Actions are idempotent and reconciled, and the agent skills are versioned behind evaluation gates.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Safety-first agentic operations teammate</li>
+              <li>Simulated Splunk and Cribl incidents</li>
+              <li>Approval binding</li>
+              <li>Authority boundaries</li>
+              <li>Redaction</li>
+              <li>Budget and time limits</li>
+              <li>Idempotent actions and reconciliation</li>
+              <li>Versioned agent skills, evaluation gates</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>Simulated Splunk</li>
-              <li>Cribl</li>
+                <li>Simulated Splunk</li>
+                <li>Cribl</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>A safety-first agentic operations teammate over simulated Splunk/Cribl incidents.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/smartops-soc-app.html"><span class="pn-label">Previous project</span><span class="pn-name">SmartOps SOC App</span></a>
           <a class="pn-link pn-next" href="/projects/pulsesec.html"><span class="pn-label">Next project</span><span class="pn-name">PulseSec</span></a>
@@ -87,10 +209,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

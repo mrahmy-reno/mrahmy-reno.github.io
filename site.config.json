@@ -22,5 +22,9 @@
   "certifications": {
     "$comment": "tier_b: [] — the owner confirmed NO Tier-B certification for publication (§10.3). Tier-B names must not appear anywhere in the deliverable until the owner confirms one and the ledger row is added first.",
     "tier_b": []
+  },
+  "provenance": {
+    "$comment": "tags: 'tier' (delivered) | 'plain' | 'off' — DESIGN_SYSTEM.md §6.10's fallback for the attribution rule. 'tier' renders the ledger source tier (S1/S2/S3/S5) on the hairline; 'plain' renders 'SOURCED'; 'off' removes the tag and renders the designed empty state in the evidence band instead (PROOF_PLAN.md §5 rule 10 forbids publishing an artefact without an attribution rule). Changing the value changes only that surface.",
+    "tags": "tier"
   }
 }

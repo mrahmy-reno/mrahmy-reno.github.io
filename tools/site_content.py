@@ -153,6 +153,15 @@ L = {
     "g3": b("Shipped products & ML systems", [], "structural"),
     "featured": b("Featured", [], "structural"),
     "tech_line_label": b("Technology", [], "structural"),
+    "row_open": b("Open", [], "structural",
+                  "Link text on a project row; the accessible name also carries the project "
+                  "name."),
+    "stage_problem": b("Problem", [], "structural"),
+    "stage_approach": b("Approach", [], "structural"),
+    "stage_architecture": b("Architecture", [], "structural"),
+    "stage_hard": b("The hard part", [], "structural"),
+    "stage_evidence": b("Evidence", [], "structural"),
+    "stage_outcome": b("Outcome", [], "structural"),
     "newtab": b("(opens in a new tab)", [], "structural",
                 "Accessible-name suffix on every link that opens a new tab."),
 }

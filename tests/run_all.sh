@@ -144,6 +144,13 @@ STATIC_RC=$?
 step 02b_regression_repairs.txt python3 tests/regression_repairs.py
 REGRESSION_RC=$?
 
+# 2c. design checks (B2-02): the redesign's own mechanics — token conformance, the banned-defaults
+#     audit, motion-spec conformance, the palette contrast table, and the artefact label audits.
+#     Python-stdlib only and independent of node_modules, so it is wired through `step` for the
+#     same reason as 02b: it must run in every checkout, including a fresh clone.
+step 02c_design_checks.txt python3 tests/design_checks.py
+DESIGN_RC=$?
+
 # 3. browser audit: rendered text, axe on all 12 pages, console, overflow, first screen,
 #    keyboard walk, reduced motion, progressive enhancement, print/PDF, screenshots
 run_step 03_browser_checks.log node tests/browser_checks.mjs --out "${OUT}" --port 8099
@@ -194,6 +201,7 @@ echo "published files: $(find docs -type f | wc -l)" >>"${OUT}/10_manifest.txt"
   row 01_build "${BUILD_RC}"
   row 02_static_scans "${STATIC_RC}"
   row 02b_regression_repairs "${REGRESSION_RC}"
+  row 02c_design_checks "${DESIGN_RC}"
   row 03_browser_checks "${BROWSER_RC}"
   row 04_text_scans "${TEXT_RC}"
   row 05_switch_integrity "${SWITCH_RC}"

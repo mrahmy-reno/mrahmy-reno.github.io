@@ -1,4 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mohammed Tawfiq Rahmy">
-  <rect width="64" height="64" rx="12" fill="#0d1b2a"/>
-  <text x="32" y="42" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="#ffffff" text-anchor="middle">MR</text>
+  <rect width="64" height="64" rx="12" fill="#0c0e13"/>
+  <rect x="1" y="1" width="62" height="62" rx="11" fill="none" stroke="#2a313d"/>
+  <rect x="12" y="50" width="40" height="2" fill="#58c9be"/>
+  <text x="32" y="44" font-family="Georgia, 'Times New Roman', serif" font-size="30" font-weight="700" fill="#f2a93b" text-anchor="middle">MR</text>
 </svg>

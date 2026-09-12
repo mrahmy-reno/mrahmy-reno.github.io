@@ -7,7 +7,7 @@
     <title>SAMA — Agentic SOC Triage &amp; Response Automation — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Multistage agentic triage workflow, grounding/evidence controls, typed contracts.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/sama-soc-triage.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="SAMA — Agentic SOC Triage &amp; Response Automation — Mohammed Tawfiq Rahmy">
@@ -36,64 +36,200 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>SAMA — Agentic SOC Triage &amp; Response Automation</h1>
-          <p class="lede">Multistage agentic triage workflow, grounding/evidence controls, typed contracts.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls.</p>
-          <p>The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p>
-          <p>Grounding/evidence controls keep its output traceable to its source.</p>
+          <h1 class="project-title">SAMA — Agentic SOC Triage &amp; Response Automation</h1>
+          <p class="project-lede">Multistage agentic triage workflow, grounding/evidence controls, typed contracts.</p>
+          <p class="project-meta"><span class="tag">Security operations &amp; agent safety</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls.</p>
+            <p>The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p>
+            <p>Grounding/evidence controls keep its output traceable to its source.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Multistage agentic triage workflow</li>
-            <li>Multi-agent triage, investigation and response</li>
-            <li>Context construction, active investigation, threat modeling, quality guards, and verdict generation</li>
-            <li>Grounding and evidence controls</li>
-            <li>Typed contracts</li>
-            <li>Strands Agents and Amazon Bedrock</li>
-            <li>MCP connectors</li>
-            <li>LLM-as-judge checks, RAGAS, blind-vs-shown evals</li>
-            <li>Contract, adversarial and compliance test suites</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Security operations triage is the work: an agentic triage and response automation system runs a multistage agentic triage workflow.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>Context construction, active investigation, threat modeling, quality guards, and verdict generation — with typed contracts and grounding controls around every stage.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-sama-soc-triage-t dg-sama-soc-triage-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-sama-soc-triage-t">SAMA — stage rail with contract gates</title>
+              <desc id="dg-sama-soc-triage-d">A left-to-right stage rail: context construction, active investigation, threat modeling, quality guards, verdict generation, with typed contracts and grounding/evidence controls as gates between stages, and the evaluation surfaces the ledger names as annotations.</desc>
+              <rect class="dg-box" x="16" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="88.3333" y="36.76" text-anchor="middle">context</text>
+              <text class="dg-label" x="88.3333" y="55.76" text-anchor="middle">construction</text>
+              <line class="dg-edge" x1="162.667" y1="41.5" x2="178.667" y2="41.5" />
+              <rect class="dg-gate" x="180.667" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="253" y="36.76" text-anchor="middle">typed</text>
+              <text class="dg-label" x="253" y="55.76" text-anchor="middle">contracts</text>
+              <line class="dg-edge" x1="327.333" y1="41.5" x2="343.333" y2="41.5" />
+              <rect class="dg-box" x="345.333" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="417.667" y="36.76" text-anchor="middle">active</text>
+              <text class="dg-label" x="417.667" y="55.76" text-anchor="middle">investigation</text>
+              <line class="dg-edge" x1="492" y1="41.5" x2="508" y2="41.5" />
+              <rect class="dg-box" x="510" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="582.333" y="36.76" text-anchor="middle">threat</text>
+              <text class="dg-label" x="582.333" y="55.76" text-anchor="middle">modeling</text>
+              <line class="dg-edge" x1="656.667" y1="41.5" x2="672.667" y2="41.5" />
+              <rect class="dg-gate" x="674.667" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="747" y="46.26" text-anchor="middle">quality guards</text>
+              <line class="dg-edge" x1="821.333" y1="41.5" x2="837.333" y2="41.5" />
+              <rect class="dg-box" x="839.333" y="16" width="144.667" height="51" rx="8" />
+              <text class="dg-label" x="911.667" y="36.76" text-anchor="middle">verdict</text>
+              <text class="dg-label" x="911.667" y="55.76" text-anchor="middle">generation</text>
+              <text class="dg-label-meta" x="16" y="93" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="99" width="277.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="154.9" y="118.76" text-anchor="middle">grounding/evidence controls</text>
+              <rect class="dg-note" x="305.8" y="99" width="136.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="374.2" y="118.76" text-anchor="middle">LLM-as-judge</text>
+              <rect class="dg-note" x="454.6" y="99" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="514.6" y="118.76" text-anchor="middle">RAGAS</text>
+              <rect class="dg-note" x="586.6" y="99" width="155.6" height="30" rx="8" />
+              <text class="dg-label-meta" x="664.4" y="118.76" text-anchor="middle">blind-vs-shown</text>
+              <rect class="dg-note" x="754.2" y="99" width="221.4" height="30" rx="8" />
+              <text class="dg-label-meta" x="864.9" y="109.26" text-anchor="middle">contract/adversarial/</text>
+              <text class="dg-label-meta" x="864.9" y="128.26" text-anchor="middle">compliance suites</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 569" role="img" aria-labelledby="dg-sama-soc-triage-v-t dg-sama-soc-triage-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-sama-soc-triage-v-t">SAMA — stage rail with contract gates</title>
+              <desc id="dg-sama-soc-triage-v-d">A left-to-right stage rail: context construction, active investigation, threat modeling, quality guards, verdict generation, with typed contracts and grounding/evidence controls as gates between stages, and the evaluation surfaces the ledger names as annotations.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">context construction</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-gate" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">typed contracts</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="140.76" text-anchor="middle">active investigation</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">threat modeling</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-gate" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">quality guards</text>
+              <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
+              <rect class="dg-box" x="16" y="276" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="296.76" text-anchor="middle">verdict generation</text>
+              <text class="dg-label-meta" x="16" y="324" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="334" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="354.76" text-anchor="middle">grounding/evidence controls</text>
+              <rect class="dg-note" x="16" y="374" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="394.76" text-anchor="middle">LLM-as-judge</text>
+              <rect class="dg-note" x="16" y="414" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="434.76" text-anchor="middle">RAGAS</text>
+              <rect class="dg-note" x="16" y="454" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="474.76" text-anchor="middle">blind-vs-shown</text>
+              <rect class="dg-note" x="16" y="494" width="368" height="51" rx="8" />
+              <text class="dg-label-meta" x="200" y="514.76" text-anchor="middle">contract/adversarial/compliance</text>
+              <text class="dg-label-meta" x="200" y="533.76" text-anchor="middle">suites</text>
+            </svg>
+          </div>
+          <figcaption>The triage workflow, stage by stage. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>Grounding and evidence controls have to hold at every stage, so the output stays traceable to its source.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Multistage agentic triage workflow</li>
+              <li>Multi-agent triage, investigation and response</li>
+              <li>Context construction, active investigation, threat modeling, quality guards, and verdict generation</li>
+              <li>Grounding and evidence controls</li>
+              <li>Typed contracts</li>
+              <li>Strands Agents and Amazon Bedrock</li>
+              <li>MCP connectors</li>
+              <li>LLM-as-judge checks, RAGAS, blind-vs-shown evals</li>
+              <li>Contract, adversarial and compliance test suites</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>Strands Agents</li>
-              <li>Amazon Bedrock</li>
-              <li>MCP connectors</li>
+                <li>Strands Agents</li>
+                <li>Amazon Bedrock</li>
+                <li>MCP connectors</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>Verdict generation at the end of an evaluation-gated workflow: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
-
           <a class="pn-link pn-next" href="/projects/smartops-soc-app.html"><span class="pn-label">Next project</span><span class="pn-name">SmartOps SOC App</span></a>
           </nav>
         </div>
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>

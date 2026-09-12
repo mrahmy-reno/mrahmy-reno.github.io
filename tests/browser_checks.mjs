@@ -674,6 +674,167 @@ async function main() {
     await page.close();
   }
 
+  // ------------------------------------------------- design system: states + banned defaults
+  // Q10/Q11. These are the assertions the redesign introduces; each one is measured in the
+  // rendered DOM rather than asserted in prose.
+  const EASE_TOKENS = ["cubic-bezier(0.22,1,0.36,1)", "cubic-bezier(0.25,1,0.5,1)",
+    "cubic-bezier(0.4,0,1,1)", "cubic-bezier(0.2,0,0,1)"];
+  const DUR_TOKENS = [0.09, 0.16, 0.24, 0.42, 0.56];
+  {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1280, height: 900 });
+    await page.goto(`${origin}/index.html`, { waitUntil: "load" });
+    const design = await page.evaluate(() => {
+      const cs = (el) => getComputedStyle(el);
+      const cards = [...document.querySelectorAll("li.card")];
+      const cardBorder = cards.map((el) => {
+        const s = cs(el);
+        return { top: s.borderBlockStartWidth, start: s.borderInlineStartWidth,
+          end: s.borderInlineEndWidth, bottom: s.borderBlockEndWidth,
+          radius: s.borderTopLeftRadius };
+      });
+      const shadows = [];
+      const grids = [];
+      const transitions = [];
+      document.querySelectorAll("body *").forEach((el) => {
+        const s = cs(el);
+        const cls = el.className.toString().slice(0, 48);
+        if (s.boxShadow && s.boxShadow !== "none") shadows.push({ cls, shadow: s.boxShadow });
+        if (s.display.indexOf("grid") >= 0 && s.gridTemplateColumns !== "none") {
+          const tracks = s.gridTemplateColumns.split(" ").filter((t) => t.length);
+          if (tracks.length > 1) {
+            grids.push({ cls, tracks: tracks.length, tpl: s.gridTemplateColumns });
+          }
+        }
+        const dur = Math.max(...String(s.transitionDuration).split(",")
+          .map((p) => parseFloat(p) || 0));
+        if (dur > 0) {
+          transitions.push({ cls, prop: s.transitionProperty, dur: s.transitionDuration,
+            ease: s.transitionTimingFunction });
+        }
+      });
+      const interactive = [...document.querySelectorAll(".btn, .nav-list a, li.card, .arrow")]
+        .map((el) => {
+          const s = cs(el);
+          return { cls: el.className.toString().slice(0, 48), prop: s.transitionProperty,
+            dur: s.transitionDuration };
+        });
+      const h = document.querySelector(".site-header");
+      const hs = cs(h);
+      return {
+        cardCount: cards.length, cardBorder, shadows, grids, transitions, interactive,
+        header: { bg: hs.backgroundColor, filter: hs.backdropFilter,
+          borderBottom: hs.borderBlockEndWidth, position: hs.position },
+        svgTextCount: document.querySelectorAll("svg text").length,
+        revealCount: document.querySelectorAll("[data-reveal]").length,
+        mainText: document.querySelector("main").textContent.replace(/\s+/g, " ").trim().length,
+      };
+    });
+
+    check(design.cardCount === 10, "design: the 10 project rows render as rows, not cards",
+      `li.card count=${design.cardCount}`);
+    const closed = design.cardBorder.filter((b) => b.top !== "0px" || b.start !== "0px" ||
+      b.end !== "0px" || b.radius !== "0px");
+    check(closed.length === 0,
+      "banned defaults: no project row draws a closed 1px border or a radius (Q11)",
+      closed.length ? JSON.stringify(closed.slice(0, 2)) : "hairline rule on one edge only");
+    const ruled = design.cardBorder.filter((b) => b.bottom === "1px");
+    check(ruled.length === 10, "design: every project row is separated by a hairline rule",
+      `rows with a 1px block-end rule: ${ruled.length}`);
+
+    // elevation: every painted shadow must be a wide ambient shadow (blur >= 18px) or an
+    // inset highlight — never a hard, tight, offset shadow (Q11).
+    const hard = [];
+    for (const entry of design.shadows) {
+      const re = /((?:rgba?\([^)]*\)|#\w+|transparent|currentcolor)?)\s*(-?[\d.]+px)\s+(-?[\d.]+px)\s+(-?[\d.]+px)(?:\s+(-?[\d.]+px))?(\s+inset)?/g;
+      let m;
+      while ((m = re.exec(entry.shadow)) !== null) {
+        if (m[6]) continue;
+        if (parseFloat(m[4]) < 18) {
+          hard.push({ cls: entry.cls, shadow: entry.shadow.slice(0, 70) });
+        }
+      }
+    }
+    check(hard.length === 0,
+      "banned defaults: no tight/hard drop shadow is painted (blur < 18px) (Q11)",
+      hard.length ? JSON.stringify(hard.slice(0, 3))
+        : `${design.shadows.length} ambient shadow(s), all wide`);
+
+    const three = design.grids.filter((g) => g.tracks === 3);
+    check(three.length === 0,
+      "banned defaults: no symmetric three-column grid exists anywhere (Q11)",
+      three.length ? JSON.stringify(three.slice(0, 3))
+        : `${design.grids.length} multi-track grids, none with 3 tracks`);
+
+    const badEase = design.transitions.filter((t) =>
+      EASE_TOKENS.indexOf(String(t.ease).replace(/\s+/g, "")) < 0);
+    check(badEase.length === 0,
+      "motion: every running transition names one of the 4 documented timing tokens",
+      badEase.length ? JSON.stringify(badEase.slice(0, 3))
+        : `${design.transitions.length} transitions, all token easings`);
+    const allProp = design.transitions.filter((t) => String(t.prop).indexOf("all") >= 0);
+    check(allProp.length === 0, "motion: transition:all is absent",
+      allProp.length ? JSON.stringify(allProp.slice(0, 3)) : "0 elements transition all properties");
+    const instant = design.interactive.filter((t) => parseFloat(t.dur) === 0);
+    check(instant.length === 0,
+      "banned defaults: no interactive element changes state instantly (Q11)",
+      instant.length ? JSON.stringify(instant.slice(0, 3))
+        : `${design.interactive.length} interactive elements all transitioned`);
+    const offSpec = design.transitions.filter((t) => DUR_TOKENS.indexOf(parseFloat(t.dur)) < 0);
+    check(offSpec.length === 0,
+      "motion: every running transition uses one of the 5 documented durations",
+      offSpec.length ? JSON.stringify(offSpec.slice(0, 3))
+        : "durations in use are a subset of 90/160/240/420/560ms");
+
+    const headerAlpha = parseFloat((String(design.header.bg).match(/[\d.]+\)$/) || ["0)"])[0]);
+    check(design.header.position === "sticky" &&
+      (design.header.filter !== "none" || headerAlpha >= 0.9),
+      "banned defaults: the sticky bar carries a real surface treatment (Q11)",
+      JSON.stringify(design.header));
+    check(design.header.borderBottom === "1px",
+      "design: the sticky bar is closed by a hairline rule", design.header.borderBottom);
+
+    results.design = design;
+
+    // ---- the 404 renders the shared chrome plus the recovery surface
+    const p404 = await browser.newPage();
+    await p404.setViewport({ width: 1280, height: 900 });
+    await p404.goto(`${origin}/404.html`, { waitUntil: "load" });
+    const nf = await p404.evaluate(() => ({
+      h1: document.querySelector("h1").textContent.trim(),
+      map: !!document.querySelector(".notfound svg.dg"),
+      contact: !!document.querySelector(".contact-panel"),
+      footer: document.querySelectorAll("footer").length,
+    }));
+    check(nf.h1.length > 0 && nf.map && nf.contact && nf.footer >= 1,
+      "404: the designed error page renders its recovery surface and the shared chrome",
+      JSON.stringify(nf));
+    await p404.close();
+
+    // ---- reduced-motion parity: identical content, nothing hidden by a reveal state
+    const pRed = await browser.newPage();
+    await pRed.setViewport({ width: 1280, height: 900 });
+    await pRed.emulateMediaFeatures([{ name: "prefers-reduced-motion", value: "reduce" }]);
+    await pRed.goto(`${origin}/index.html`, { waitUntil: "load" });
+    const red = await pRed.evaluate(() => ({
+      mainText: document.querySelector("main").textContent.replace(/\s+/g, " ").trim().length,
+      hiddenReveals: [...document.querySelectorAll("[data-reveal]")]
+        .filter((el) => parseFloat(getComputedStyle(el).opacity) < 1).length,
+      svgTextCount: document.querySelectorAll("svg text").length,
+    }));
+    check(red.mainText === design.mainText,
+      "reduced motion: the page carries exactly the same text as the motion-enabled page",
+      `reduced=${red.mainText} normal=${design.mainText}`);
+    check(red.hiddenReveals === 0,
+      "reduced motion: no element is left hidden by a reveal state",
+      `${design.revealCount} reveal elements checked; ${red.hiddenReveals} below opacity 1`);
+    check(red.svgTextCount === design.svgTextCount,
+      "reduced motion: every diagram label is present (the stagger orders, it does not gate)",
+      `reduced=${red.svgTextCount} normal=${design.svgTextCount}`);
+    await pRed.close();
+    await page.close();
+  }
+
   await browser.close();
   server.close();
 

@@ -7,7 +7,7 @@
     <title>Smart Care — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/smart-care.html">
-    <meta name="theme-color" content="#0d1b2a">
+    <meta name="theme-color" content="#0c0e13">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="Smart Care — Mohammed Tawfiq Rahmy">
@@ -36,48 +36,157 @@
       <span class="nav-slot"><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button></span>
       <nav class="site-nav" aria-label="Primary">
         <ul class="nav-list" id="primary-nav">
-            <li><a href="/index.html#about">About</a></li>
-            <li><a href="/index.html#experience">Experience</a></li>
-            <li><a href="/index.html#projects">Work</a></li>
-            <li><a href="/index.html#skills">Skills</a></li>
-            <li><a href="/index.html#education">Education</a></li>
-            <li><a href="/index.html#contact">Contact</a></li>
+            <li><a href="/index.html#about" data-nav-section="about">About</a></li>
+            <li><a href="/index.html#experience" data-nav-section="experience">Experience</a></li>
+            <li><a href="/index.html#projects" data-nav-section="projects">Work</a></li>
+            <li><a href="/index.html#skills" data-nav-section="skills">Skills</a></li>
+            <li><a href="/index.html#education" data-nav-section="education">Education</a></li>
+            <li><a href="/index.html#contact" data-nav-section="contact">Contact</a></li>
         </ul>
       </nav>
       <a class="btn btn-small header-contact" href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a>
     </div>
   </header>
     <main id="main">
-      <article class="section project-detail">
+      <article class="project-detail">
         <div class="wrap">
           <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1>Smart Care</h1>
-          <p class="lede">Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.</p>
-          <section class="proj-section" id="overview" aria-labelledby="overview-h2">
-            <h2 id="overview-h2">Overview</h2>
-          <p>A network-ops analytics copilot that chains intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p>
-          <p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p>
+          <h1 class="project-title">Smart Care</h1>
+          <p class="project-lede">Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.</p>
+          <p class="project-meta"><span class="tag">Applied RAG &amp; analytics</span><span class="cs-label">03 / 06 · Architecture</span></p>
+          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">Overview</p>
+              <div class="cs-body">
+                <h2 id="overview-h2">Overview</h2>
+            <p>A network-ops analytics copilot that chains intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p>
+            <p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p>
+              </div>
+            </div>
           </section>
-          <section class="proj-section" id="capabilities" aria-labelledby="capabilities-h2">
-            <h2 id="capabilities-h2">Capabilities &amp; practices</h2>
-            <ul class="bullets">
-            <li>Network-ops analytics copilot</li>
-            <li>Intent → grounded SQL → stats → visualisation agents</li>
-            <li>Dremio</li>
-            <li>Streaming React UI</li>
-            <li>Orchestrator + shared state</li>
-            <li>Schema-aware prompting</li>
-            <li>Session memory</li>
-            </ul>
+          <section class="cs-stage cs-problem">
+            <div class="cs-stage-inner">
+            <p class="cs-label">01 / 06 · Problem</p>
+            <div class="cs-body"><p>Analytics questions arrive in intent, not SQL, and the answer has to be grounded.</p></div>
+            </div>
           </section>
-          <div class="tech-row">
+          <section class="cs-stage cs-approach">
+            <div class="cs-stage-inner">
+            <p class="cs-label">02 / 06 · Approach</p>
+            <div class="cs-body"><p>Intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
+            <div class="wrap">
+              <div class="cs-stage-inner">
+                <p class="cs-label">03 / 06 · Architecture</p>
+                <div class="cs-body">
+                  <h2 id="architecture-h2">Architecture</h2>
+                  <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-smart-care-t dg-smart-care-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-smart-care-t">Smart Care — intent to grounded output</title>
+              <desc id="dg-smart-care-d">A staged rail from intent to grounded SQL to stats to visualisation agents, with an orchestrator and shared state as the spine, schema-aware prompting and session memory as annotations, Dremio as the source layer and a streaming React UI as the final surface.</desc>
+              <rect class="dg-box" x="102" y="16" width="184" height="51" rx="8" />
+              <text class="dg-label" x="194" y="46.26" text-anchor="middle">intent</text>
+              <line class="dg-edge" x1="288" y1="41.5" x2="304" y2="41.5" />
+              <rect class="dg-box" x="306" y="16" width="184" height="51" rx="8" />
+              <text class="dg-label" x="398" y="46.26" text-anchor="middle">grounded SQL</text>
+              <line class="dg-edge" x1="492" y1="41.5" x2="508" y2="41.5" />
+              <rect class="dg-box" x="510" y="16" width="184" height="51" rx="8" />
+              <text class="dg-label" x="602" y="46.26" text-anchor="middle">stats</text>
+              <line class="dg-edge" x1="696" y1="41.5" x2="712" y2="41.5" />
+              <rect class="dg-box" x="714" y="16" width="184" height="51" rx="8" />
+              <text class="dg-label" x="806" y="36.76" text-anchor="middle">visualisation</text>
+              <text class="dg-label" x="806" y="55.76" text-anchor="middle">agents</text>
+              <text class="dg-label-meta" x="16" y="93" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="99" width="277.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="154.9" y="118.76" text-anchor="middle">orchestrator + shared state</text>
+              <rect class="dg-note" x="305.8" y="99" width="230.8" height="30" rx="8" />
+              <text class="dg-label-meta" x="421.2" y="118.76" text-anchor="middle">schema-aware prompting</text>
+              <rect class="dg-note" x="548.6" y="99" width="155.6" height="30" rx="8" />
+              <text class="dg-label-meta" x="626.4" y="118.76" text-anchor="middle">session memory</text>
+              <rect class="dg-note" x="716.2" y="99" width="120" height="30" rx="8" />
+              <text class="dg-label-meta" x="776.2" y="118.76" text-anchor="middle">Dremio</text>
+              <rect class="dg-note" x="848.2" y="99" width="193.2" height="30" rx="8" />
+              <text class="dg-label-meta" x="944.8" y="118.76" text-anchor="middle">streaming React UI</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 446" role="img" aria-labelledby="dg-smart-care-v-t dg-smart-care-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-smart-care-v-t">Smart Care — intent to grounded output</title>
+              <desc id="dg-smart-care-v-d">A staged rail from intent to grounded SQL to stats to visualisation agents, with an orchestrator and shared state as the spine, schema-aware prompting and session memory as annotations, Dremio as the source layer and a streaming React UI as the final surface.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">intent</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">grounded SQL</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="140.76" text-anchor="middle">stats</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">visualisation agents</text>
+              <text class="dg-label-meta" x="16" y="220" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="230" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="250.76" text-anchor="middle">orchestrator + shared state</text>
+              <rect class="dg-note" x="16" y="270" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="290.76" text-anchor="middle">schema-aware prompting</text>
+              <rect class="dg-note" x="16" y="310" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="330.76" text-anchor="middle">session memory</text>
+              <rect class="dg-note" x="16" y="350" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="370.76" text-anchor="middle">Dremio</text>
+              <rect class="dg-note" x="16" y="390" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="410.76" text-anchor="middle">streaming React UI</text>
+            </svg>
+          </div>
+          <figcaption>Intent to grounded output. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-hard">
+            <div class="cs-stage-inner">
+            <p class="cs-label">04 / 06 · The hard part</p>
+            <div class="cs-body"><p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p></div>
+            </div>
+          </section>
+          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
+            <div class="cs-stage-inner">
+              <p class="cs-label">05 / 06 · Evidence</p>
+              <div class="cs-body">
+                <h2 id="evidence-h2">Evidence</h2>
+                <div class="evidence-panel" data-reveal>
+                  <h3>Capabilities &amp; practices</h3>
+                  <ul class="bullets">
+              <li>Network-ops analytics copilot</li>
+              <li>Intent → grounded SQL → stats → visualisation agents</li>
+              <li>Dremio</li>
+              <li>Streaming React UI</li>
+              <li>Orchestrator + shared state</li>
+              <li>Schema-aware prompting</li>
+              <li>Session memory</li>
+                  </ul>
+                </div>
+          <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
-              <li>Dremio</li>
-              <li>React</li>
+                <li>Dremio</li>
+                <li>React</li>
             </ul>
           </div>
-          <p class="scope-note">Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </section>
+          <section class="cs-stage cs-outcome">
+            <div class="cs-stage-inner">
+            <p class="cs-label">06 / 06 · Outcome</p>
+            <div class="cs-body"><p>A network-ops analytics copilot.</p></div>
+            </div>
+          </section>
+          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/tonsy-gpt.html"><span class="pn-label">Previous project</span><span class="pn-name">Tonsy-GPT</span></a>
           <a class="pn-link pn-next" href="/projects/halalbot.html"><span class="pn-label">Next project</span><span class="pn-name">HalalBot</span></a>
@@ -86,10 +195,20 @@
       </article>
     </main>
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-<p class="to-top"><a href="/index.html#projects">All work</a></p>
+      <dl class="legend">
+        <div>
+          <dt>Source tiers</dt>
+          <dd>S1 — authorized LinkedIn profile</dd>
+          <dd>S2 — owner résumé</dd>
+          <dd>S3 — owner profile material</dd>
+          <dd>S5 — owner résumé (newer)</dd>
+        </div>
+      </dl>
+      <p class="to-top"><a href="/index.html#projects">All work</a></p>
+
     </div>
   </footer>
   </body>
