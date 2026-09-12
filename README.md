@@ -38,7 +38,7 @@ root-absolute, correct when `docs/` is the web root, as on GitHub Pages at a dom
 │   └── projects/<slug>.html ×10
 ├── content-map.md          provenance map: every rendered claim → FACTS_LEDGER row
 ├── README.md               this file
-├── DEPLOY_RUNBOOK.md       publish / rollback steps (B1-07 finalises)
+├── DEPLOY_RUNBOOK.md       publish / rollback steps + owner-decision switches (FINAL, B1-07)
 ├── tools/                  generator + asset + scan helpers (not published)
 └── tests/                  the runnable check suite (not published)
 ```
