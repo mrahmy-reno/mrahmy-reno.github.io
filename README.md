@@ -52,7 +52,7 @@ the owner-decision switches have exactly one home. The generated output is commi
 ```bash
 python3 tools/build_site.py            # renders docs/ from site.config.json + tools/site_content.py
 python3 tools/gen_content_map.py       # rewrites content-map.md from the same content model
-bash tests/run_all.sh                  # the full check suite (see §7)
+bash tests/run_all.sh                  # the full check suite (needs the test tooling — see §7)
 ```
 
 `tools/build_site.py` is Python-stdlib only. `tools/make_assets.sh` regenerates the icon and OG
@@ -116,6 +116,19 @@ pinned to exact versions for reproducibility (see `evidence/B1-03/00_environment
 
 ## 7. Test suite
 
+**Precondition:** the check suite is split into Python-only steps and Node steps. The Node steps
+(browser/axe, rendered-text scans, link check, HTML validation, Lighthouse) need the pinned
+test-only tooling, which is gitignored and therefore **absent in a fresh clone**. Install it once:
+
+```bash
+bash tools/install_dev_tooling.sh     # npm install of the pinned devDependencies
+python3 -m http.server -d docs 8000   # (serving the site needs none of this)
+```
+
+If the tooling is missing, the suite does **not** report a false pass: `tools/check_dev_tooling.sh`
+runs first, names what is missing, the affected steps are recorded as `SKIPPED` in the summary, and
+the run still exits non-zero. A step is never silently downgraded to a pass.
+
 ```bash
 bash tests/run_all.sh                      # everything, raw output into the evidence directory
 EVIDENCE_DIR=/tmp/x bash tests/run_all.sh  # ...or somewhere else
@@ -124,12 +137,13 @@ EVIDENCE_DIR=/tmp/x bash tests/run_all.sh  # ...or somewhere else
 | Step | What it proves |
 |---|---|
 | `tests/static_scans.py` | coverage counts (3 roles, 10 detail pages, 8 skill groups, 2 education, 5 Tier-A certs, 0 Tier-B), internal link + anchor integrity, single external destination, zero external subresources, unique titles/descriptions, sitemap = 11 URLs, robots, JSON-LD `Person`, ledger PII absence, secret patterns, attribution guard (no project name in an experience entry; no employer name on a project page) |
-| `tests/browser_checks.mjs` | rendered-text extraction, axe-core on all 12 pages (0 critical / 0 serious), console capture (0 errors / 0 warnings), first-screen assertions at 1366×768 and 390×844 with zero scroll, overflow at 4 widths, 8 screenshots, 22-stop keyboard walk, reduced-motion check, JS-disabled check, print emulation + PDF |
+| `tests/regression_repairs.py` | B1-05 regression tests: the tooling scripts act on the checkout they are run from, the suite degrades honestly (SKIPPED + non-zero) without `node_modules`, the rendered-text extractor proves it reached the last section, regeneration leaves the tree clean, and the Lighthouse summary reports the median |
+| `tests/browser_checks.mjs` | rendered-text extraction **+ last-section coverage assertion**, axe-core on all 12 pages (0 critical / 0 serious), console capture (0 errors / 0 warnings), first-screen assertions at 1366×768 and 390×844 with zero scroll, overflow at 4 widths, 8 screenshots, 22-stop keyboard walk, reduced-motion check, JS-disabled check, print emulation + PDF |
 | `tests/text_scans.py` | provenance (every rendered line maps to the content model / `content-map.md`), banned-pattern scan (ledger §9, contact values, Tier-B names, banned vocabulary), numeric-token whitelist (`tests/numeric_whitelist.txt`) |
 | `tests/switch_integrity.py` | A16: delivered state + all three switches flipped, each changing only its own surface |
 | `tests/link_check.mjs` | the external destination resolves (HTTP + real browser navigation) |
 | `tests/validate_html.sh` | HTML validity: `html-validate` (0 errors) **and** the W3C Nu checker over all 12 pages (0 errors) |
-| `tests/run_lighthouse.sh` | Lighthouse mobile ≥ 90 on all four categories, on the index and one detail page |
+| `tests/run_lighthouse.sh` | Lighthouse mobile ≥ 90 on all four categories, on the index and one detail page; every run is kept and the summary (`tools/lh_median.py`) reports the **median** with the full spread |
 | `tests/reproduce.sh` | A11: fresh `git clone` → documented build command → identical published-file hashes |
 
 Test tooling is pinned in `package.json` and installed with:

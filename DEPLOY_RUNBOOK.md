@@ -65,6 +65,8 @@ Post-publish evidence belongs in `evidence/B1-08/` (HTTP statuses, final URLs, a
 
 ```bash
 git clone <repo> /tmp/verify && cd /tmp/verify
+bash tools/install_dev_tooling.sh       # test-only Node tooling; node_modules/ is gitignored
+                                        # (without it the Node steps are recorded as SKIPPED)
 python3 -m http.server -d docs 8000     # spot-check in a browser
 bash tests/run_all.sh                   # full suite against the same content
 ```
