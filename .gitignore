@@ -4,3 +4,7 @@ docs-unused/
 .DS_Store
 .evidence-tmp/
 chrome-profile-*/
+# B1-05 / D-04: Python bytecode embeds source mtimes/paths and is not reproducible, so it must
+# never be tracked (regeneration left the tree dirty).
+__pycache__/
+*.pyc

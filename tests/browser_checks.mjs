@@ -220,6 +220,34 @@ async function main() {
     fs.writeFileSync(path.join(OUT, "rendered-text",
       rel.replace(/\//g, "_").replace(/\.html$/, "") + ".txt"), text);
 
+    // B1-05 / D-03 guard. `styles.css` sets `.section{content-visibility:auto}`, which keeps
+    // off-screen sections unpainted. A renderer that reads only the painted/laid-out surface can
+    // therefore silently drop whole sections and still look "complete" (that is exactly how a
+    // truncated dump passed for a full one during B1-04). Never trust a text dump without proving
+    // it reaches the LAST section: this walks the last section's own text nodes and asserts a
+    // marker from it is present in the extracted dump.
+    const coverage = await page.evaluate(() => {
+      const sections = [...document.querySelectorAll("section")];
+      const last = sections[sections.length - 1];
+      let marker = "";
+      if (last) {
+        const walker = document.createTreeWalker(last, NodeFilter.SHOW_TEXT);
+        let n;
+        while ((n = walker.nextNode())) {
+          const t = n.nodeValue.replace(/\s+/g, " ").trim();
+          if (t) marker = t;
+        }
+      }
+      return { sections: sections.length, lastMarker: marker };
+    });
+    if (!results.coverage) results.coverage = {};
+    results.coverage[rel] = { ...coverage, dumpChars: text.length };
+    check(coverage.sections >= 1 && coverage.lastMarker.length > 0 &&
+      text.includes(coverage.lastMarker),
+      `rendered-text dump reaches the last section on ${rel} (no silent content-visibility truncation)`,
+      JSON.stringify({ sections: coverage.sections, lastMarker: coverage.lastMarker,
+        dumpChars: text.length }));
+
     // axe
     await page.evaluate(AXE_SOURCE);
     const axe = await page.evaluate(async () => {
