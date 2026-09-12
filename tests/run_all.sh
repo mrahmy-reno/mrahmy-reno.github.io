@@ -136,9 +136,12 @@ step 02_static_scans.txt python3 tests/static_scans.py
 STATIC_RC=$?
 
 # 2b. regression tests for the defects repaired in B1-05 (tooling scripts, honest skip mode,
-#     evidence-extraction guard, byte-reproducibility, Lighthouse median). Python-stdlib only, so
-#     it runs even in a checkout without node_modules.
-run_step 02b_regression_repairs.txt python3 tests/regression_repairs.py
+#     evidence-extraction guard, byte-reproducibility, Lighthouse median). Python-stdlib only and
+#     independent of node_modules, so it is wired through `step` and NOT through `run_step`: it
+#     runs in every checkout, including a fresh clone with no installed tooling, where only the
+#     Node-dependent steps are the ones recorded as SKIPPED (R2-01: this line must stay in sync
+#     with the comment above it).
+step 02b_regression_repairs.txt python3 tests/regression_repairs.py
 REGRESSION_RC=$?
 
 # 3. browser audit: rendered text, axe on all 12 pages, console, overflow, first screen,

@@ -20,6 +20,10 @@ Covered:
 
 Run: python3 tests/regression_repairs.py        (also step 02b of tests/run_all.sh)
 Exit 0 = every regression test passed.
+
+R2-03: every `check()` detail string states what was OBSERVED (an offending line, a count, a
+missing row), never a claim that the check passed — a mutation log must read correctly on the FAIL
+line too. The labels and the conditions themselves are unchanged.
 """
 import json
 import os
@@ -97,7 +101,7 @@ def test_d01_no_tooling_script_hardcodes_an_absolute_path():
                 offenders.append(f"{script.name}:{i}: {line.strip()}")
     check(not offenders,
           "D-01 every tools/*.sh that changes directory derives it from its own location",
-          "; ".join(offenders) or "no hardcoded cd")
+          f"offending lines: {'; '.join(offenders) if offenders else 'none'}")
 
 
 # ------------------------------------------------------------------------------- D-02: honest skip
@@ -142,17 +146,27 @@ def test_d02_suite_reports_skipped_steps_and_still_fails():
     check(r.returncode != 0,
           "D-02 the suite exits non-zero in a clone without tooling (no false PASS)",
           f"exit={r.returncode}")
-    check(all(f"STEP {s}" in out and "SKIPPED" in out for s in skipped_steps),
+    absent_rows = [s for s in skipped_steps if f"STEP {s}" not in out]
+    without_marker = [s for s in skipped_steps if "SKIPPED" not in out]
+    check(not absent_rows and not without_marker,
           "D-02 every Node-dependent step is reported SKIPPED, none silently omitted",
-          "; ".join(s for s in skipped_steps if f"STEP {s}" not in out) or "all five reported")
-    check(summary.count("SKIP (node tooling missing — not run)") == len(skipped_steps),
+          f"steps with no STEP row in the console: {absent_rows or 'none'}; "
+          f"steps whose console line has no SKIPPED marker: {without_marker or 'none'}")
+    skip_rows = summary.count("SKIP (node tooling missing — not run)")
+    check(skip_rows == len(skipped_steps),
           "D-02 the summary marks those steps SKIP instead of printing an exit code",
-          summary.strip()[:400])
+          f"'SKIP (node tooling missing — not run)' rows in the summary: {skip_rows} "
+          f"(expected {len(skipped_steps)}; the Node steps are {', '.join(skipped_steps)})")
     check("PREREQUISITE MISSING" in out and "install_dev_tooling.sh" in out,
           "D-02 the run states the missing prerequisite and the remedy",
-          out.strip()[-400:])
-    check(not re.search(r"STEP (03|04|06|07|08)\w*[^\n]*exit 0", out),
-          "D-02 no Node-dependent step claims exit 0 when it could not run")
+          f"console has 'PREREQUISITE MISSING': {'PREREQUISITE MISSING' in out}; "
+          f"console has the remedy 'install_dev_tooling.sh': {'install_dev_tooling.sh' in out}; "
+          f"last line of the console: {out.strip().splitlines()[-1][:120] if out.strip() else '<no output>'!r}")
+    false_pass = re.search(r"STEP (03|04|06|07|08)\w*[^\n]*exit 0", out)
+    check(not false_pass,
+          "D-02 no Node-dependent step claims exit 0 when it could not run",
+          f"offending line: {false_pass.group(0)!r}" if false_pass
+          else "no Node-dependent step reported 'exit 0'")
 
 
 # ------------------------------------------------------------------- D-03: extraction coverage guard
@@ -175,7 +189,7 @@ def test_d04_regeneration_leaves_the_tree_clean():
           f"exit={r.returncode} {r.stdout.strip()[:200]}")
     st = run(["git", "status", "--porcelain"], cwd=clone).stdout.strip()
     check(st == "", "D-04 regeneration leaves the fresh clone byte-identical (git status clean)",
-          st[:300] or "clean")
+          f"git status --porcelain output: {st[:300]!r}" if st else "git status --porcelain: empty")
     tracked = run(["git", "ls-files"], cwd=clone).stdout
     pyc = [ln for ln in tracked.splitlines() if ln.endswith(".pyc") or "__pycache__" in ln]
     check(not pyc, "D-04 no Python bytecode is tracked in the repository", "; ".join(pyc))
@@ -223,7 +237,9 @@ def test_d06_summary_reports_the_median_run():
           f"exit={r3.returncode} {r3.stdout.strip().replace(chr(10), ' | ')[:300]}")
     run_all = (REPO / "tests" / "run_all.sh").read_text()
     check("lh_median.py" in run_all and "run1.json" not in run_all,
-          "D-06 the suite summary uses the median helper, not the first run's JSON")
+          "D-06 the suite summary uses the median helper, not the first run's JSON",
+          f"run_all.sh mentions tools/lh_median.py: {'lh_median.py' in run_all}; "
+          f"run_all.sh mentions run1.json: {'run1.json' in run_all}")
 
 
 def main():
