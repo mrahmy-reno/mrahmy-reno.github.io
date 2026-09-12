@@ -7,7 +7,7 @@
     <title>Voice agent core — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/voice-agent-core.html">
-    <meta name="theme-color" content="#0c0e13">
+    <meta name="theme-color" content="#fbfaf7">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="Voice agent core — Mohammed Tawfiq Rahmy">
@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/assets/styles.css">
     <script src="/assets/main.js" defer></script>
   </head>
-  <body>
+  <body data-surface="warm" data-mode="M1" data-arch="A8">
   <a class="skip-link" href="#main">Skip to content</a>
   <p class="print-only print-contact">Mohammed Tawfiq Rahmy · https://www.linkedin.com/in/mohammed-rahmy</p>
   <header class="site-header">
@@ -48,133 +48,131 @@
     </div>
   </header>
     <main id="main">
-      <article class="project-detail">
-        <div class="wrap">
-          <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1 class="project-title">Voice agent core</h1>
-          <p class="project-lede">VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English.</p>
-          <p class="project-meta"><span class="tag">Shipped products &amp; ML systems</span><span class="cs-label">03 / 06 · Architecture</span></p>
-          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">Overview</p>
-              <div class="cs-body">
-                <h2 id="overview-h2">Overview</h2>
-            <p>A voice agent pipeline: VAD → Whisper → LLM → TTS. It is Twilio-ready and covers Arabic + English.</p>
-              </div>
+      <article class="project-detail" data-arch="A8" data-mode="M1">
+        <section class="plane plane-lead" data-surface="warm" data-plane="head">
+          <div class="wrap">
+            <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
+            <h1 class="project-title">Voice agent core</h1>
+            <p class="project-lede">VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English.</p>
+            <p class="project-meta"><span class="tag">Shipped products &amp; ML systems</span></p>
+            <div class="cs-body project-overview">
+              <h2>Overview</h2>
+              <p>A voice agent pipeline: VAD → Whisper → LLM → TTS. It is Twilio-ready and covers Arabic + English.</p>
             </div>
-          </section>
-          <section class="cs-stage cs-problem">
-            <div class="cs-stage-inner">
-            <p class="cs-label">01 / 06 · Problem</p>
-            <div class="cs-body"><p>Speech has to move through a pipeline before a model can answer.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-approach">
-            <div class="cs-stage-inner">
-            <p class="cs-label">02 / 06 · Approach</p>
-            <div class="cs-body"><p>VAD → Whisper → LLM → TTS, Twilio-ready, covering Arabic + English.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
-            <div class="wrap">
-              <div class="cs-stage-inner">
-                <p class="cs-label">03 / 06 · Architecture</p>
-                <div class="cs-body">
-                  <h2 id="architecture-h2">Architecture</h2>
-                  <div class="diagram-panel" data-reveal>
-        <figure class="artefact">
-          <div class="artefact-frame">
-            <svg class="dg art-wide" viewBox="0 0 1000 130" role="img" aria-labelledby="dg-voice-agent-core-t dg-voice-agent-core-d" preserveAspectRatio="xMidYMid meet">
-              <title id="dg-voice-agent-core-t">Voice agent core — the audio pipeline</title>
-              <desc id="dg-voice-agent-core-d">A linear rail VAD, Whisper, LLM, TTS, with Arabic + English as a language band spanning the rail and a terminal boundary labelled Twilio-ready.</desc>
-              <rect class="dg-box" x="16" y="16" width="177.6" height="32" rx="8" />
-              <text class="dg-label" x="104.8" y="36.76" text-anchor="middle">VAD</text>
-              <line class="dg-edge" x1="195.6" y1="32" x2="211.6" y2="32" />
-              <rect class="dg-box" x="213.6" y="16" width="177.6" height="32" rx="8" />
-              <text class="dg-label" x="302.4" y="36.76" text-anchor="middle">Whisper</text>
-              <line class="dg-edge" x1="393.2" y1="32" x2="409.2" y2="32" />
-              <rect class="dg-box" x="411.2" y="16" width="177.6" height="32" rx="8" />
-              <text class="dg-label" x="500" y="36.76" text-anchor="middle">LLM</text>
-              <line class="dg-edge" x1="590.8" y1="32" x2="606.8" y2="32" />
-              <rect class="dg-box" x="608.8" y="16" width="177.6" height="32" rx="8" />
-              <text class="dg-label" x="697.6" y="36.76" text-anchor="middle">TTS</text>
-              <line class="dg-edge" x1="788.4" y1="32" x2="804.4" y2="32" />
-              <rect class="dg-gate" x="806.4" y="16" width="177.6" height="32" rx="8" />
-              <text class="dg-label" x="895.2" y="36.76" text-anchor="middle">Twilio-ready</text>
-              <text class="dg-label-meta" x="16" y="74" text-anchor="start">annotations</text>
-              <rect class="dg-note" x="16" y="80" width="174.4" height="30" rx="8" />
-              <text class="dg-label-meta" x="103.2" y="99.76" text-anchor="middle">Arabic + English</text>
-            </svg>
-            <svg class="dg art-tall" viewBox="0 0 400 338" role="img" aria-labelledby="dg-voice-agent-core-v-t dg-voice-agent-core-v-d" preserveAspectRatio="xMidYMid meet">
-              <title id="dg-voice-agent-core-v-t">Voice agent core — the audio pipeline</title>
-              <desc id="dg-voice-agent-core-v-d">A linear rail VAD, Whisper, LLM, TTS, with Arabic + English as a language band spanning the rail and a terminal boundary labelled Twilio-ready.</desc>
-              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="36.76" text-anchor="middle">VAD</text>
-              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
-              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="88.76" text-anchor="middle">Whisper</text>
-              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
-              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="140.76" text-anchor="middle">LLM</text>
-              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
-              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="192.76" text-anchor="middle">TTS</text>
-              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
-              <rect class="dg-gate" x="16" y="224" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="244.76" text-anchor="middle">Twilio-ready</text>
-              <text class="dg-label-meta" x="16" y="272" text-anchor="start">annotations</text>
-              <rect class="dg-note" x="16" y="282" width="368" height="32" rx="8" />
-              <text class="dg-label-meta" x="200" y="302.76" text-anchor="middle">Arabic + English</text>
-            </svg>
           </div>
-          <figcaption>The audio pipeline, end to end. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
-        </figure>
-                  </div>
-                </div>
-              </div>
+        </section>
+        <section class="plane spread-plane" data-surface="warm" data-plane="spread">
+          <div class="wrap">
+            <div class="spread" data-reveal>
+              <div class="spread-main">
+            <div class="cs-stage cs-problem">
+              <p class="cs-label">01 / 06 · Problem</p>
+              <div class="cs-body"><p>Speech has to move through a pipeline before a model can answer.</p></div>
             </div>
-          </section>
-          <section class="cs-stage cs-hard">
-            <div class="cs-stage-inner">
-            <p class="cs-label">04 / 06 · The hard part</p>
-            <div class="empty"><span class="empty-label">NOT YET PUBLISHED</span><p>This block is withheld until its source is published on this site.</p></div>
+            <div class="cs-stage cs-approach">
+              <p class="cs-label">02 / 06 · Approach</p>
+              <div class="cs-body"><p>VAD → Whisper → LLM → TTS, Twilio-ready, covering Arabic + English.</p></div>
             </div>
-          </section>
-          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
-            <div class="cs-stage-inner">
+            <div class="cs-stage cs-hard">
+              <p class="cs-label">04 / 06 · The hard part</p>
+              <div class="empty"><span class="empty-label">NOT YET PUBLISHED</span><p>This block is withheld until its source is published on this site.</p></div>
+            </div>
+            <div class="cs-stage cs-evidence">
               <p class="cs-label">05 / 06 · Evidence</p>
               <div class="cs-body">
-                <h2 id="evidence-h2">Evidence</h2>
+                <h2>Evidence</h2>
                 <div class="evidence-panel" data-reveal>
                   <h3>Capabilities &amp; practices</h3>
                   <ul class="bullets">
-              <li>VAD → Whisper → LLM → TTS pipeline</li>
-              <li>Twilio-ready</li>
-              <li>Arabic + English</li>
+                  <li>VAD → Whisper → LLM → TTS pipeline</li>
+                  <li>Twilio-ready</li>
+                  <li>Arabic + English</li>
                   </ul>
                 </div>
           <div class="tech-row" data-reveal>
-            <h3>Technology</h3>
-            <ul class="chips">
-                <li>VAD → Whisper → LLM → TTS</li>
-                <li>Twilio</li>
-            </ul>
+              <h3>Technology</h3>
+              <ul class="chips">
+                  <li>VAD → Whisper → LLM → TTS</li>
+                  <li>Twilio</li>
+              </ul>
           </div>
                 <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
               </div>
             </div>
-          </section>
-          <section class="cs-stage cs-outcome">
-            <div class="cs-stage-inner">
-            <p class="cs-label">06 / 06 · Outcome</p>
-            <div class="cs-body"><p>A voice agent pipeline that is Twilio-ready and covers Arabic + English.</p></div>
+            <div class="cs-stage cs-outcome">
+              <p class="cs-label">06 / 06 · Outcome</p>
+              <div class="cs-body"><p>A voice agent pipeline that is Twilio-ready and covers Arabic + English.</p></div>
             </div>
-          </section>
+              </div>
+              <div class="spread-margin">
+            <p class="serial">Notes</p>
+              <p class="cs-label">03 / 06 · Architecture</p>
+              <div class="cs-body">
+                <h2>Architecture</h2>
+                <div class="diagram-panel" data-reveal>
+        <figure class="artefact">
+          <div class="artefact-frame">
+              <svg class="dg art-wide" viewBox="0 0 1000 130" role="img" aria-labelledby="dg-voice-agent-core-t dg-voice-agent-core-d" preserveAspectRatio="xMidYMid meet">
+                <title id="dg-voice-agent-core-t">Voice agent core — the audio pipeline</title>
+                <desc id="dg-voice-agent-core-d">A linear rail VAD, Whisper, LLM, TTS, with Arabic + English as a language band spanning the rail and a terminal boundary labelled Twilio-ready.</desc>
+                <rect class="dg-box" x="16" y="16" width="177.6" height="32" rx="8" />
+                <text class="dg-label" x="104.8" y="36.76" text-anchor="middle">VAD</text>
+                <line class="dg-edge" x1="195.6" y1="32" x2="211.6" y2="32" />
+                <rect class="dg-box" x="213.6" y="16" width="177.6" height="32" rx="8" />
+                <text class="dg-label" x="302.4" y="36.76" text-anchor="middle">Whisper</text>
+                <line class="dg-edge" x1="393.2" y1="32" x2="409.2" y2="32" />
+                <rect class="dg-box" x="411.2" y="16" width="177.6" height="32" rx="8" />
+                <text class="dg-label" x="500" y="36.76" text-anchor="middle">LLM</text>
+                <line class="dg-edge" x1="590.8" y1="32" x2="606.8" y2="32" />
+                <rect class="dg-box" x="608.8" y="16" width="177.6" height="32" rx="8" />
+                <text class="dg-label" x="697.6" y="36.76" text-anchor="middle">TTS</text>
+                <line class="dg-edge" x1="788.4" y1="32" x2="804.4" y2="32" />
+                <rect class="dg-gate" x="806.4" y="16" width="177.6" height="32" rx="8" />
+                <text class="dg-label" x="895.2" y="36.76" text-anchor="middle">Twilio-ready</text>
+                <text class="dg-label-meta" x="16" y="74" text-anchor="start">annotations</text>
+                <rect class="dg-note" x="16" y="80" width="174.4" height="30" rx="8" />
+                <text class="dg-label-meta" x="103.2" y="99.76" text-anchor="middle">Arabic + English</text>
+              </svg>
+              <svg class="dg art-tall" viewBox="0 0 400 338" role="img" aria-labelledby="dg-voice-agent-core-v-t dg-voice-agent-core-v-d" preserveAspectRatio="xMidYMid meet">
+                <title id="dg-voice-agent-core-v-t">Voice agent core — the audio pipeline</title>
+                <desc id="dg-voice-agent-core-v-d">A linear rail VAD, Whisper, LLM, TTS, with Arabic + English as a language band spanning the rail and a terminal boundary labelled Twilio-ready.</desc>
+                <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+                <text class="dg-label" x="200" y="36.76" text-anchor="middle">VAD</text>
+                <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+                <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+                <text class="dg-label" x="200" y="88.76" text-anchor="middle">Whisper</text>
+                <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+                <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+                <text class="dg-label" x="200" y="140.76" text-anchor="middle">LLM</text>
+                <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+                <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+                <text class="dg-label" x="200" y="192.76" text-anchor="middle">TTS</text>
+                <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+                <rect class="dg-gate" x="16" y="224" width="368" height="32" rx="8" />
+                <text class="dg-label" x="200" y="244.76" text-anchor="middle">Twilio-ready</text>
+                <text class="dg-label-meta" x="16" y="272" text-anchor="start">annotations</text>
+                <rect class="dg-note" x="16" y="282" width="368" height="32" rx="8" />
+                <text class="dg-label-meta" x="200" y="302.76" text-anchor="middle">Arabic + English</text>
+              </svg>
+          </div>
+          <figcaption>The audio pipeline, end to end. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+        </figure>
+                </div>
+              </div>
+              <ul class="bullets">
+                <li>VAD → Whisper → LLM → TTS pipeline</li>
+                <li>Twilio-ready</li>
+                <li>Arabic + English</li>
+              </ul>
+              <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
+              </div>
+            </div>
+          </div>
+        </section>
           <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/email-mcp.html"><span class="pn-label">Previous project</span><span class="pn-name">email-MCP</span></a>
           </nav>
-        </div>
       </article>
     </main>
   <footer class="site-footer">

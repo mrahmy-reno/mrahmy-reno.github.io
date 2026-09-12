@@ -7,7 +7,7 @@
     <title>SAMA — Agentic SOC Triage &amp; Response Automation — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Multistage agentic triage workflow, grounding/evidence controls, typed contracts.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/sama-soc-triage.html">
-    <meta name="theme-color" content="#0c0e13">
+    <meta name="theme-color" content="#fbfaf7">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="SAMA — Agentic SOC Triage &amp; Response Automation — Mohammed Tawfiq Rahmy">
@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/assets/styles.css">
     <script src="/assets/main.js" defer></script>
   </head>
-  <body>
+  <body data-surface="deep" data-mode="M2" data-arch="A4">
   <a class="skip-link" href="#main">Skip to content</a>
   <p class="print-only print-contact">Mohammed Tawfiq Rahmy · https://www.linkedin.com/in/mohammed-rahmy</p>
   <header class="site-header">
@@ -48,42 +48,51 @@
     </div>
   </header>
     <main id="main">
-      <article class="project-detail">
-        <div class="wrap">
-          <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1 class="project-title">SAMA — Agentic SOC Triage &amp; Response Automation</h1>
-          <p class="project-lede">Multistage agentic triage workflow, grounding/evidence controls, typed contracts.</p>
-          <p class="project-meta"><span class="tag">Security operations &amp; agent safety</span><span class="cs-label">03 / 06 · Architecture</span></p>
-          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">Overview</p>
-              <div class="cs-body">
-                <h2 id="overview-h2">Overview</h2>
-            <p>An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls.</p>
-            <p>The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p>
-            <p>Grounding/evidence controls keep its output traceable to its source.</p>
-              </div>
+      <article class="project-detail" data-arch="A4" data-mode="M2">
+        <section class="plane plane-lead" data-surface="deep" data-plane="head">
+          <div class="wrap">
+            <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
+            <h1 class="project-title">SAMA — Agentic SOC Triage &amp; Response Automation</h1>
+            <p class="project-lede">Multistage agentic triage workflow, grounding/evidence controls, typed contracts.</p>
+            <p class="project-meta"><span class="tag">Security operations &amp; agent safety</span></p>
+            <div class="cs-body project-overview">
+              <h2>Overview</h2>
+              <p>An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls.</p>
+              <p>The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p>
+              <p>Grounding/evidence controls keep its output traceable to its source.</p>
             </div>
-          </section>
-          <section class="cs-stage cs-problem">
-            <div class="cs-stage-inner">
+          </div>
+        </section>
+        <section class="plane cs-stage cs-problem" data-surface="deep" data-plane="problem">
+          <div class="wrap">
             <p class="cs-label">01 / 06 · Problem</p>
             <div class="cs-body"><p>Security operations triage is the work: an agentic triage and response automation system runs a multistage agentic triage workflow.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-approach">
-            <div class="cs-stage-inner">
+          </div>
+        </section>
+        <div class="gate" data-surface="deep">
+          <div class="wrap">
+            <span class="gate-node" aria-hidden="true"></span>
+            <span class="gate-label">Decision gate</span>
+          </div>
+        </div>
+        <section class="plane cs-stage cs-approach" data-surface="deep" data-plane="approach">
+          <div class="wrap">
             <p class="cs-label">02 / 06 · Approach</p>
             <div class="cs-body"><p>Context construction, active investigation, threat modeling, quality guards, and verdict generation — with typed contracts and grounding controls around every stage.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
-            <div class="wrap">
-              <div class="cs-stage-inner">
-                <p class="cs-label">03 / 06 · Architecture</p>
-                <div class="cs-body">
-                  <h2 id="architecture-h2">Architecture</h2>
-                  <div class="diagram-panel" data-reveal>
+          </div>
+        </section>
+        <div class="gate" data-surface="deep">
+          <div class="wrap">
+            <span class="gate-node" aria-hidden="true"></span>
+            <span class="gate-label">Decision gate</span>
+          </div>
+        </div>
+        <section class="plane cs-stage cs-architecture" data-surface="deep" data-plane="architecture">
+          <div class="wrap">
+            <p class="cs-label">03 / 06 · Architecture</p>
+            <div class="cs-body">
+              <h2>Architecture</h2>
+              <div class="diagram-panel" data-reveal>
         <figure class="artefact">
           <div class="artefact-frame">
             <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-sama-soc-triage-t dg-sama-soc-triage-d" preserveAspectRatio="xMidYMid meet">
@@ -160,36 +169,48 @@
           </div>
           <figcaption>The triage workflow, stage by stage. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
         </figure>
-                  </div>
-                </div>
               </div>
             </div>
-          </section>
-          <section class="cs-stage cs-hard">
-            <div class="cs-stage-inner">
+          </div>
+        </section>
+        <div class="gate" data-surface="deep">
+          <div class="wrap">
+            <span class="gate-node" aria-hidden="true"></span>
+            <span class="gate-label">Decision gate</span>
+          </div>
+        </div>
+        <section class="plane cs-stage cs-hard" data-surface="deep" data-plane="hard">
+          <div class="wrap">
             <p class="cs-label">04 / 06 · The hard part</p>
             <div class="cs-body"><p>Grounding and evidence controls have to hold at every stage, so the output stays traceable to its source.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">05 / 06 · Evidence</p>
-              <div class="cs-body">
-                <h2 id="evidence-h2">Evidence</h2>
-                <div class="evidence-panel" data-reveal>
-                  <h3>Capabilities &amp; practices</h3>
-                  <ul class="bullets">
-              <li>Multistage agentic triage workflow</li>
-              <li>Multi-agent triage, investigation and response</li>
-              <li>Context construction, active investigation, threat modeling, quality guards, and verdict generation</li>
-              <li>Grounding and evidence controls</li>
-              <li>Typed contracts</li>
-              <li>Strands Agents and Amazon Bedrock</li>
-              <li>MCP connectors</li>
-              <li>LLM-as-judge checks, RAGAS, blind-vs-shown evals</li>
-              <li>Contract, adversarial and compliance test suites</li>
-                  </ul>
-                </div>
+          </div>
+        </section>
+        <div class="gate" data-surface="deep">
+          <div class="wrap">
+            <span class="gate-node" aria-hidden="true"></span>
+            <span class="gate-label">Decision gate</span>
+          </div>
+        </div>
+        <section class="plane cs-stage cs-evidence" data-surface="deep" data-plane="evidence">
+          <div class="wrap">
+            <p class="cs-label">05 / 06 · Evidence</p>
+            <div class="cs-body">
+              <h2>Evidence</h2>
+            <p class="plane-signal"><span class="signal" data-admission="C3" data-signal-key="scope">Scope</span></p>
+              <div class="evidence-panel" data-reveal>
+                <h3>Capabilities &amp; practices</h3>
+                <ul class="bullets">
+                <li>Multistage agentic triage workflow</li>
+                <li>Multi-agent triage, investigation and response</li>
+                <li>Context construction, active investigation, threat modeling, quality guards, and verdict generation</li>
+                <li>Grounding and evidence controls</li>
+                <li>Typed contracts</li>
+                <li>Strands Agents and Amazon Bedrock</li>
+                <li>MCP connectors</li>
+                <li>LLM-as-judge checks, RAGAS, blind-vs-shown evals</li>
+                <li>Contract, adversarial and compliance test suites</li>
+                </ul>
+              </div>
           <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
@@ -198,21 +219,26 @@
                 <li>MCP connectors</li>
             </ul>
           </div>
-                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
-              </div>
+              <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
             </div>
-          </section>
-          <section class="cs-stage cs-outcome">
-            <div class="cs-stage-inner">
+          </div>
+        </section>
+        <div class="gate" data-surface="deep">
+          <div class="wrap">
+            <span class="gate-node" aria-hidden="true"></span>
+            <span class="gate-label">Decision gate</span>
+          </div>
+        </div>
+        <section class="plane cs-stage cs-outcome" data-surface="deep" data-plane="outcome">
+          <div class="wrap">
             <p class="cs-label">06 / 06 · Outcome</p>
             <div class="cs-body"><p>Verdict generation at the end of an evaluation-gated workflow: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p></div>
-            </div>
-          </section>
+          </div>
+        </section>
           <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-next" href="/projects/smartops-soc-app.html"><span class="pn-label">Next project</span><span class="pn-name">SmartOps SOC App</span></a>
           </nav>
-        </div>
       </article>
     </main>
   <footer class="site-footer">

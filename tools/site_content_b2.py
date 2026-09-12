@@ -61,9 +61,14 @@ GLANCE = {
     "languages": b("Languages", [], "structural"),
 }
 
-ROLE_LEDGER = b("AI Solutions Engineer", ["L3.1"], "verbatim",
-                "The ledger's own role row (L3.1). Used for the at-a-glance strip, so the strip "
-                "carries the ledger's exact role token rather than the longer S5 title.")
+# The role, wherever it is asserted as a FIELD (at-a-glance strip, page <title>, JSON-LD,
+# experience entry, print line). The formal title is FACTS_LEDGER.md §11 row R2 (source S5,
+# which wins over the older "AI Solutions Engineer" of L3.1). The older variant survives only
+# inside owner-authored summary prose (PITCH / S5_SUMMARY / ABOUT_SUMMARY / META_DESCRIPTION).
+ROLE_LEDGER = b("Associate Solutions Engineer — AI / GenAI Solutions", ["S5-R2"], "verbatim",
+                "The formal current role title (FACTS_LEDGER.md §11 R2, source S5). Used wherever "
+                "a role is asserted as a field. The older L3.1 token 'AI Solutions Engineer' is "
+                "retained only inside owner-authored summary prose.")
 
 # ---------------------------------------------------------------- section serials & decks
 
@@ -140,6 +145,90 @@ SOURCE_TAGS = {
     "S2": b("— source: owner résumé", [], "structural"),
     "S3": b("— source: owner profile material", [], "structural"),
     "S5": b("— source: owner résumé (newer)", [], "structural"),
+}
+
+# ---------------------------------------------------------------- SIGNAL / MTR: the signal
+
+# The signal is one mark with one meaning, admitted only by C1 (active), C2 (verified),
+# C3 (consequential) or C4 (attention-worthy), and it is always paired with a label in the
+# instrument voice (DESIGN_LANGUAGE.md §3.6). These are the labels in use on this site, each with
+# the condition it names. Most pages ship zero signals — that is the language's normal state
+# (DNA §3.5), and it is demonstrated on nine of the twelve pages.
+SIGNAL = {
+    # C1 ACTIVE — true now, and not true at an earlier time. The current role and employer.
+    "active": b("Active", [], "structural",
+                "Signal label (DESIGN_LANGUAGE.md §3.6). Condition C1 ACTIVE: the current role "
+                "is true now and was not true before. Label is a noun-of-state, not an "
+                "encouragement (DNA §5.6)."),
+    # C3 CONSEQUENTIAL — a scope boundary turns here. SAMA is client work (ledger §4 note:
+    # 'mention depth, never internals'), so reading past the scope note has a cost if misread.
+    "scope": b("Scope", [], "structural",
+               "Signal label (DESIGN_LANGUAGE.md §3.6). Condition C3 CONSEQUENTIAL: a scope "
+               "boundary the ledger itself imposes on this project row (FACTS_LEDGER §4, S3)."),
+}
+
+# ---------------------------------------------------------------- the expression system
+
+# Every page declares its expression: a MODE (EXPRESSION_SYSTEM.md §2 — leading surface, scale
+# band, signal budget, motion budget) and a layout ARCHETYPE (§4 — the arrangement of planes).
+# The composition is chosen after the content, and no two consecutive pages in the series share
+# an archetype (§4 rule 1). These are structural declarations, not claims.
+#
+#   mode   M1 editorial-quiet · M2 instrument-dense · M3 signal-forward · M4 archival
+#   arch   A2 rail & content · A3 hub/broker · A4 stage-gate · A5 register · A6 plate ·
+#          A8 marginalia
+#
+# `surface` is the LEADING surface (DNA §4.2/§4.3: one surface leads, ≥70% of planes).
+# `close` names the one sanctioned transition when the page has one, with its reason (DNA §4.4):
+#   T1 claim → proof · T2 human → system · T3 narrative → reference · T4 overview → detail
+EXPRESSION: dict[str, dict] = {
+    # A4 stage-gate · M2 instrument-dense · deep-led · zero transitions
+    "sama-soc-triage": {"mode": "M2", "arch": "A4", "surface": "deep"},
+    # A3 hub/broker · M2 instrument-dense · deep-led · zero transitions
+    "smartops-soc-app": {"mode": "M2", "arch": "A3", "surface": "deep"},
+    # A6 plate · M2 → M1 close · deep-led, T2 at the human close
+    "milo-ai-employee": {"mode": "M2", "arch": "A6", "surface": "deep",
+                         "close": ("warm", "T2")},
+    # A5 register · M4 archival · warm-led · zero motion
+    "pulsesec": {"mode": "M4", "arch": "A5", "surface": "warm"},
+    # A4 stage-gate · M2 instrument-dense · deep-led
+    "tonsy-gpt": {"mode": "M2", "arch": "A4", "surface": "deep"},
+    # A3 hub/broker · M2 instrument-dense · deep-led
+    "smart-care": {"mode": "M2", "arch": "A3", "surface": "deep"},
+    # A8 marginalia · M1 editorial-quiet · warm-led
+    "halalbot": {"mode": "M1", "arch": "A8", "surface": "warm"},
+    # A6 plate · M2 → M1 close · deep-led, T2 at the human close
+    "forwheelz": {"mode": "M2", "arch": "A6", "surface": "deep",
+                  "close": ("warm", "T2")},
+    # A5 register · M4 archival · warm-led
+    "email-mcp": {"mode": "M4", "arch": "A5", "surface": "warm"},
+    # A8 marginalia · M1 editorial-quiet · warm-led
+    "voice-agent-core": {"mode": "M1", "arch": "A8", "surface": "warm"},
+}
+
+# The index's own expression (EXPRESSION_SYSTEM.md §3.2: site index → M1 leads, M2 passage,
+# A2 rail & content, ≤1 signal on the lead, one transition into the artefact plate).
+INDEX_EXPRESSION = {"mode": "M1", "arch": "A2", "surface": "warm",
+                    "close": ("deep", "T1")}
+
+# Plane headings the archetypes introduce. Structural: they name the arrangement, not the work.
+ARCH = {
+    "rail": b("Register", [], "structural",
+              "Archetype label for the rail column (A2 rail & content). Names the column, "
+              "asserts nothing."),
+    "hub": b("The system", [], "structural",
+             "Archetype label for the hub plane (A3 hub/broker). Names the centre of the "
+             "drawing."),
+    "spokes": b("The parts", [], "structural",
+                "Archetype label for the bounded spokes around the hub."),
+    "gate": b("Decision gate", [], "structural",
+              "Archetype label for the gate between two stages (A4 stage-gate)."),
+    "plate": b("The drawing", [], "structural",
+               "Archetype label for the plate (A6 plate)."),
+    "margin": b("Notes", [], "structural",
+                "Archetype label for the margin column (A8 marginalia)."),
+    "close": b("What it is", [], "structural",
+               "Archetype label for the closing human plane (the T2 close)."),
 }
 
 # ---------------------------------------------------------------- case-study stage copy

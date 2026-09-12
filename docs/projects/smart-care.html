@@ -7,7 +7,7 @@
     <title>Smart Care — Mohammed Tawfiq Rahmy</title>
     <meta name="description" content="Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.">
     <link rel="canonical" href="https://mrahmy-reno.github.io/projects/smart-care.html">
-    <meta name="theme-color" content="#0c0e13">
+    <meta name="theme-color" content="#fbfaf7">
     <meta property="og:type" content="article">
     <meta property="og:site_name" content="Mohammed Tawfiq Rahmy">
     <meta property="og:title" content="Smart Care — Mohammed Tawfiq Rahmy">
@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="/assets/styles.css">
     <script src="/assets/main.js" defer></script>
   </head>
-  <body>
+  <body data-surface="deep" data-mode="M2" data-arch="A3">
   <a class="skip-link" href="#main">Skip to content</a>
   <p class="print-only print-contact">Mohammed Tawfiq Rahmy · https://www.linkedin.com/in/mohammed-rahmy</p>
   <header class="site-header">
@@ -48,41 +48,26 @@
     </div>
   </header>
     <main id="main">
-      <article class="project-detail">
-        <div class="wrap">
-          <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
-          <h1 class="project-title">Smart Care</h1>
-          <p class="project-lede">Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.</p>
-          <p class="project-meta"><span class="tag">Applied RAG &amp; analytics</span><span class="cs-label">03 / 06 · Architecture</span></p>
-          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">Overview</p>
-              <div class="cs-body">
-                <h2 id="overview-h2">Overview</h2>
-            <p>A network-ops analytics copilot that chains intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p>
-            <p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p>
-              </div>
+      <article class="project-detail" data-arch="A3" data-mode="M2">
+        <section class="plane plane-lead" data-surface="deep" data-plane="head">
+          <div class="wrap">
+            <p class="breadcrumb"><a href="/index.html#projects">All work</a></p>
+            <h1 class="project-title">Smart Care</h1>
+            <p class="project-lede">Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI.</p>
+            <p class="project-meta"><span class="tag">Applied RAG &amp; analytics</span></p>
+            <div class="cs-body project-overview">
+              <h2>Overview</h2>
+              <p>A network-ops analytics copilot that chains intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p>
+              <p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p>
             </div>
-          </section>
-          <section class="cs-stage cs-problem">
-            <div class="cs-stage-inner">
-            <p class="cs-label">01 / 06 · Problem</p>
-            <div class="cs-body"><p>Analytics questions arrive in intent, not SQL, and the answer has to be grounded.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-approach">
-            <div class="cs-stage-inner">
-            <p class="cs-label">02 / 06 · Approach</p>
-            <div class="cs-body"><p>Intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p></div>
-            </div>
-          </section>
-          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
-            <div class="wrap">
-              <div class="cs-stage-inner">
-                <p class="cs-label">03 / 06 · Architecture</p>
-                <div class="cs-body">
-                  <h2 id="architecture-h2">Architecture</h2>
-                  <div class="diagram-panel" data-reveal>
+          </div>
+        </section>
+        <section class="plane hub" data-surface="deep" data-plane="hub">
+          <div class="wrap">
+            <p class="cs-label">03 / 06 · Architecture</p>
+            <div class="cs-body">
+              <h2>The system</h2>
+              <div class="diagram-panel" data-reveal>
         <figure class="artefact">
           <div class="artefact-frame">
             <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-smart-care-t dg-smart-care-d" preserveAspectRatio="xMidYMid meet">
@@ -141,34 +126,46 @@
           </div>
           <figcaption>Intent to grounded output. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
         </figure>
-                  </div>
-                </div>
               </div>
             </div>
-          </section>
-          <section class="cs-stage cs-hard">
-            <div class="cs-stage-inner">
-            <p class="cs-label">04 / 06 · The hard part</p>
-            <div class="cs-body"><p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p></div>
+          </div>
+        </section>
+        <section class="plane spokes" data-surface="deep" data-plane="spokes">
+          <div class="wrap">
+            <p class="serial">The parts</p>
+            <div class="spoke-grid" data-reveal>
+            <div class="spoke cs-stage cs-problem">
+              <p class="cs-label">01 / 06 · Problem</p>
+              <div class="cs-body"><p>Analytics questions arrive in intent, not SQL, and the answer has to be grounded.</p></div>
             </div>
-          </section>
-          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">05 / 06 · Evidence</p>
-              <div class="cs-body">
-                <h2 id="evidence-h2">Evidence</h2>
-                <div class="evidence-panel" data-reveal>
-                  <h3>Capabilities &amp; practices</h3>
-                  <ul class="bullets">
-              <li>Network-ops analytics copilot</li>
-              <li>Intent → grounded SQL → stats → visualisation agents</li>
-              <li>Dremio</li>
-              <li>Streaming React UI</li>
-              <li>Orchestrator + shared state</li>
-              <li>Schema-aware prompting</li>
-              <li>Session memory</li>
-                  </ul>
-                </div>
+            <div class="spoke cs-stage cs-approach">
+              <p class="cs-label">02 / 06 · Approach</p>
+              <div class="cs-body"><p>Intent → grounded SQL → stats → visualisation agents, on Dremio with a streaming React UI.</p></div>
+            </div>
+            <div class="spoke cs-stage cs-hard">
+              <p class="cs-label">04 / 06 · The hard part</p>
+              <div class="cs-body"><p>An orchestrator with shared state, schema-aware prompting and session memory coordinates the chain.</p></div>
+            </div>
+            </div>
+          </div>
+        </section>
+        <section class="plane cs-stage cs-evidence" data-surface="deep" data-plane="evidence">
+          <div class="wrap">
+            <p class="cs-label">05 / 06 · Evidence</p>
+            <div class="cs-body">
+              <h2>Evidence</h2>
+              <div class="evidence-panel" data-reveal>
+                <h3>Capabilities &amp; practices</h3>
+                <ul class="bullets">
+                <li>Network-ops analytics copilot</li>
+                <li>Intent → grounded SQL → stats → visualisation agents</li>
+                <li>Dremio</li>
+                <li>Streaming React UI</li>
+                <li>Orchestrator + shared state</li>
+                <li>Schema-aware prompting</li>
+                <li>Session memory</li>
+                </ul>
+              </div>
           <div class="tech-row" data-reveal>
             <h3>Technology</h3>
             <ul class="chips">
@@ -176,22 +173,21 @@
                 <li>React</li>
             </ul>
           </div>
-                <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
-              </div>
+              <p class="callout"><span class="callout-label">Scope</span>Describes capability and engineering practice; no client or third-party internals are disclosed.</p>
             </div>
-          </section>
-          <section class="cs-stage cs-outcome">
-            <div class="cs-stage-inner">
+          </div>
+        </section>
+        <section class="plane cs-stage cs-outcome" data-surface="deep" data-plane="outcome">
+          <div class="wrap">
             <p class="cs-label">06 / 06 · Outcome</p>
             <div class="cs-body"><p>A network-ops analytics copilot.</p></div>
-            </div>
-          </section>
+          </div>
+        </section>
           <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-prev" href="/projects/tonsy-gpt.html"><span class="pn-label">Previous project</span><span class="pn-name">Tonsy-GPT</span></a>
           <a class="pn-link pn-next" href="/projects/halalbot.html"><span class="pn-label">Next project</span><span class="pn-name">HalalBot</span></a>
           </nav>
-        </div>
       </article>
     </main>
   <footer class="site-footer">

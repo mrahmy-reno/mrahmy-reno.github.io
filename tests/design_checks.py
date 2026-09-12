@@ -30,6 +30,8 @@ from pathlib import Path
 
 FAILURES: list[str] = []
 CHECKS = 0
+SIGNAL_CSS: str = ""
+PROJECT_ORDER: list[str] = []
 
 
 def check(cond: bool, label: str, detail: str = "") -> bool:
@@ -49,16 +51,21 @@ REQUIRED_TOKENS = [
     "--color-bg-base", "--color-bg-raise", "--color-bg-panel", "--color-ink-1", "--color-ink-2",
     "--color-ink-3", "--color-ink-disabled", "--color-line-rule", "--color-line-strong",
     "--color-accent-signal", "--color-accent-trace", "--color-on-accent", "--color-glass",
-    "--color-paper", "--color-paper-2", "--color-ink-print", "--color-ink-print-2",
-    "--color-line-print", "--color-accent-print", "--color-focus-print",
+    # the warm editorial surface (B2-08: promoted from a print fallback to a first-class
+    # screen surface, DESIGN_LANGUAGE.md §4.1 / RECONCILIATION.md)
+    "--color-paper", "--color-paper-2", "--color-paper-3", "--color-ink-print",
+    "--color-ink-print-2", "--color-ink-print-3", "--color-line-print",
+    "--color-line-print-strong", "--color-accent-print", "--color-focus-print",
+    "--color-marker-warm",
     "--surface-page", "--surface-raise", "--surface-panel", "--text-body", "--text-secondary",
-    "--text-meta", "--text-link", "--text-trace", "--rule-decor", "--rule-boundary",
-    "--fill-action", "--text-on-action", "--ring-outer", "--ring-inner",
+    "--text-meta", "--text-signal", "--text-link", "--text-trace", "--rule-decor",
+    "--rule-boundary", "--fill-action", "--text-on-action", "--ring-outer", "--ring-inner",
+    "--signal-size", "--signal-size-print",
     "--font-display", "--font-sans", "--font-mono",
     "--fs-base", "--fs-md", "--fs-lg", "--fs-xl", "--fs-2xl", "--fs-3xl", "--fs-sm",
     "--fs-label", "--fs-micro", "--fs-display-1", "--fs-display-2", "--fs-display-3", "--fs-hero",
     "--lh-display", "--lh-heading", "--lh-body", "--lh-meta", "--ls-display", "--ls-heading",
-    "--ls-mono", "--measure", "--wrap",
+    "--ls-mono", "--measure", "--wrap", "--page-lead",
     "--space-0", "--space-1", "--space-2", "--space-3", "--space-4", "--space-5", "--space-6",
     "--space-7", "--space-8", "--space-9", "--space-10",
     "--radius-0", "--radius-1", "--radius-2", "--radius-3", "--radius-full",
@@ -257,63 +264,110 @@ def composite(fg: str, bg: str, alpha: float) -> str:
     return "#" + "".join(f"{v:02x}" for v in out)
 
 
-PAIRS_TEXT = [
-    ("ink-1 on base", "--color-ink-1", "--color-bg-base", 4.5),
-    ("ink-1 on raise", "--color-ink-1", "--color-bg-raise", 4.5),
-    ("ink-1 on panel", "--color-ink-1", "--color-bg-panel", 4.5),
-    ("ink-2 on base", "--color-ink-2", "--color-bg-base", 4.5),
-    ("ink-2 on raise", "--color-ink-2", "--color-bg-raise", 4.5),
-    ("ink-2 on panel", "--color-ink-2", "--color-bg-panel", 4.5),
-    ("ink-3 on base", "--color-ink-3", "--color-bg-base", 4.5),
-    ("ink-3 on raise", "--color-ink-3", "--color-bg-raise", 4.5),
-    ("ink-3 on panel", "--color-ink-3", "--color-bg-panel", 4.5),
-    ("signal on base", "--color-accent-signal", "--color-bg-base", 4.5),
-    ("signal on raise", "--color-accent-signal", "--color-bg-raise", 4.5),
-    ("signal on panel", "--color-accent-signal", "--color-bg-panel", 4.5),
-    ("trace on base", "--color-accent-trace", "--color-bg-base", 4.5),
-    ("trace on raise", "--color-accent-trace", "--color-bg-raise", 4.5),
-    ("trace on panel", "--color-accent-trace", "--color-bg-panel", 4.5),
-    ("on-accent on signal", "--color-on-accent", "--color-accent-signal", 4.5),
-    ("on-accent on trace", "--color-on-accent", "--color-accent-trace", 4.5),
-    ("print ink on paper", "--color-ink-print", "--color-paper", 4.5),
-    ("print ink-2 on paper", "--color-ink-print-2", "--color-paper", 4.5),
-    ("print ink-2 on paper-2", "--color-ink-print-2", "--color-paper-2", 4.5),
-    ("print accent on paper", "--color-accent-print", "--color-paper", 4.5),
-]
-
-PAIRS_NON_TEXT = [
-    ("boundary on base", "--color-line-strong", "--color-bg-base", 3.0),
-    ("boundary on raise", "--color-line-strong", "--color-bg-raise", 3.0),
-    ("boundary on panel", "--color-line-strong", "--color-bg-panel", 3.0),
-    ("focus ring on base", "--color-ink-1", "--color-bg-base", 3.0),
-    ("focus ring on raise", "--color-ink-1", "--color-bg-raise", 3.0),
-    ("print focus on paper", "--color-focus-print", "--color-paper", 3.0),
-]
+# B2-08: the palette is two SURFACES, not one theme, so every pair is graded against the
+# surface it actually sits on (DESIGN_LANGUAGE.md §5.2). A pair is only meaningful if the two
+# values can be adjacent: the signal token is never graded across surfaces, because the values
+# are roles and are deliberately not interchangeable (that cross-surface pair is the recorded
+# deliberate-FAIL control, printed at the end of this section).
+SURFACE_PALETTE = {
+    "warm": {
+        "surfaces": ["--color-paper", "--color-paper-2", "--color-paper-3"],
+        "inks": [("body", "--color-ink-print"), ("secondary", "--color-ink-print-2"),
+                 ("meta", "--color-ink-print-3"), ("signal", "--color-accent-print"),
+                 ("marker", "--color-marker-warm")],
+        "non_text": [("boundary", "--color-line-print-strong", 3.0),
+                     ("focus ring", "--color-focus-print", 3.0),
+                     ("signal disc", "--color-accent-print", 3.0)],
+        "action": ("--color-ink-print", "--color-paper"),
+    },
+    "deep": {
+        "surfaces": ["--color-bg-base", "--color-bg-raise", "--color-bg-panel"],
+        "inks": [("body", "--color-ink-1"), ("secondary", "--color-ink-2"),
+                 ("meta", "--color-ink-3"), ("signal", "--color-accent-signal"),
+                 ("marker", "--color-accent-trace")],
+        "non_text": [("boundary", "--color-line-strong", 3.0),
+                     ("focus ring", "--color-ink-1", 3.0),
+                     ("signal disc", "--color-accent-signal", 3.0)],
+        "action": ("--color-ink-1", "--color-bg-base"),
+    },
+}
 
 
 def check_contrast(css: str) -> None:
-    print("\n-- 5. palette contrast, computed per pair from the shipped tokens --")
-    tokens = dict(re.findall(r"(--color-[a-z0-9-]+):\s*(#[0-9a-fA-F]{6});", css))
-    check(len(tokens) >= 18, "the shipped stylesheet declares the palette primitives",
+    print("\n-- 5. palette contrast, computed per pair from the shipped tokens, per SURFACE --")
+    tokens = dict(re.findall(r"(--color-[a-z0-9-]+):\s*(#[0-9a-fA-F]{6})", css))
+    check(len(tokens) >= 20, "the shipped stylesheet declares the palette primitives",
           f"{len(tokens)} colour tokens parsed")
     print(f"        tokens: {len(tokens)}")
-    fails = []
-    print(f"        {'pair':32} {'ratio':>7}  threshold")
-    for label, fg_key, bg_key, thr in PAIRS_TEXT + PAIRS_NON_TEXT:
-        fg, bg = tokens.get(fg_key), tokens.get(bg_key)
-        if not fg or not bg:
-            fails.append(f"{label}: token missing")
-            continue
-        r = ratio(fg, bg)
-        ok = r >= thr
-        print(f"        {label:32} {r:7.2f}  >= {thr}  {'PASS' if ok else 'FAIL'}")
-        if not ok:
-            fails.append(f"{label} = {r:.2f} < {thr}")
-    check(not fails, "every text pair >= 4.5:1 and every non-text pair >= 3:1",
-          f"failures={fails}" if fails else
-          f"{len(PAIRS_TEXT) + len(PAIRS_NON_TEXT)} pairs computed, 0 failures")
+    fails: list[str] = []
+    pairs = 0
+    for surface, spec in SURFACE_PALETTE.items():
+        print(f"        --- {surface} surface ---")
+        print(f"        {'pair':38} {'ratio':>7}  threshold")
+        for bg in spec["surfaces"]:
+            for name, ink in spec["inks"]:
+                thr = 4.5
+                fg_v, bg_v = tokens.get(ink), tokens.get(bg)
+                if not fg_v or not bg_v:
+                    fails.append(f"{surface}/{name} on {bg}: token missing")
+                    continue
+                r = ratio(fg_v, bg_v)
+                ok = r >= thr
+                pairs += 1
+                print(f"        {name + ' on ' + bg:38} {r:7.2f}  >= {thr}  "
+                      f"{'PASS' if ok else 'FAIL'}")
+                if not ok:
+                    fails.append(f"{surface}: {name} on {bg} = {r:.2f} < {thr}")
+        for name, tok, thr in spec["non_text"]:
+            for bg in spec["surfaces"]:
+                fg_v, bg_v = tokens.get(tok), tokens.get(bg)
+                if not fg_v or not bg_v:
+                    fails.append(f"{surface}/{name} on {bg}: token missing")
+                    continue
+                r = ratio(fg_v, bg_v)
+                ok = r >= thr
+                pairs += 1
+                print(f"        {name + ' on ' + bg:38} {r:7.2f}  >= {thr}  "
+                      f"{'PASS' if ok else 'FAIL'}")
+                if not ok:
+                    fails.append(f"{surface}: {name} on {bg} = {r:.2f} < {thr}")
+        fg, bg = spec["action"]
+        r = ratio(tokens[fg], tokens[bg])
+        pairs += 1
+        print(f"        {'action fill on its label':38} {r:7.2f}  >= 4.5  "
+              f"{'PASS' if r >= 4.5 else 'FAIL'}")
+        if r < 4.5:
+            fails.append(f"{surface}: action fill = {r:.2f} < 4.5")
+    check(not fails, "every text pair >= 4.5:1 and every non-text pair >= 3:1, per surface",
+          f"failures={fails}" if fails else f"{pairs} pairs computed, 0 failures")
 
-    # the light field lightens the background, so it is measured as a composite
+    # The structural fix for the owner's named failure mode: the SIGNAL hue may never be the
+    # action or link colour (DESIGN_LANGUAGE.md §5.2 rule 2). Asserted by reading the shipped
+    # declarations, not by trusting the comment.
+    body = token_body(css)
+    action_offenders = []
+    for surface in SURFACE_PALETTE:
+        block = re.search(r'\[data-surface="' + surface + r'"\]\s*\{(.*?)\}', body, re.S)
+        if not block:
+            action_offenders.append(f"{surface}: no token block")
+            continue
+        for tok in ("--text-link", "--fill-action"):
+            m = re.search(re.escape(tok) + r":\s*([^;]+);", block.group(1))
+            if m and ("accent-signal" in m.group(1) or "accent-print" in m.group(1)):
+                action_offenders.append(f"{surface}: {tok} = {m.group(1).strip()}")
+    check(not action_offenders,
+          "the signal hue is never the action or link colour on either surface",
+          "; ".join(action_offenders) if action_offenders else
+          "action is carried by ink, weight and underline (DNA 5.2 rule 3)")
+
+    # The recorded deliberate-FAIL control: the instrument signal value on the warm surface.
+    # It must fail, or the "one role, per-surface values" claim is not real.
+    cross = ratio(tokens["--color-accent-signal"], tokens["--color-paper"])
+    check(cross < 3.0,
+          "control: the instrument signal value on the warm surface FAILS (values are per-surface)",
+          f"instrument signal on paper = {cross:.2f}:1 (deliberate FAIL control, DNA 5.2 rule 4)")
+
+    # the deep light field lightens the background, so it is measured as a composite
     base = tokens.get("--color-bg-base", "#0c0e13")
     trace = tokens.get("--color-accent-trace", "#58c9be")
     signal = tokens.get("--color-accent-signal", "#f2a93b")
@@ -326,7 +380,7 @@ def check_contrast(css: str) -> None:
                 if worst is None or r < worst[0]:
                     worst = (r, alpha, glow, ink)
     check(worst and worst[0] >= 4.5,
-          "the hero light field composite keeps every ink pair >= 4.5:1 at alpha <= 0.08",
+          "the deep-surface light field composite keeps every ink pair >= 4.5:1 at alpha <= 0.08",
           f"worst case {worst[0]:.2f}:1 at alpha {worst[1]} ({worst[2]} / {worst[3]})")
 
 
@@ -487,6 +541,236 @@ def check_provenance_switch() -> None:
     print("        the motif's fallback costs one config line and one build, as specified")
 
 
+# --------------------------------------------------------------------------- 8. the signal
+
+# B2-08 check (a): signal scarcity. The mark is countable, so scarcity is asserted mechanically
+# rather than left to taste (DESIGN_LANGUAGE.md §3.4, §3.7). Budget per artifact by mode; hard
+# ceiling 3; at most one per plane; every mark attributable to C1-C4 with a label beside it.
+MODE_SIGNAL_BUDGET = {"M1": 1, "M2": 2, "M3": 1, "M4": 1}
+SIGNAL_CEILING = 3
+
+SIGNAL_EL = re.compile(r'<span class="signal"([^>]*)>(.*?)</span>', re.S)
+ADMISSION = re.compile(r'data-admission="(C[1-4])"')
+PLANE_OPEN = re.compile(r'<section class="plane([^>]*)>')
+
+
+def parse_page(html_: str) -> dict:
+    body = re.search(r"<body([^>]*)>", html_)
+    attrs = body.group(1) if body else ""
+    def attr(name: str, default: str = "") -> str:
+        m = re.search(name + r'="([^"]*)"', attrs)
+        return m.group(1) if m else default
+    planes = []
+    matches = list(PLANE_OPEN.finditer(html_))
+    for i, m in enumerate(matches):
+        attrs_s = m.group(1)
+        end = matches[i + 1].start() if i + 1 < len(matches) else len(html_)
+        chunk = html_[m.end():end]
+        surface = re.search(r'data-surface="([^"]+)"', attrs_s)
+        label = re.search(r'data-plane="([^"]+)"', attrs_s)
+        planes.append({
+            "surface": surface.group(1) if surface else None,
+            "label": label.group(1) if label else "unnamed",
+            "signals": len(SIGNAL_EL.findall(chunk)),
+        })
+    signals = []
+    for attrs_s, label in SIGNAL_EL.findall(html_):
+        adm = ADMISSION.search(attrs_s)
+        signals.append({"admission": adm.group(1) if adm else None,
+                        "label": re.sub(r"<[^>]+>", "", label).strip()})
+    return {"page": attr("data-page"), "mode": attr("data-mode"), "arch": attr("data-arch"),
+            "surface": attr("data-surface"), "planes": planes, "signals": signals}
+
+
+def check_signal_scarcity(docs: Path) -> None:
+    print("\n-- 8. signal scarcity (DESIGN_LANGUAGE.md 3.4 / 3.7) --")
+    print("        proxy: every <span class=\"signal\"> in the built HTML, counted per page and")
+    print("        per plane, with its admission condition read from data-admission.")
+    pages = sorted(docs.rglob("*.html"))
+    rows = []
+    problems: list[str] = []
+    unattributed: list[str] = []
+    unlabelled: list[str] = []
+    plural: list[str] = []
+    for page in pages:
+        html_ = page.read_text(encoding="utf-8")
+        info = parse_page(html_)
+        rel = str(page.relative_to(docs))
+        total = len(info["signals"])
+        budget = MODE_SIGNAL_BUDGET.get(info["mode"], 0)
+        rows.append((rel, info["mode"], info["arch"], total, budget))
+        if total > budget:
+            problems.append(f"{rel}: {total} signals > mode {info['mode']} budget {budget}")
+        if total > SIGNAL_CEILING:
+            problems.append(f"{rel}: {total} signals > the hard ceiling {SIGNAL_CEILING}")
+        for pl in info["planes"]:
+            if pl["signals"] > 1:
+                problems.append(f"{rel}: plane '{pl['label']}' carries {pl['signals']} signals")
+        for s in info["signals"]:
+            if not s["admission"]:
+                unattributed.append(f"{rel}: {s['label']!r} names no C1-C4 condition")
+            if not s["label"]:
+                unlabelled.append(f"{rel}: a signal carries no label")
+        if re.search(r"<li[^>]*>\s*<span class=\"signal\"", html_):
+            plural.append(f"{rel}: a signal is used as a list bullet")
+        if re.search(r"<t[dh][^>]*>\s*<span class=\"signal\"", html_):
+            plural.append(f"{rel}: a signal sits in a table cell (a plurality)")
+
+    print(f"        {'page':34} {'mode':5} {'arch':5} {'signals':>7}  budget")
+    for rel, mode, arch, total, budget in rows:
+        print(f"        {rel:34} {mode:5} {arch:5} {total:>7}  {budget}")
+    zero = sum(1 for r in rows if r[3] == 0)
+    check(not problems, "no page exceeds its mode's signal budget or the hard ceiling",
+          "; ".join(problems[:4]) if problems else
+          f"{len(rows)} pages, {zero} of them with ZERO signals (the language's normal state)")
+    check(not unattributed, "every signal names its admission condition (C1-C4)",
+          "; ".join(unattributed[:4]) if unattributed else
+          f"{sum(r[3] for r in rows)} marks, all attributable")
+    check(not unlabelled, "every signal carries an adjacent label",
+          "; ".join(unlabelled[:3]) if unlabelled else "no unlabelled mark exists")
+    check(not plural, "no signal is used as a bullet or a per-row plurality",
+          "; ".join(plural[:3]) if plural else "the mark is never a column")
+
+    # the label must be set in the instrument voice, next to a mark that is never colour-alone
+    css_info = SIGNAL_CSS
+    check("font-family: var(--font-mono)" in css_info and "text-transform: uppercase" in css_info,
+          "the signal label is set in the instrument voice (mono, labellable)",
+          "declared once on .signal")
+    check("background-color: var(--text-signal)" in css_info,
+          "the mark is drawn from the SIGNAL role, not from an arbitrary value",
+          "the disc consumes --text-signal only")
+
+
+# --------------------------------------------------------------------------- 9. anti-template
+
+# B2-08 check (b): the anti-template rule (DESIGN_LANGUAGE.md §6.3). The proxy is measurable and
+# parsed from the built files, never asserted:
+#   D1 section order      — the sequence of data-plane values, compared as lists
+#   D2 type-scale emphasis— the mode's lead type step / the body step, resolved from the CSS
+#   D3 grid archetype     — the declared data-arch plus the number of distinct planes
+#   D4 surface dominance  — the leading surface and its share of the artifact's planes
+#   D5 motif placement    — the signal count and where the mark sits (leading / inline / absent)
+def resolve_css_numbers(css: str) -> dict[str, float]:
+    """Resolve the fixed type ramp to px and the per-mode lead step (16px root)."""
+    root = re.search(r":root\s*\{(.*?)\n  \}", css, re.S)
+    body = root.group(1) if root else ""
+    vals: dict[str, float] = {}
+
+    def px(var: str, seen: str = "") -> float | None:
+        m = re.search(re.escape(var) + r":\s*([^;]+);", body)
+        if not m:
+            return None
+        v = m.group(1).strip()
+        if v.startswith("var("):
+            inner = v[4:-1].strip()
+            return None if inner == seen else px(inner, var)
+        num = re.match(r"([\d.]+)(rem|px)", v)
+        if not num:
+            return None
+        return float(num.group(1)) * (16.0 if num.group(2) == "rem" else 1.0)
+
+    for name in ("--fs-base", "--fs-hero", "--fs-3xl", "--fs-2xl", "--fs-display-1"):
+        v = px(name)
+        if v:
+            vals[name] = v
+    for mode in MODE_SIGNAL_BUDGET:
+        m = re.search(r'\[data-mode="' + mode + r'"\]\s*\{\s*--page-lead:\s*var\(([^)]+)\)', css)
+        if m:
+            v = vals.get(m.group(1).strip())
+            if v:
+                vals[f"lead:{mode}"] = v
+    return vals
+
+
+def check_variability(docs: Path, css: str) -> None:
+    print("\n-- 9. anti-template: the variability proxy D1-D5 (DESIGN_LANGUAGE.md 6.3) --")
+    vals = resolve_css_numbers(css)
+    body_px = vals.get("--fs-base", 17.0)
+    order = ["index.html"] + [f"projects/{s}.html" for s in PROJECT_ORDER]
+    series = []
+    for rel in order:
+        p = docs / rel
+        if not p.exists():
+            continue
+        info = parse_page(p.read_text(encoding="utf-8"))
+        planes = info["planes"]
+        surfaces = [pl["surface"] for pl in planes]
+        warm = surfaces.count("warm")
+        deep = surfaces.count("deep")
+        lead_surface = "warm" if warm >= deep else "deep"
+        share = round(100 * max(warm, deep) / max(1, len(planes)))
+        lead_px = vals.get(f"lead:{info['mode']}")
+        emphasis = round(lead_px / body_px, 2) if lead_px else None
+        n = len(info["signals"])
+        if n == 0:
+            motif = "absent"
+        elif planes and planes[0]["signals"]:
+            motif = "leading"
+        else:
+            motif = "inline"
+        series.append({
+            "page": rel, "mode": info["mode"], "arch": info["arch"],
+            "d1": [pl["label"] for pl in planes],
+            "d2": emphasis, "d3": (info["arch"], len(planes)),
+            "d4": (lead_surface, share), "d5": (n, motif),
+        })
+
+    print(f"        {'page':34} {'mode':5} {'arch':5} {'D2':>5}  {'D4 leading':14} {'D5 motif':10} D1")
+    for s in series:
+        print(f"        {s['page']:34} {s['mode']:5} {s['arch']:5} {str(s['d2']):>5}  "
+              f"{s['d4'][0] + ' ' + str(s['d4'][1]) + '%':14} {str(s['d5'][1]):10} "
+              f"{'>'.join(s['d1'])}")
+
+    def differs(a: dict, b: dict) -> list[str]:
+        d = []
+        if a["d1"] != b["d1"]:
+            d.append("D1")
+        if a["d2"] != b["d2"]:
+            d.append("D2")
+        if a["d3"] != b["d3"]:
+            d.append("D3")
+        if a["d4"] != b["d4"]:
+            d.append("D4")
+        if a["d5"] != b["d5"]:
+            d.append("D5")
+        return d
+
+    archs = {s["arch"] for s in series}
+    check(len(archs) >= 3, "the series uses at least three layout archetypes",
+          f"{len(archs)} used: {sorted(archs)}")
+    clash = [f"{series[i]['page']} / {series[i + 1]['page']}"
+             for i in range(len(series) - 1) if series[i]["arch"] == series[i + 1]["arch"]]
+    check(not clash, "no two consecutive pages in the series share an archetype",
+          f"clashes={clash}" if clash else f"{len(series) - 1} adjacent pairs checked")
+
+    weak = []
+    for i in range(len(series) - 1):
+        d = differs(series[i], series[i + 1])
+        if len(d) < 2:
+            weak.append(f"{series[i]['page']} / {series[i + 1]['page']} differ on {d}")
+    check(not weak, "every adjacent pair differs on at least 2 of the 5 dimensions",
+          "; ".join(weak[:3]) if weak else
+          f"{len(series) - 1} pairs, minimum 2 dimensions, prose not consulted")
+
+    demo = {s["page"]: s for s in series}
+    trio = ["index.html", "projects/sama-soc-triage.html", "projects/pulsesec.html"]
+    missing = [t for t in trio if t not in demo]
+    pairs_bad = []
+    for i in range(len(trio)):
+        for j in range(i + 1, len(trio)):
+            if trio[i] in demo and trio[j] in demo:
+                d = differs(demo[trio[i]], demo[trio[j]])
+                if len(d) < 2:
+                    pairs_bad.append(f"{trio[i]} vs {trio[j]}: {d}")
+    check(not missing and not pairs_bad,
+          "the three demonstration artefacts (index + two project pages) differ pairwise on >= 2",
+          "; ".join(pairs_bad) if pairs_bad else
+          "index (M1/A2) vs SAMA (M2/A4) vs PulseSec (M4/A5): all pairs >= 2 of 5")
+    modes = {s["mode"] for s in series}
+    check(len(modes) >= 2, "the series uses more than one expression mode",
+          f"{len(modes)} modes: {sorted(modes)}")
+
+
 # --------------------------------------------------------------------------- main
 
 def main() -> int:
@@ -500,13 +784,18 @@ def main() -> int:
     raw_css = Path(args.css).read_text(encoding="utf-8")
     # Comments are blanked (never deleted) so line numbers stay aligned with the raw file:
     # a `@deviation:` marker is read from the raw lines, everything else from the code.
-    global RAW_LINES
+    global RAW_LINES, SIGNAL_CSS, PROJECT_ORDER
     RAW_LINES = raw_css.splitlines()
     css = re.sub(r"/\*.*?\*/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), raw_css, flags=re.S)
+    SIGNAL_CSS = " ".join(re.findall(r"\.signal(?:::before)?\s*\{[^}]*\}", css))
     ledger = Path(args.ledger).read_text(encoding="utf-8")
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
+    import site_content as _C  # noqa: PLC0415
+    PROJECT_ORDER = list(_C.PROJECT_ORDER)
 
     print("=" * 78)
-    print("B2-02 DESIGN CHECKS — shipped stylesheet + built artefacts")
+    print("DESIGN CHECKS — shipped stylesheet + built artefacts")
+    print("(B2-02 mechanics, extended in B2-08 for the SIGNAL/MTR design language)")
     print(f"docs   = {docs}")
     print(f"css    = {args.css}")
     print("=" * 78)
@@ -516,6 +805,8 @@ def main() -> int:
     check_contrast(css)
     check_artefacts(docs, ledger)
     check_provenance_switch()
+    check_signal_scarcity(docs)
+    check_variability(docs, css)
 
     print("\n" + "=" * 78)
     print(f"checks run: {CHECKS}   failures: {len(FAILURES)}")

@@ -39,15 +39,33 @@
     --color-on-accent: #0c0e13;        /* 9.66:1 on either accent fill */
     --color-glass: rgba(20, 25, 34, 0.72);
     --color-glass-condensed: rgba(20, 25, 34, 0.86);
+    /* the warm surface's own translucency: the sticky bar takes the material of the page's
+       LEADING surface, so its ink is always the ink of that surface (DESIGN_LANGUAGE.md 4.5) */
+    --color-glass-warm: rgba(251, 250, 247, 0.88);
+    --color-glass-warm-condensed: rgba(251, 250, 247, 0.96);
 
-    /* -- 2.2 primitives: light / print ------------------------------------ */
-    --color-paper: #fbfaf7;            /* ink-print 17.21:1 */
-    --color-paper-2: #f2efe9;
-    --color-ink-print: #14171c;
-    --color-ink-print-2: #3e4653;      /* 9.12:1 / 8.30:1 */
-    --color-line-print: #d6d1c7;
-    --color-accent-print: #8a5a12;     /* 5.66:1 */
-    --color-focus-print: #7a4b00;      /* 7.10:1 */
+    /* -- 2.2 primitives: warm editorial (the human surface) ----------------
+       DESIGN_LANGUAGE.md 4.1/5.2. The warm family is a first-class SCREEN
+       surface, not print-only: it is the material the person speaks in, and it
+       is what the index leads with. Ratios are computed per pair against the
+       actual adjacent surface in tests/design_checks.py.                     */
+    --color-paper: #fbfaf7;            /* step 0 — body ink 16.70:1 */
+    --color-paper-2: #f4f1ea;          /* step 1 */
+    --color-paper-3: #eae5da;          /* step 2 — panels */
+    --color-ink-print: #171a20;        /* 16.70 / 15.45 / 13.87 */
+    --color-ink-print-2: #3d4553;      /*  9.25 /  8.56 /  7.69 */
+    --color-ink-print-3: #5a6371;      /*  5.82 /  5.38 /  4.83 */
+    --color-line-print: #dad4c8;       /* 1.41:1 — decoration only */
+    --color-line-print-strong: #7a7466;/* 4.45 / 4.16 / 3.70 — boundaries */
+    --color-accent-print: #8a5a12;     /* 5.66 / 4.71 — THE SIGNAL, warm value */
+    --color-focus-print: #7a4b00;      /* 7.10 / 5.90 — keyboard visibility */
+    --color-marker-warm: #1f6a62;      /* 6.10 / 5.07 — structural marks, never a control */
+
+    /* -- 2.3 the SIGNAL is a role with per-surface values (DNA 5.2 rule 4).
+       The two values are deliberately NOT interchangeable: the instrument
+       value on the warm surface measures 1.91:1 and is a review failure.     */
+    --signal-size: 6px;                /* optical: the x-height of a 12px label */
+    --signal-size-print: 9px;          /* 1.5x the label x-height, for paper */
 
     /* -- atmosphere (ART_DIRECTION §5.3): alpha <= 0.08, measured 6.81:1 -- */
     --field-trace: rgb(88 201 190 / 6%);
@@ -144,7 +162,12 @@
     --z-overlay: 30;
     --z-skip: 100;
 
-    /* -- semantic layer (components use ONLY these) ----------------------- */
+    /* -- semantic layer (components use ONLY these) -----------------------
+       The DEFAULT mapping is the deep instrument surface: the site's densest
+       register, and the material the case-study interiors use. A page or a
+       plane selects the warm editorial surface with data-surface="warm"
+       (DESIGN_LANGUAGE.md 4.1-4.3). One surface leads an artifact at >= 70% of
+       its planes; a transition is a plane boundary with a named reason.      */
     --surface-page: var(--color-bg-base);
     --surface-raise: var(--color-bg-raise);
     --surface-panel: var(--color-bg-panel);
@@ -154,16 +177,75 @@
     --text-secondary: var(--color-ink-2);
     --text-meta: var(--color-ink-3);
     --text-disabled: var(--color-ink-disabled);
-    --text-link: var(--color-accent-signal);
+    --text-signal: var(--color-accent-signal);
+    --text-link: var(--color-ink-1);      /* action is INK, never the signal hue */
     --text-trace: var(--color-accent-trace);
-    --text-on-action: var(--color-on-accent);
+    --text-on-action: var(--color-bg-base);
     --rule-decor: var(--color-line-rule);
     --rule-boundary: var(--color-line-strong);
-    --fill-action: var(--color-accent-signal);
+    --fill-action: var(--color-ink-1);
     --ring-outer: var(--color-ink-1);
     --ring-inner: var(--color-bg-base);
     --field-one: var(--field-trace);
     --field-two: var(--field-signal);
+
+    /* -- expression: the lead type step, set by the mode (DNA 5.1 floor >= 3.0x) -- */
+    --page-lead: var(--fs-3xl);
+  }
+
+  /* ====================== SURFACE: DEEP INSTRUMENT ======================
+     The system being inspected: structure, evidence, mechanics, state.
+     Depth comes from light (one static field per plane) and surface steps. */
+  [data-surface="deep"] {
+    --surface-glass: var(--color-glass);
+    --surface-glass-condensed: var(--color-glass-condensed);
+    --surface-page: var(--color-bg-base);
+    --surface-raise: var(--color-bg-raise);
+    --surface-panel: var(--color-bg-panel);
+    --text-body: var(--color-ink-1);
+    --text-secondary: var(--color-ink-2);
+    --text-meta: var(--color-ink-3);
+    --text-disabled: var(--color-ink-disabled);
+    --text-signal: var(--color-accent-signal);
+    --text-link: var(--color-ink-1);
+    --text-trace: var(--color-accent-trace);
+    --text-on-action: var(--color-bg-base);
+    --rule-decor: var(--color-line-rule);
+    --rule-boundary: var(--color-line-strong);
+    --fill-action: var(--color-ink-1);
+    --ring-outer: var(--color-ink-1);
+    --ring-inner: var(--color-bg-base);
+    --field-one: var(--field-trace);
+    --field-two: var(--field-signal);
+    --surface-field: radial-gradient(60% 80% at 20% 0%, var(--field-one), var(--field-clear) 70%);
+  }
+
+  /* ====================== SURFACE: WARM EDITORIAL ======================
+     The human speaking: a claim, a reason, a story, an invitation. Depth
+     comes from rules, margin, measure and ink contrast — ZERO atmosphere
+     (DNA 5.3): no light field, no grain. Warmth is material, not effect.   */
+  [data-surface="warm"] {
+    --surface-glass: var(--color-glass-warm);
+    --surface-glass-condensed: var(--color-glass-warm-condensed);
+    --surface-page: var(--color-paper);
+    --surface-raise: var(--color-paper-2);
+    --surface-panel: var(--color-paper-3);
+    --text-body: var(--color-ink-print);
+    --text-secondary: var(--color-ink-print-2);
+    --text-meta: var(--color-ink-print-3);
+    --text-disabled: var(--color-ink-print-3);
+    --text-signal: var(--color-accent-print);
+    --text-link: var(--color-ink-print);
+    --text-trace: var(--color-marker-warm);
+    --text-on-action: var(--color-paper);
+    --rule-decor: var(--color-line-print);
+    --rule-boundary: var(--color-line-print-strong);
+    --fill-action: var(--color-ink-print);
+    --ring-outer: var(--color-focus-print);
+    --ring-inner: var(--color-paper);
+    --field-one: none;
+    --field-two: none;
+    --surface-field: none;
   }
 }
 
@@ -237,17 +319,9 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* D-5 grain: one fixed, non-animated tile, under everything. Decorative. */
-  body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    z-index: var(--z-base);
-    background-image: var(--grain);
-    background-repeat: repeat;
-    opacity: 0.03;
-    pointer-events: none;
-  }
+  /* D-5 grain: one fixed, non-animated tile, under everything. Decorative, and an
+     INSTRUMENT mechanism — it is declared for the deep surface only (DNA 5.3). The
+     warm editorial surface carries zero atmosphere. */
 
   h1,
   h2,
@@ -1490,6 +1564,253 @@
     fill: var(--text-link);
     text-decoration: underline;
   }
+
+  /* ======================================================================
+     SIGNAL / MTR — the language applied to the page (B2-08)
+
+     The DNA is fixed; the composition below is this site's expression of it.
+     Every declaration consumes the tokens above and introduces no value of
+     its own (DESIGN_LANGUAGE.md 6.1 item 4).
+     ====================================================================== */
+
+  /* -- a plane is one surface --------------------------------------------
+     The surface is a material with a job, not a mood. The transition between
+     the two surfaces is a plane boundary with a named reason (DNA 4.4) — it is
+     marked structurally by the plane change, never by a gradient, and bands are
+     square-cornered (DNA 5.2 rule 6: a rounded band reads as a card). */
+  .plane {
+    background-color: var(--surface-page);
+    background-image: var(--surface-field);
+    background-repeat: no-repeat;
+    background-size: 140% 120%;
+    background-position: 20% -20%;
+    color: var(--text-body);
+  }
+
+  /* The grain tile is an INSTRUMENT mechanism (DNA 5.3). It exists on the deep
+     surface only: warmth is material, not effect (P4). */
+  body[data-surface="deep"]::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-base);
+    background-image: var(--grain);
+    background-repeat: repeat;
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  /* -- the signal: one mark, one meaning, always labelled -----------------
+     The disc is drawn with ::before and the label is the element's own text,
+     so the mark is never the only cue (WCAG 1.4.1) and is never a background
+     image. Colour is the second cue; the word is the first. */
+  .signal {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-mono);
+    line-height: var(--lh-meta);
+    text-transform: uppercase;
+    color: var(--text-meta);
+  }
+
+  .signal::before {
+    content: "";
+    inline-size: var(--signal-size);
+    block-size: var(--signal-size);
+    border-radius: var(--radius-full);
+    background-color: var(--text-signal);
+    flex: none;
+  }
+
+  .plane-signal {
+    margin-block-end: var(--space-3);
+  }
+
+  /* the project overview: the ledger-derived opening passage on every case study */
+  .project-overview {
+    margin-block-start: var(--space-5);
+  }
+
+  .project-overview p {
+    color: var(--text-secondary);
+  }
+
+  .project-overview p + p {
+    margin-block-start: var(--space-3);
+  }
+
+  /* a drawn plate keeps the instrument surface even inside a warm plane: a diagram is
+     instrument material (the system being inspected), so it is graded against that surface. */
+  .map-plate {
+    margin-block-start: var(--space-5);
+    padding: var(--space-4);
+    background-color: var(--surface-page);
+    color: var(--text-body);
+  }
+
+  /* -- A2 rail & content (the index's archetype) --------------------------
+     An asymmetric side rail carrying the register, beside a reading column.
+     Two tracks only: a symmetric three-column content wall is refused (DNA 7).
+     The placement itself lives in the responsive block near the end of this
+     layer, next to every other width-dependent rule. */
+
+  /* -- A4 stage-gate: an explicit gate between two stages ------------------ */
+  .gate {
+    background-color: var(--surface-page);
+    padding-block: var(--space-4);
+  }
+
+  .gate .wrap {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  .gate-node {
+    inline-size: var(--space-1);
+    block-size: var(--space-1);
+    background-color: var(--rule-boundary);
+    flex: none;
+  }
+
+  .gate-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-micro);
+    letter-spacing: var(--ls-mono);
+    text-transform: uppercase;
+    color: var(--text-meta);
+  }
+
+  .gate .wrap::after {
+    content: "";
+    flex: 1;
+    block-size: 1px;
+    background-color: var(--rule-decor);
+  }
+
+  /* -- A3 hub / broker: a central plane with bounded spokes ---------------- */
+  .hub .cs-body {
+    max-inline-size: none;
+  }
+
+  .spoke-grid {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 768px) {
+    .spoke-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .spoke-grid .spoke:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* -- A5 register: dense rows separated by rules, no boxes ---------------- */
+  .register {
+    border-block-start: 1px solid var(--rule-boundary);
+  }
+
+  .register-row {
+    display: grid;
+    gap: var(--space-2) var(--space-4);
+    padding-block: var(--space-4);
+    border-block-end: 1px solid var(--rule-decor);
+  }
+
+  @media (min-width: 768px) {
+    .register-row {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr) minmax(0, 5fr);
+      align-items: start;
+    }
+  }
+
+  .register-num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--ls-mono);
+    color: var(--text-meta);
+  }
+
+  .register-label {
+    font-family: var(--font-display);
+    font-size: var(--fs-md);
+    line-height: var(--lh-heading);
+  }
+
+  /* -- A6 plate: one drawn artefact, full-bleed, with its caption ---------- */
+  .plate-plane {
+    padding-block: var(--space-6);
+  }
+
+  .plate {
+    border-block: 1px solid var(--rule-decor);
+    padding-block: var(--space-5);
+  }
+
+  .close-lede {
+    margin-block-end: var(--space-3);
+    font-size: var(--fs-md);
+  }
+
+  /* -- A8 marginalia: a primary plane with a margin column ----------------- */
+  .spread {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 1024px) {
+    .spread {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 4fr);
+      align-items: start;
+    }
+  }
+
+  .spread-main {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .spread-margin {
+    display: grid;
+    gap: var(--space-4);
+    border-block-start: 1px solid var(--rule-boundary);
+    padding-block-start: var(--space-4);
+  }
+
+  /* -- scale emphasis: the FIXED FLOOR, then the mode's band ---------------
+     DNA 5.1: on every artifact the largest meaningful type step is >= 3.0x the
+     body step. The mode sets how much more (EXPRESSION_SYSTEM 2): M1 reaches
+     the display ladder, M2/M4 stay just above the floor. */
+  [data-mode="M1"] {
+    --page-lead: var(--fs-hero);
+  }
+
+  [data-mode="M2"] {
+    --page-lead: var(--fs-3xl);
+  }
+
+  [data-mode="M4"] {
+    --page-lead: var(--fs-3xl);
+  }
+
+  .project-title {
+    font-size: clamp(var(--fs-display-3), 1.2rem + 3.4vw, var(--page-lead));
+  }
+
+  body[data-mode="M1"] .hero h1 {
+    font-size: clamp(var(--fs-display-3), 1.4rem + 6vw, var(--page-lead));
+  }
+
+  /* -- M4 archival: motion budget ZERO (EXPRESSION_SYSTEM 2) --------------- */
+  body[data-mode="M4"] .plane {
+    background-image: none;
+  }
 }
 
 /* ==========================================================================
@@ -1669,24 +1990,48 @@
   }
 
   @media (min-width: 1024px) {
+    /* A2 rail & content: the register rail beside the reading column, two tracks. */
     .hero-inner {
-      grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
       gap: var(--space-5) var(--space-7);
+      align-items: start;
     }
 
-    .hero-text,
-    .hero-cta,
-    .hero-pitch {
+    .hero-lead,
+    .hero-close {
+      grid-column: 2;
+    }
+
+    .hero-lead {
+      grid-row: 1;
+    }
+
+    .hero-close {
+      grid-row: 2;
+    }
+
+    .hero-rail {
       grid-column: 1;
+      grid-row: 1;
     }
 
     .hero-aside {
-      grid-column: 2;
-      grid-row: 1 / span 3;
+      grid-column: 1;
+      grid-row: 2;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
     }
 
-    .hero-cta,
-    .hero-pitch {
+    .hero-rail .glance-strip {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hero-rail .glance-item {
+      border-inline-start: 0;
+    }
+
+    .hero-cta {
       margin-block-start: 0;
     }
 
@@ -1777,24 +2122,28 @@
 
 @layer print {
   @media print {
-    :root {
+    :root,
+    [data-surface="warm"],
+    [data-surface="deep"] {
       --surface-page: var(--color-paper);
       --surface-raise: var(--color-paper-2);
-      --surface-panel: var(--color-paper-2);
+      --surface-panel: var(--color-paper-3);
       --text-body: var(--color-ink-print);
       --text-secondary: var(--color-ink-print-2);
-      --text-meta: var(--color-ink-print-2);
-      --text-disabled: var(--color-ink-print-2);
-      --text-link: var(--color-accent-print);
-      --text-trace: var(--color-accent-print);
+      --text-meta: var(--color-ink-print-3);
+      --text-disabled: var(--color-ink-print-3);
+      --text-signal: var(--color-accent-print);
+      --text-link: var(--color-ink-print);
+      --text-trace: var(--color-marker-warm);
       --text-on-action: var(--color-paper);
       --rule-decor: var(--color-line-print);
-      --rule-boundary: var(--color-ink-print-2);
-      --fill-action: var(--color-accent-print);
+      --rule-boundary: var(--color-line-print-strong);
+      --fill-action: var(--color-ink-print);
       --ring-outer: var(--color-focus-print);
       --ring-inner: var(--color-paper);
       --field-one: none;
       --field-two: none;
+      --surface-field: none;
       --elev-0: none;
       --elev-1: none;
       --elev-2: none;
@@ -1912,20 +2261,20 @@
 }
 
 /* ==========================================================================
-   PAINT COST — keep the initial layout pass cheap on a long single page.
+   PAINT COST.
 
-   `contain-intrinsic-size: auto` remembers each section's last rendered height,
-   so there is no scrollbar jump and no layout shift.
+   B2-08 REMOVED the `content-visibility: auto` optimisation that used to sit
+   here. It was safe while the whole site was one surface: an unpainted plane
+   simply showed the page background, which was the same material. On a
+   two-surface page it is a real defect — an off-screen deep plane whose
+   subtree is skipped paints the WARM page behind light instrument ink
+   (#9aa4b2 on #fbfaf7 = 2.41:1), which the accessibility audit correctly
+   reports as a contrast violation and which a fast scroll can expose.
+   `contain-intrinsic-size` cannot fix that: the material itself is missing.
+
+   The trade-off is a heavier initial layout pass on a long single page. The
+   floors that matter (Lighthouse, CLS) are measured in the evidence pack.
    ========================================================================== */
-
-@supports (content-visibility: auto) {
-  @media screen {
-    .section {
-      content-visibility: auto;
-      contain-intrinsic-size: auto 700px;
-    }
-  }
-}
 
 /* ==========================================================================
    REDUCED MOTION — unlayered and important, so it wins over every layer.

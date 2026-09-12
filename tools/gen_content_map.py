@@ -54,6 +54,14 @@ LEGEND = """\
 | `S5-P1`…`S5-P6` | §11 "New publishable facts from S5" | Renosystems bullets, SEWS-E bullets, ForWheelz wording, cert dates, education dates, skills additions |
 | *(none)* | declared `structural` | headings, labels, navigation and link text: asserts no fact about the person |
 
+**B2-08 fact correction (the role, wherever it is a FIELD).** The formal current title is
+`Associate Solutions Engineer — AI / GenAI Solutions` (`FACTS_LEDGER.md` §11 row **R2**, source
+**S5**, which wins over the older `L3.1` wording "AI Solutions Engineer"). It is the value of every
+role field: the at-a-glance register, the experience entry, the `Person.jobTitle` in the JSON-LD,
+the page `<title>` and the print-only header line. The older variant is permitted **only** inside
+owner-authored summary prose (`L2.1` / `L2.2` / `S5-R9`, rendered in the hero pitch and About),
+where it is a sentence the owner wrote rather than an assertion of a role field.
+
 **Declared composition exceptions**
 
 - **E1 (ledger `L2.1`, hero pitch).** The ledger records the positioning statement with two `…`

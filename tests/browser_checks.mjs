@@ -314,7 +314,10 @@ async function main() {
     await page.goto(`${origin}/index.html`, { waitUntil: "load" });
     const probe = await page.evaluate(firstScreenProbe, [
       "Mohammed Tawfiq Rahmy", "Solutions Engineer | Mechatronics × AI Systems",
-      "AI Solutions Engineer", "Renosystems",
+      // B2-08 fact correction: the formal current role (FACTS_LEDGER §11 R2, source S5) is the
+      // title asserted as a FIELD, so it is the one the first screen must carry. The superseded
+      // "AI Solutions Engineer" variant survives only inside owner-authored summary prose.
+      "Associate Solutions Engineer", "Renosystems",
     ]);
     const link = await page.evaluate(() => {
       const a = [...document.querySelectorAll('a[href^="https://www.linkedin.com"]')]
@@ -340,8 +343,13 @@ async function main() {
   fs.writeFileSync(path.join(OUT, "first-screen.json"), JSON.stringify(firstScreen, null, 2));
 
   // ---------------------------------------------------------------- overflow + screenshots
+  // B2-08: the responsive set covers the index and the TWO project pages that are claimed as
+  // different expressions (SAMA = M2/A4 stage-gate deep, PulseSec = M4/A5 register warm), so the
+  // anti-template claim has a side-by-side artefact at every width. Every page is additionally
+  // captured at 1440 so the whole series is inspectable.
+  const OVERS = ["index.html", "projects/sama-soc-triage.html", "projects/pulsesec.html"];
   const overflow = {};
-  for (const rel of ["index.html", "projects/sama-soc-triage.html"]) {
+  for (const rel of OVERS) {
     overflow[rel] = {};
     for (const w of WIDTHS) {
       const page = await browser.newPage();
@@ -381,8 +389,32 @@ async function main() {
     }
   }
   fs.writeFileSync(path.join(OUT, "overflow.json"), JSON.stringify(overflow, null, 2));
+
+  // every page in the series, at 1440, for the whole-set inspection
+  {
+    const page = await browser.newPage();
+    await page.setViewport({ width: 1440, height: 900, deviceScaleFactor: 1 });
+    for (const rel of PAGES) {
+      await page.goto(`${origin}/${rel}`, { waitUntil: "load" });
+      await page.evaluate(async () => {
+        const h = document.body.scrollHeight;
+        for (let y = 0; y < h; y += 400) {
+          window.scrollTo(0, y);
+          await new Promise((r) => setTimeout(r, 15));
+        }
+        window.scrollTo(0, 0);
+        await new Promise((r) => setTimeout(r, 60));
+      });
+      const name = `all-${rel.replace(/\//g, "_").replace(/\.html$/, "")}-1440.png`;
+      await page.screenshot({ path: path.join(OUT, "screenshots", name), fullPage: true });
+    }
+    await page.close();
+  }
+
   const shotCount = fs.readdirSync(path.join(OUT, "screenshots")).filter((f) => f.endsWith(".png")).length;
-  check(shotCount === 8, "8 responsive screenshots captured", `found ${shotCount}`);
+  check(shotCount === OVERS.length * WIDTHS.length + PAGES.length,
+    `${OVERS.length * WIDTHS.length + PAGES.length} screenshots captured (12 responsive + 12 series)`,
+    `found ${shotCount}`);
 
   // ---------------------------------------------------------------- keyboard walk (A4)
   {

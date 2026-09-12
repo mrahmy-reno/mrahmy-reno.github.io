@@ -33,7 +33,7 @@ DEFAULT_CONFIG = ROOT / "site.config.json"
 SITE_NAME_FALLBACK = "Mohammed Tawfiq Rahmy"
 PAGES_INDEX = "index.html"
 
-THEME_COLOR = "#0c0e13"
+THEME_COLOR = "#fbfaf7"
 
 GROUP_LABELS = {1: "g1", 2: "g2", 3: "g3"}
 
@@ -366,7 +366,7 @@ def render_system_map(p: Page, link: bool = True) -> str:
                   "Mandatory scope caption (PROOF_PLAN.md section 5 rule 9).")
     # The proof affordance points at the index evidence band, which only exists on the index;
     # the 404 renders the same map as a recovery surface with no in-page link.
-    tail = (f' <a href="#evidence">{p.t(C2.EXTRA["map_link"])}</a> →' if link else "")
+    tail = (f' <a href="#projects">{p.t(C2.EXTRA["map_link"])}</a> →' if link else "")
     return (f'      <figure class="system-map" data-reveal>\n'
             + "\n".join("        " + line for line in wide.splitlines()) + "\n"
             + "\n".join("        " + line for line in tall.splitlines()) + "\n"
@@ -381,7 +381,7 @@ def section_about(cfg: dict, p: Page) -> str:
     tags = source_tags(cfg)
     pov = C2.POINT_OF_VIEW
     pov_html = p.raw(pov["text"], pov["refs"], "composed", pov["note"])
-    return f"""      <section class="section" id="about" aria-labelledby="about-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="about" id="about" aria-labelledby="about-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["about"], C.L["h2_about"], C2.EXTRA["about_deck"], "about")}
         <div class="prose" data-reveal>
@@ -410,7 +410,7 @@ def section_experience(cfg: dict, p: Page) -> str:
 {bullets}
             </ul>
           </article>""")
-    return f"""      <section class="section" id="experience" aria-labelledby="experience-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="experience" id="experience" aria-labelledby="experience-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["experience"], C.L["h2_experience"], C2.EXTRA["experience_deck"], "experience")}
           <div class="exp-list" data-reveal>
@@ -449,7 +449,7 @@ def section_projects(cfg: dict, p: Page) -> str:
 {chr(10).join(cards)}
             </ul>
           </div>""")
-    return f"""      <section class="section" id="projects" aria-labelledby="work-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="projects" id="projects" aria-labelledby="work-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["work"], C.L["h2_work"], C2.EXTRA["work_deck"], "work")}
 {chr(10).join(groups)}
@@ -481,9 +481,10 @@ def section_evidence(cfg: dict, p: Page) -> str:
                  f'        <ul class="evidence-index">\n' + "\n".join(items) + "\n        </ul>")
     more = (f'        <p class="to-top"><a class="btn btn-secondary" href="#projects">'
             f'{p.t(C2.EXTRA["evidence_more"])}</a></p>')
-    return f"""      <section class="band band-signal section" id="evidence" aria-labelledby="evidence-h2">
+    return f"""      <section class="plane section" data-surface="deep" data-plane="evidence" id="evidence" aria-labelledby="evidence-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["evidence"], C2.EXTRA["evidence_h2"], C2.EXTRA["evidence_deck"], "evidence")}
+{render_system_map(p)}
 {inner}
 {more}
 {attribution(p, tags, "S2")}
@@ -503,7 +504,7 @@ def section_skills(cfg: dict, p: Page) -> str:
 {items}
             </ul>
           </div>""")
-    return f"""      <section class="section" id="skills" aria-labelledby="skills-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="skills" id="skills" aria-labelledby="skills-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["skills"], C.L["h2_skills"], C2.EXTRA["skills_deck"], "skills")}
           <div class="skill-list">
@@ -545,7 +546,7 @@ def section_education(cfg: dict, p: Page) -> str:
                         f'<span class="cert-body">{p.t(blk2)}</span></li>')
         extra = ('          <h3 class="certs-h3-tierb">Additional certifications</h3>\n'
                  '          <ul class="certs">\n' + "\n".join(rows) + "\n          </ul>")
-    return f"""      <section class="section" id="education" aria-labelledby="education-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="education" id="education" aria-labelledby="education-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["education"], C.L["h2_education"], C2.EXTRA["education_deck"], "education")}
           <div class="edu-list">
@@ -562,7 +563,7 @@ def section_education(cfg: dict, p: Page) -> str:
 
 
 def section_contact(cfg: dict, p: Page) -> str:
-    return f"""      <section class="section" id="contact" aria-labelledby="contact-h2">
+    return f"""      <section class="plane section" data-surface="warm" data-plane="contact" id="contact" aria-labelledby="contact-h2">
         <div class="wrap">
 {section_head(p, C2.SERIALS["contact"], C.L["h2_contact"], C2.EXTRA["contact_deck"], "contact")}
           <div class="contact-panel" data-reveal>
@@ -573,29 +574,33 @@ def section_contact(cfg: dict, p: Page) -> str:
 
 
 def build_index(cfg: dict, p: Page) -> str:
-    title_block = C.b("Mohammed Tawfiq Rahmy — AI Solutions Engineer", ["L1.1", "L3.1"], "composed",
-                      "Title composed from the ledger name (L1.1) and role (L3.1).")
+    title_block = C.b("Mohammed Tawfiq Rahmy — Associate Solutions Engineer — AI / GenAI Solutions",
+                      ["L1.1", "S5-R2"], "composed",
+                      "Title composed from the ledger name (L1.1) and the formal current role "
+                      "(FACTS_LEDGER §11 R2, source S5). The older L3.1 token 'AI Solutions "
+                      "Engineer' is not used as a title field; it survives only inside the "
+                      "owner-authored summary prose.")
     jsonld = render_jsonld(cfg)
     photo = render_photo(cfg, p)
-    body = f"""      <section class="band band-trace hero" id="top" aria-labelledby="hero-h1">
+    body = f"""      <section class="plane hero" data-surface="warm" data-plane="hero" id="top" aria-labelledby="hero-h1">
         <div class="wrap hero-inner">
-          <div class="hero-text" data-reveal="hero">
-            <p class="eyebrow">{p.t(C.HEADLINE)}</p>
+          <div class="hero-lead" data-reveal="hero">
+            <p class="eyebrow">{signal_el(p, "active")} · {p.t(C.HEADLINE)}</p>
             <h1 id="hero-h1">{p.t(C.NAME)}</h1>
             <p class="claim">{p.t(C2.CLAIM_LEAD)} <span class="claim-tail">{p.t(C2.CLAIM_TAIL)}</span></p>
           </div>
-          <div class="hero-aside" data-reveal>
-{photo}
+          <div class="hero-rail" data-reveal>
+            <p class="serial">{p.t(C2.ARCH["rail"])}</p>
 {render_glance_strip(cfg, p)}
           </div>
-          <div class="hero-cta">
+          <div class="hero-aside" data-reveal>
+{photo}
+          </div>
+          <div class="hero-close" data-reveal>
+            <p class="pitch">{p.t(C.PITCH)}</p>
             <p class="cta-row"><a class="btn" href="#projects">{p.t(C.L["cta_work"])}</a> <a class="btn btn-secondary" href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["cta_linkedin"])}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a></p>
           </div>
-          <div class="hero-pitch">
-            <p class="pitch">{p.t(C.PITCH)}</p>
-          </div>
         </div>
-{render_system_map(p)}
       </section>
 {section_about(cfg, p)}
 {section_experience(cfg, p)}
@@ -606,7 +611,7 @@ def build_index(cfg: dict, p: Page) -> str:
 {section_contact(cfg, p)}"""
     return page_shell(cfg, p, title_block=title_block, desc_block=C.META_DESCRIPTION,
                       path=PAGES_INDEX, body=body, og_type="profile", is_index=True,
-                      jsonld=jsonld)
+                      jsonld=jsonld, expression=C2.INDEX_EXPRESSION)
 
 
 def render_jsonld(cfg: dict) -> str:
@@ -646,15 +651,22 @@ def render_jsonld(cfg: dict) -> str:
 
 def page_shell(cfg: dict, p: Page, *, title_block: dict, desc_block: dict, path: str,
                body: str, og_type: str = "website", is_index: bool = False,
-               jsonld: str | None = None, noindex: bool = False) -> str:
+               jsonld: str | None = None, noindex: bool = False,
+               expression: dict | None = None) -> str:
     lang = esc(cfg["site"]["lang"])
+    ex = expression or C2.INDEX_EXPRESSION
+    close = ex.get("close")
+    attrs = (f' data-surface="{ex["surface"]}" data-mode="{ex["mode"]}"'
+             f' data-arch="{ex["arch"]}"')
+    if close:
+        attrs += f' data-transition="{close[1]}" data-transition-to="{close[0]}"'
     return f"""<!DOCTYPE html>
 <html lang="{lang}" class="no-js">
   <head>
 {render_head(cfg, p, title_block=title_block, desc_block=desc_block, path=path,
              og_type=og_type, jsonld=jsonld, noindex=noindex)}
   </head>
-  <body>
+  <body{attrs}>
 {render_header(cfg, p, is_index)}
     <main id="main">
 {body}
@@ -665,6 +677,47 @@ def page_shell(cfg: dict, p: Page, *, title_block: dict, desc_block: dict, path:
 """
 
 
+# --------------------------------------------------------------------------- SIGNAL / MTR
+
+# The signal: one mark, one meaning, admitted only by C1-C4 and always carrying its label
+# (DESIGN_LANGUAGE.md 3.6). The label text is the state word; the admission condition is on the
+# element so the scarcity check can attribute every mark mechanically (3.7 step 2).
+SIGNAL_ADMISSION = {"active": "C1", "scope": "C3"}
+
+
+def signal_el(p: Page, key: str) -> str:
+    return (f'<span class="signal" data-admission="{SIGNAL_ADMISSION[key]}"'
+            f' data-signal-key="{key}">{p.t(C2.SIGNAL[key])}</span>')
+
+
+def plane(p: Page, surface: str, cls: str, *, anchor: str | None = None,
+          label: str | None = None, extra: str = "") -> str:
+    """Open a plane. A plane is one surface; a surface transition is a plane boundary (DNA 4.4)."""
+    sid = f' id="{anchor}"' if anchor else ""
+    attrs = f' data-surface="{surface}"'
+    if label:
+        attrs += f' data-plane="{label}"'
+    if extra:
+        attrs += " " + extra
+    return f'        <section class="plane {cls}"{attrs}{sid}>'
+
+
+def plane_head(p: Page, surface: str, serial: dict, h2: dict, deck: dict | None = None) -> str:
+    deck_html = f'\n            <p class="deck">{p.t(deck)}</p>' if deck else ""
+    return (f'          <div class="plane-head" data-reveal>\n'
+            f'            <p class="serial">{p.t(serial)}</p>\n'
+            f'            <h2>{p.t(h2)}</h2>{deck_html}\n'
+            f'          </div>')
+
+
+def gate(p: Page) -> str:
+    """An A4 stage-gate boundary: a visible rule with its structural label. Not a signal."""
+    return (f'          <div class="gate" aria-hidden="false">\n'
+            f'            <span class="gate-node" aria-hidden="true"></span>\n'
+            f'            <span class="gate-label">{p.t(C2.ARCH["gate"])}</span>\n'
+            f'          </div>')
+
+
 CASE_STAGE_KEYS = [
     (1, "cs-problem", "stage_problem", "problem"),
     (2, "cs-approach", "stage_approach", "approach"),
@@ -673,24 +726,278 @@ CASE_STAGE_KEYS = [
 ]
 
 
-def stage_block(p: Page, num: int, cls: str, label_key: str, text: str | None,
+class ProjectCtx:
+    """Everything an archetype renderer needs, resolved once by build_project."""
+
+    def __init__(self, *, p: Page, proj: dict, stages: dict, artefact: str, caps: str,
+                 tech: str, scope_note: str, domain: dict, lead: str, close: str | None,
+                 signal: str | None) -> None:
+        self.p = p
+        self.proj = proj
+        self.stages = stages
+        self.artefact = artefact
+        self.caps = caps
+        self.tech = tech
+        self.scope_note = scope_note
+        self.domain = domain
+        self.lead = lead
+        self.close = close
+        self.signal = signal
+
+
+def _plane(p: Page, surface: str, cls: str, label: str, inner: str) -> str:
+    return (f'        <section class="plane {cls}" data-surface="{surface}"'
+            f' data-plane="{label}">\n          <div class="wrap">\n{inner}\n'
+            f'          </div>\n        </section>')
+
+
+def _proj_head(p: Page, proj: dict, domain: dict) -> str:
+    overview = "\n".join(f'              <p>{p.t(par)}</p>' for par in proj["overview"])
+    return (f'            <p class="breadcrumb"><a href="/index.html#projects">'
+            f'{p.t(C.L["all_work"])}</a></p>\n'
+            f'            <h1 class="project-title">{p.t(proj["name"])}</h1>\n'
+            f'            <p class="project-lede">{p.t(proj["one_liner"])}</p>\n'
+            f'            <p class="project-meta"><span class="tag">{p.t(domain)}</span></p>\n'
+            f'            <div class="cs-body project-overview">\n'
+            f'              <h2>{p.t(C2.EXTRA["overview_label"])}</h2>\n'
+            f'{overview}\n            </div>')
+
+
+def _stage_body(p: Page, num: int, label_key: str, text: str | None,
                 refs: list[str]) -> str:
+    """One case-study stage's inner markup. The stage serial is a position marker."""
     label = p.t(C2.STAGE_SERIALS[num])
-    head = (f'            <p class="cs-label">{label} · {p.t(C.L[label_key])}</p>')
+    head = f'            <p class="cs-label">{label} · {p.t(C.L[label_key])}</p>'
     if text is None:
         empty = (f'            <div class="empty"><span class="empty-label">'
                  f'{p.t(C2.EXTRA["empty_label"])}</span>'
                  f'<p>{p.t(C2.EXTRA["empty_body"])}</p></div>')
-        return (f'          <section class="cs-stage {cls}">\n'
-                f'            <div class="cs-stage-inner">\n{head}\n{empty}\n'
-                f'            </div>\n          </section>')
+        return f"{head}\n{empty}"
     note = ("Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / "
             "approved-extension phrases; connective verbs only.")
     para = p.raw(text, refs, "composed", note)
-    return (f'          <section class="cs-stage {cls}">\n'
-            f'            <div class="cs-stage-inner">\n{head}\n'
-            f'            <div class="cs-body"><p>{para}</p></div>\n'
-            f'            </div>\n          </section>')
+    return f'{head}\n            <div class="cs-body"><p>{para}</p></div>'
+
+
+def _architecture_body(p: Page, ctx: ProjectCtx) -> str:
+    label = p.t(C2.STAGE_SERIALS[3])
+    return (f'            <p class="cs-label">{label} · {p.t(C.L["stage_architecture"])}</p>\n'
+            f'            <div class="cs-body">\n'
+            f'              <h2>{p.t(C.L["stage_architecture"])}</h2>\n'
+            f'              <div class="diagram-panel" data-reveal>\n{ctx.artefact}\n'
+            f'              </div>\n            </div>')
+
+
+def _evidence_body(p: Page, ctx: ProjectCtx) -> str:
+    label = p.t(C2.STAGE_SERIALS[5])
+    sig = f'            <p class="plane-signal">{ctx.signal}</p>\n' if ctx.signal else ""
+    return (f'            <p class="cs-label">{label} · {p.t(C.L["stage_evidence"])}</p>\n'
+            f'            <div class="cs-body">\n'
+            f'              <h2>{p.t(C.L["stage_evidence"])}</h2>\n'
+            + sig
+            + f'              <div class="evidence-panel" data-reveal>\n'
+            f'                <h3>{p.t(C.L["capabilities"])}</h3>\n'
+            f'                <ul class="bullets">\n{ctx.caps}\n                </ul>\n'
+            f'              </div>\n'
+            f'{ctx.tech}\n'
+            f'              {ctx.scope_note}\n'
+            f'            </div>')
+
+
+def _gate(p: Page, surface: str) -> str:
+    """An A4 stage-gate boundary: a visible rule with its structural label. Not a signal."""
+    return (f'        <div class="gate" data-surface="{surface}">\n'
+            f'          <div class="wrap">\n'
+            f'            <span class="gate-node" aria-hidden="true"></span>\n'
+            f'            <span class="gate-label">{p.t(C2.ARCH["gate"])}</span>\n'
+            f'          </div>\n        </div>')
+
+
+def arch_a4(ctx: ProjectCtx) -> str:
+    """A4 stage-gate — a linear sequence of stages, each with an explicit gate between.
+
+    Order: problem, approach, architecture, the hard part, evidence, outcome — the canonical
+    case-study shape, walked as a gated sequence. Deep instrument leads, 100%.
+    """
+    p, s, st = ctx.p, ctx.lead, ctx.stages
+    hard = (st["hard"][0], st["hard"][1]) if st["hard"] else (None, [])
+    parts = [
+        _plane(p, s, "plane-lead", "head", _proj_head(p, ctx.proj, ctx.domain)),
+        _plane(p, s, "cs-stage cs-problem", "problem",
+               _stage_body(p, 1, "stage_problem", st["problem"][0], st["problem"][1])),
+        _gate(p, s),
+        _plane(p, s, "cs-stage cs-approach", "approach",
+               _stage_body(p, 2, "stage_approach", st["approach"][0], st["approach"][1])),
+        _gate(p, s),
+        _plane(p, s, "cs-stage cs-architecture", "architecture",
+               _architecture_body(p, ctx)),
+        _gate(p, s),
+        _plane(p, s, "cs-stage cs-hard", "hard",
+               _stage_body(p, 4, "stage_hard", hard[0], hard[1])),
+        _gate(p, s),
+        _plane(p, s, "cs-stage cs-evidence", "evidence", _evidence_body(p, ctx)),
+        _gate(p, s),
+        _plane(p, s, "cs-stage cs-outcome", "outcome",
+               _stage_body(p, 6, "stage_outcome", st["outcome"][0], st["outcome"][1])),
+    ]
+    return "\n".join(parts)
+
+
+def arch_a3(ctx: ProjectCtx) -> str:
+    """A3 hub/broker — a central plane with bounded spokes; scope is drawn, not described.
+
+    The architecture drawing is the hub and leads the page; problem, approach and the hard part
+    are the bounded spokes around it. Deep instrument leads, 100%.
+    """
+    p, s, st = ctx.p, ctx.lead, ctx.stages
+    hard = (st["hard"][0], st["hard"][1]) if st["hard"] else (None, [])
+    hub = (_architecture_body(p, ctx).replace(
+        f'{p.t(C.L["stage_architecture"])}</h2>',
+        f'{p.t(C2.ARCH["hub"])}</h2>', 1))
+    spokes = ("\n".join([
+        f'            <div class="spoke cs-stage cs-problem">\n'
+        + _stage_body(p, 1, "stage_problem", st["problem"][0], st["problem"][1]).replace(
+            "            ", "              ") + "\n            </div>",
+        f'            <div class="spoke cs-stage cs-approach">\n'
+        + _stage_body(p, 2, "stage_approach", st["approach"][0], st["approach"][1]).replace(
+            "            ", "              ") + "\n            </div>",
+        f'            <div class="spoke cs-stage cs-hard">\n'
+        + _stage_body(p, 4, "stage_hard", hard[0], hard[1]).replace(
+            "            ", "              ") + "\n            </div>",
+    ]))
+    parts = [
+        _plane(p, s, "plane-lead", "head", _proj_head(p, ctx.proj, ctx.domain)),
+        _plane(p, s, "hub", "hub", hub),
+        _plane(p, s, "spokes", "spokes",
+               f'            <p class="serial">{p.t(C2.ARCH["spokes"])}</p>\n'
+               f'            <div class="spoke-grid" data-reveal>\n{spokes}\n            </div>'),
+        _plane(p, s, "cs-stage cs-evidence", "evidence", _evidence_body(p, ctx)),
+        _plane(p, s, "cs-stage cs-outcome", "outcome",
+               _stage_body(p, 6, "stage_outcome", st["outcome"][0], st["outcome"][1])),
+    ]
+    return "\n".join(parts)
+
+
+def arch_a6(ctx: ProjectCtx) -> str:
+    """A6 plate — one drawn artefact, full-bleed, with a caption and a scope note.
+
+    The proof is the picture, so the picture leads; the six stages follow it and the page closes
+    on the warm human surface (T2: system → human). Deep leads, 86% of planes.
+    """
+    p, s, st = ctx.p, ctx.lead, ctx.stages
+    close = ctx.close or "warm"
+    hard = (st["hard"][0], st["hard"][1]) if st["hard"] else (None, [])
+    plate = (f'            <p class="cs-label">{p.t(C2.ARCH["plate"])}</p>\n'
+             f'            <div class="plate" data-reveal>\n{ctx.artefact}\n            </div>')
+    closing = (f'            <p class="cs-label">{p.t(C2.ARCH["close"])}</p>\n'
+               f'            <div class="cs-body">\n'
+               f'              <p class="close-lede">{p.t(ctx.proj["one_liner"])}</p>\n'
+               + _stage_body(p, 6, "stage_outcome", st["outcome"][0], st["outcome"][1])
+               + "\n            </div>")
+    parts = [
+        _plane(p, s, "plane-lead", "head", _proj_head(p, ctx.proj, ctx.domain)),
+        _plane(p, s, "plate-plane", "plate", plate),
+        _plane(p, s, "cs-stage cs-problem", "problem",
+               _stage_body(p, 1, "stage_problem", st["problem"][0], st["problem"][1])),
+        _plane(p, s, "cs-stage cs-approach", "approach",
+               _stage_body(p, 2, "stage_approach", st["approach"][0], st["approach"][1])),
+        _plane(p, s, "cs-stage cs-hard", "hard",
+               _stage_body(p, 4, "stage_hard", hard[0], hard[1])),
+        _plane(p, s, "cs-stage cs-evidence", "evidence", _evidence_body(p, ctx)),
+        _plane(p, close, "close-plane", "close", closing),
+    ]
+    return "\n".join(parts)
+
+
+def arch_a5(ctx: ProjectCtx) -> str:
+    """A5 register — dense rows separated by rules, columns aligned, no boxes.
+
+    The content is looked up rather than read, so the six stages become six numbered register
+    rows in one ruled plane. Warm editorial leads, 100%; motion budget zero.
+    """
+    p, s, st = ctx.p, ctx.lead, ctx.stages
+    rows = [
+        (1, "stage_problem", st["problem"][0], st["problem"][1], None),
+        (2, "stage_approach", st["approach"][0], st["approach"][1], None),
+        (3, "stage_architecture", None, None, "architecture"),
+        (4, "stage_hard", (st["hard"][0] if st["hard"] else None),
+         (st["hard"][1] if st["hard"] else []), None),
+        (5, "stage_evidence", None, None, "evidence"),
+        (6, "stage_outcome", st["outcome"][0], st["outcome"][1], None),
+    ]
+    out = []
+    for num, key, text, refs, special in rows:
+        if special == "architecture":
+            cell = (f'                <div class="cs-body">\n{ctx.artefact}\n'
+                    f'                </div>')
+        elif special == "evidence":
+            cell = (f'                <div class="cs-body">\n'
+                    f'                  <ul class="bullets">\n{ctx.caps}\n'
+                    f'                  </ul>\n{ctx.tech}\n                  {ctx.scope_note}\n'
+                    f'                </div>')
+        elif text is None:
+            cell = (f'                <div class="empty"><span class="empty-label">'
+                    f'{p.t(C2.EXTRA["empty_label"])}</span>'
+                    f'<p>{p.t(C2.EXTRA["empty_body"])}</p></div>')
+        else:
+            note = ("Case-study stage copy. Composed under PRD 3.4 from this project's own "
+                    "ledger / approved-extension phrases; connective verbs only.")
+            cell = (f'                <div class="cs-body"><p>'
+                    f'{p.raw(text, refs, "composed", note)}</p></div>')
+        out.append(f'            <div class="register-row" data-stage="{num:02d}">\n'
+                   f'              <p class="register-num">{p.t(C2.STAGE_SERIALS[num])}</p>\n'
+                   f'              <h2 class="register-label">{p.t(C.L[key])}</h2>\n'
+                   f'{cell}\n            </div>')
+    register = (f'            <div class="register" data-reveal>\n'
+                + "\n".join(out) + "\n            </div>")
+    parts = [
+        _plane(p, s, "plane-lead", "head", _proj_head(p, ctx.proj, ctx.domain)),
+        _plane(p, s, "register-plane", "register", register),
+    ]
+    return "\n".join(parts)
+
+
+def arch_a8(ctx: ProjectCtx) -> str:
+    """A8 marginalia — a primary plane with a margin column carrying side information.
+
+    The artifact needs a second, quieter channel: the stages read in the primary column while the
+    margin carries the architecture drawing, the capabilities and the scope note. Warm leads,
+    100%.
+    """
+    p, s, st = ctx.p, ctx.lead, ctx.stages
+    hard = (st["hard"][0], st["hard"][1]) if st["hard"] else (None, [])
+    primary = "\n".join([
+        f'            <div class="cs-stage cs-problem">\n'
+        + _stage_body(p, 1, "stage_problem", st["problem"][0], st["problem"][1]).replace(
+            "            ", "              ") + "\n            </div>",
+        f'            <div class="cs-stage cs-approach">\n'
+        + _stage_body(p, 2, "stage_approach", st["approach"][0], st["approach"][1]).replace(
+            "            ", "              ") + "\n            </div>",
+        f'            <div class="cs-stage cs-hard">\n'
+        + _stage_body(p, 4, "stage_hard", hard[0], hard[1]).replace(
+            "            ", "              ") + "\n            </div>",
+        f'            <div class="cs-stage cs-evidence">\n'
+        + _evidence_body(p, ctx).replace("            ", "              ") + "\n            </div>",
+        f'            <div class="cs-stage cs-outcome">\n'
+        + _stage_body(p, 6, "stage_outcome", st["outcome"][0], st["outcome"][1]).replace(
+            "            ", "              ") + "\n            </div>",
+    ])
+    margin = (f'            <p class="serial">{p.t(C2.ARCH["margin"])}</p>\n'
+              + _architecture_body(p, ctx).replace("            ", "              ")
+              + f'\n              <ul class="bullets">\n{ctx.caps}\n              </ul>\n'
+              + f'              {ctx.scope_note}')
+    spread = (f'            <div class="spread" data-reveal>\n'
+              f'              <div class="spread-main">\n{primary}\n              </div>\n'
+              f'              <div class="spread-margin">\n{margin}\n              </div>\n'
+              f'            </div>')
+    parts = [
+        _plane(p, s, "plane-lead", "head", _proj_head(p, ctx.proj, ctx.domain)),
+        _plane(p, s, "spread-plane", "spread", spread),
+    ]
+    return "\n".join(parts)
+
+
+ARCH_RENDER = {"A3": arch_a3, "A4": arch_a4, "A5": arch_a5, "A6": arch_a6, "A8": arch_a8}
 
 
 def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
@@ -700,10 +1007,16 @@ def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
     desc_block = C.b(proj["one_liner"]["text"], [proj["name"]["refs"][0]], "verbatim",
                      "Meta description = the ledger one-liner for this project.")
     stages = C2.CASE_STAGES[proj["slug"]]
-    overview = "\n".join(
-        f'            <p>{p.t(par)}</p>' for par in proj["overview"]
-    )
-    caps = "\n".join(f'              <li>{p.t(cap)}</li>' for cap in proj["capabilities"])
+    ex = C2.EXPRESSION[proj["slug"]]
+    arch = ex["arch"]
+    lead = ex["surface"]
+    close = ex.get("close")
+    close_surface = close[0] if close else None
+    domain = C.L[GROUP_LABELS[proj["group"]]]
+    artefact = render_figure(p, f"dg-{proj['slug']}", proj["slug"], refs=proj["name"]["refs"])
+    caps = "\n".join(f'                <li>{p.t(cap)}</li>' for cap in proj["capabilities"])
+    scope_note = (f'<p class="callout"><span class="callout-label">'
+                  f'{p.t(C2.EXTRA["scope_label"])}</span>{p.t(C.SCOPE_NOTE)}</p>')
     tech = ""
     if proj["tech_line"]:
         chips = "\n".join(f'                <li>{p.t(t)}</li>' for t in proj["tech_line"])
@@ -713,17 +1026,6 @@ def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
 {chips}
             </ul>
           </div>"""
-    problem = stage_block(p, 1, "cs-problem", "stage_problem", stages["problem"][0],
-                          stages["problem"][1])
-    approach = stage_block(p, 2, "cs-approach", "stage_approach", stages["approach"][0],
-                           stages["approach"][1])
-    hard = stage_block(p, 4, "cs-hard", "stage_hard",
-                       stages["hard"][0] if stages["hard"] else None,
-                       stages["hard"][1] if stages["hard"] else [])
-    outcome = stage_block(p, 6, "cs-outcome", "stage_outcome", stages["outcome"][0],
-                          stages["outcome"][1])
-    artefact = render_figure(p, f"dg-{proj['slug']}", proj["slug"], refs=proj["name"]["refs"])
-    domain = C.L[GROUP_LABELS[proj["group"]]]
     prev_slug = C.PROJECT_ORDER[idx - 1] if idx > 0 else None
     next_slug = C.PROJECT_ORDER[idx + 1] if idx < len(C.PROJECT_ORDER) - 1 else None
     pn = []
@@ -734,62 +1036,21 @@ def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
         pn.append(f'          <a class="pn-link {cls}" href="/projects/{slug}.html">'
                   f'<span class="pn-label">{p.t(C.L[key])}</span>'
                   f'<span class="pn-name">{p.t(other["name"])}</span></a>')
-    body = f"""      <article class="project-detail">
-        <div class="wrap">
-          <p class="breadcrumb"><a href="/index.html#projects">{p.t(C.L["all_work"])}</a></p>
-          <h1 class="project-title">{p.t(proj["name"])}</h1>
-          <p class="project-lede">{p.t(proj["one_liner"])}</p>
-          <p class="project-meta"><span class="tag">{p.t(domain)}</span><span class="cs-label">{p.t(C2.STAGE_SERIALS[3])} · {p.t(C.L["stage_architecture"])}</span></p>
-          <section class="cs-stage" id="overview" aria-labelledby="overview-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">{p.t(C2.EXTRA["overview_label"])}</p>
-              <div class="cs-body">
-                <h2 id="overview-h2">{p.t(C2.EXTRA["overview_label"])}</h2>
-{overview}
-              </div>
-            </div>
-          </section>
-{problem}
-{approach}
-          <section class="cs-stage cs-architecture" aria-labelledby="architecture-h2">
-            <div class="wrap">
-              <div class="cs-stage-inner">
-                <p class="cs-label">{p.t(C2.STAGE_SERIALS[3])} · {p.t(C.L["stage_architecture"])}</p>
-                <div class="cs-body">
-                  <h2 id="architecture-h2">{p.t(C.L["stage_architecture"])}</h2>
-                  <div class="diagram-panel" data-reveal>
-{artefact}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-{hard}
-          <section class="cs-stage cs-evidence" aria-labelledby="evidence-h2">
-            <div class="cs-stage-inner">
-              <p class="cs-label">{p.t(C2.STAGE_SERIALS[5])} · {p.t(C.L["stage_evidence"])}</p>
-              <div class="cs-body">
-                <h2 id="evidence-h2">{p.t(C.L["stage_evidence"])}</h2>
-                <div class="evidence-panel" data-reveal>
-                  <h3>{p.t(C.L["capabilities"])}</h3>
-                  <ul class="bullets">
-{caps}
-                  </ul>
-                </div>
-{tech}
-                <p class="callout"><span class="callout-label">{p.t(C2.EXTRA["scope_label"])}</span>{p.t(C.SCOPE_NOTE)}</p>
-              </div>
-            </div>
-          </section>
-{outcome}
+    sig = signal_el(p, "scope") if proj["slug"] == "sama-soc-triage" else None
+    ctx = ProjectCtx(p=p, proj=proj, stages=stages, artefact=artefact, caps=caps, tech=tech,
+                     scope_note=scope_note, domain=domain, lead=lead, close=close_surface,
+                     signal=sig)
+    core = ARCH_RENDER[arch](ctx)
+    body = f"""      <article class="project-detail" data-arch="{arch}" data-mode="{ex["mode"]}">
+{core}
 {attribution(p, tags, "S2")}
           <nav class="prev-next" aria-label="Project navigation">
 {chr(10).join(pn)}
           </nav>
-        </div>
       </article>"""
     return page_shell(cfg, p, title_block=title_block, desc_block=desc_block,
-                      path=f'projects/{proj["slug"]}.html', body=body, og_type="article")
+                      path=f'projects/{proj["slug"]}.html', body=body, og_type="article",
+                      expression=ex)
 
 
 def build_404(cfg: dict, p: Page) -> str:
@@ -801,24 +1062,31 @@ def build_404(cfg: dict, p: Page) -> str:
         f'          <li><a href="/projects/{pr["slug"]}.html">{p.t(pr["name"])}</a></li>'
         for pr in C.PROJECTS
     )
-    body = f"""      <section class="section notfound">
+    body = f"""      <section class="plane section notfound" data-surface="warm" data-plane="notfound">
         <div class="wrap">
           <h1>{p.t(C2.EXTRA["nf_h1_v2"])}</h1>
           <p>{p.t(C2.EXTRA["nf_body_v2"])}</p>
           <p><a class="btn" href="/index.html">{p.t(C.L["nf_link"])}</a></p>
           <h2>{p.t(C2.EXTRA["nf_map"])}</h2>
+          <div class="map-plate" data-surface="deep">
 {render_system_map(p, link=False)}
-          <h2>{p.t(C2.EXTRA["all_projects"])}</h2>
-          <ul class="evidence-index">
+            <h2>{p.t(C2.EXTRA["all_projects"])}</h2>
+            <ul class="evidence-index">
 {links}
-          </ul>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <section class="plane section" data-surface="warm" data-plane="contact">
+        <div class="wrap">
           <div class="contact-panel">
 {render_contact_block(cfg, p)}
           </div>
         </div>
       </section>"""
     return page_shell(cfg, p, title_block=title_block, desc_block=desc_block,
-                      path="404.html", body=body, og_type="website", noindex=True)
+                      path="404.html", body=body, og_type="website", noindex=True,
+                      expression={"mode": "M4", "arch": "A5", "surface": "warm"})
 
 
 # --------------------------------------------------------------------------- static files
