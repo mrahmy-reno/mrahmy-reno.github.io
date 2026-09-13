@@ -92,8 +92,8 @@ async function main() {
         const file = path.join(OUT, `${name}__${w}__fig${b.i}.png`);
         await page.screenshot({
           path: file,
+          captureBeyondViewport: true,
           clip: { x: 0, y: Math.max(0, b.top - 8), width: w, height: Math.min(b.height + 24, 4000) },
-          fullPage: true,
         });
         report.push({ page: name, width: w, figure: b.i, ...b, file });
       }
