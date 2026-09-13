@@ -50,14 +50,16 @@ CURRENT_DATES = b("Mar 2026 – Present", ["L3.1"])
 CURRENT_ROLE_SHORT = b("Associate Solutions Engineer", ["S5-R2"])
 
 META_DESCRIPTION = b(
-    "AI Solutions Engineer building agentic and generative AI systems for security, operations, "
-    "and analytics. Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, "
-    "MCP/tool integrations, LLM evaluation, guardrails, and full-stack AI delivery.",
+    "I build agentic and generative AI systems for security, operations, and analytics. "
+    "Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, MCP/tool "
+    "integrations, LLM evaluation, guardrails, and full-stack AI delivery.",
     ["S5-R9"],
-    "verbatim",
-    "The S5 summary (authoritative positioning per resolution R9); the closing clause 'backed by "
-    "AWS Professional and Associate certifications' is rendered in the About section rather than "
-    "the meta description.",
+    "composed",
+    "B2-04 / D11 repair: the S5 summary with its opening clause recast to a first-person, "
+    "non-title phrase — 'I build …' replaces 'AI Solutions Engineer building …' — so that the "
+    "meta description no longer repeats the job title beside the <title> field in a search "
+    "result or link preview. Every substantive word after the opening clause is the S5 summary's "
+    "own (the closing clause about certifications is rendered in About). No new fact is added.",
 )
 
 LINKEDIN_URL = "https://www.linkedin.com/in/mohammed-rahmy"          # L8.3

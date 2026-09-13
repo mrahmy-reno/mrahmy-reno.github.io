@@ -128,7 +128,7 @@ function firstScreenProbe(strings) {
     }
     const r = parent.getBoundingClientRect();
     if (r.width <= 0 && r.height <= 0) continue;
-    const text = node.nodeValue;
+    const text = node.nodeValue.replace(/\u00a0/g, " ");
     for (const s of strings) {
       if (text.includes(s)) {
         found.get(s).push({ top: Math.round(r.top), bottom: Math.round(r.bottom),
@@ -883,6 +883,206 @@ async function main() {
       `reduced=${red.svgTextCount} normal=${design.svgTextCount}`);
     await pRed.close();
     await page.close();
+  }
+
+  // ------------------------------------------------- B2-04 craft regressions (D1, D2, D9, D10, D12)
+  // The four visible defects the critique measured from screenshots, now measured from the
+  // rendered DOM at every width they were reported at: exactly one responsive variant of every
+  // diagram is displayed, the ordinal never wraps, the eyebrow never opens a line with an
+  // operator, and the RENDERED type-scale emphasis is reported (not the declared token).
+  {
+    const craft = { variants: {}, ordinals: {}, eyebrow: null, emphasis: null,
+      index: {} };
+    const CRAFT_PAGES = ["index.html", "projects/sama-soc-triage.html",
+      "projects/smartops-soc-app.html"];
+    const craftPage = await browser.newPage();
+    for (const rel of CRAFT_PAGES) {
+      for (const width of [390, 768, 1366]) {
+        await craftPage.setViewport({ width, height: 900 });
+        await craftPage.goto(`${origin}/${rel}`, { waitUntil: "load" });
+        await craftPage.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+        await craftPage.evaluate(() => window.scrollTo(0, 0));
+        const probe = await craftPage.evaluate(() => {
+          const visible = (el) => {
+            const r = el.getBoundingClientRect();
+            return r.width > 1 && r.height > 1;
+          };
+          const figs = [...document.querySelectorAll("figure.artefact, figure.system-map")];
+          const variants = figs.map((fig) => {
+            const svgs = [...fig.querySelectorAll("svg")];
+            return {
+              uids: svgs.map((s) => (s.getAttribute("aria-labelledby") || "").split(" ")[0]),
+              shown: svgs.filter(visible).map((s) => s.getAttribute("class")),
+              announced: svgs.filter((s) => visible(s)
+                && ["img", "group"].includes(s.getAttribute("role"))).length,
+              height: Math.round(fig.getBoundingClientRect().height),
+            };
+          });
+          const ranks = [...document.querySelectorAll("#projects .rank")].map((el) => ({
+            text: el.textContent.trim(),
+            w: Math.round(el.getBoundingClientRect().width),
+            h: Math.round(el.getBoundingClientRect().height),
+            lineHeight: getComputedStyle(el).lineHeight,
+          }));
+          const eb = document.querySelector(".eyebrow");
+          let eyebrow = null;
+          if (eb) {
+            const node = [...eb.childNodes].find((n) => n.nodeType === 3
+              && n.textContent.includes("Mechatronics"));
+            if (node) {
+              const text = node.textContent;
+              const start = text.indexOf("Mechatronics");
+              const end = text.indexOf("×", start) + 1;
+              const range = document.createRange();
+              range.setStart(node, start);
+              range.setEnd(node, end);
+              eyebrow = { rects: range.getClientRects().length,
+                firstLineOpensWithTimes: [...eb.getClientRects()].length > 0
+                  && text.trimStart().startsWith("×") };
+            }
+          }
+          const h1 = document.querySelector("h1");
+          const body = getComputedStyle(document.body);
+          const idx = {
+            height: document.documentElement.scrollHeight,
+            words: (document.querySelector("main")?.innerText || "").split(/\s+/)
+              .filter((w) => w.length).length,
+            povInHero: !!document.querySelector(".hero .band-statement"),
+          };
+          return { variants, ranks, eyebrow, idx,
+            h1Px: h1 ? parseFloat(getComputedStyle(h1).fontSize) : null,
+            bodyPx: parseFloat(body.fontSize), bodyLine: body.lineHeight };
+        });
+        craft.variants[`${rel}@${width}`] = probe.variants;
+        craft.ordinals[`${rel}@${width}`] = probe.ranks;
+        if (rel === "index.html") {
+          craft.index[`@${width}`] = probe.idx;
+          if (probe.eyebrow) craft.eyebrow = probe.eyebrow;
+          if (probe.h1Px && probe.bodyPx) {
+            craft.emphasis = { width, h1Px: probe.h1Px, bodyPx: probe.bodyPx,
+              ratio: Math.round((probe.h1Px / probe.bodyPx) * 100) / 100 };
+          }
+        }
+      }
+    }
+    await craftPage.close();
+
+    // D1 — one variant displayed, never two. The critique measured the failure at 768/1024/1366/
+    // 1440; this measures it at 390/768/1366 and counts what assistive technology is handed.
+    const dupes = [];
+    const announcedTwice = [];
+    for (const [where, figs] of Object.entries(craft.variants)) {
+      for (const fig of figs) {
+        if (fig.shown.length !== 1) {
+          dupes.push(`${where}: ${fig.uids.join(",")} shown=${JSON.stringify(fig.shown)}`);
+        }
+        if (fig.announced > 1) announcedTwice.push(`${where}: ${fig.announced} announced`);
+      }
+    }
+    check(dupes.length === 0,
+      "D1: exactly one responsive variant of every diagram is displayed at 390/768/1366",
+      dupes.length ? JSON.stringify(dupes.slice(0, 3))
+        : `${Object.keys(craft.variants).length} page/width combinations, every figure shows 1`);
+    check(announcedTwice.length === 0,
+      "D9: no diagram is announced twice to assistive technology",
+      announcedTwice.length ? JSON.stringify(announcedTwice.slice(0, 3))
+        : "one role=img/group element per diagram at every width");
+
+    // D2 — the ordinal is one line, wider than its two digits, at every width.
+    const wrapped = [];
+    for (const [where, ranks] of Object.entries(craft.ordinals)) {
+      for (const r of ranks) {
+        if (r.lineHeight !== "normal" && r.h > parseFloat(r.lineHeight) * 1.5) {
+          wrapped.push(`${where}: "${r.text}" ${r.w}x${r.h}px (line-height ${r.lineHeight})`);
+        }
+      }
+    }
+    check(wrapped.length === 0,
+      "D2: no project ordinal wraps to two lines at 390/768/1366 (the first row included)",
+      wrapped.length ? JSON.stringify(wrapped.slice(0, 3))
+        : `${Object.values(craft.ordinals).flat().length} ordinals measured, all single-line`);
+
+    // D10 — the eyebrow's "Mechatronics ×" joint is unbroken.
+    check(craft.eyebrow && craft.eyebrow.rects === 1,
+      "D10: the mobile eyebrow keeps 'Mechatronics ×' on one line (the operator never opens one)",
+      JSON.stringify(craft.eyebrow));
+
+    // D12 — the RENDERED emphasis, at 1366, against the 3.0 floor of the bar's Q2.
+    check(craft.emphasis && craft.emphasis.ratio >= 3.0,
+      "D12: the rendered h1/body type-scale emphasis at 1366 is measured and clears the 3.0 floor",
+      JSON.stringify(craft.emphasis));
+    check(craft.index["@1366"] && craft.index["@1366"].povInHero,
+      "Q9/D4: the point of view renders inside the first screen (the hero), not 2k px down",
+      JSON.stringify(craft.index["@1366"]));
+
+    // D4 — the index is a reading page, not a register. The defect revision measured 13,396 px /
+    // 17.4 screens / 1,186 words at 1366x768; the repair's ceiling is recorded here so the
+    // documentation feel cannot return silently. (This is the repair's own budget, not a bar
+    // clause: the bar has no length threshold. Coverage counts stay locked by static_scans.)
+    const budget = { "@1366": { height: 10500, words: 1100 }, "@390": { height: 14000, words: 1100 } };
+    const over = [];
+    for (const [vp, cap] of Object.entries(budget)) {
+      const m = craft.index[vp];
+      if (!m) { over.push(`${vp}: not measured`); continue; }
+      if (m.height > cap.height) over.push(`${vp}: ${m.height}px > ${cap.height}px`);
+      if (m.words > cap.words) over.push(`${vp}: ${m.words} words > ${cap.words}`);
+    }
+    check(over.length === 0,
+      "D4: the index stays inside the repair's reading budget (height and words, 1366 and 390)",
+      over.length ? JSON.stringify(over) : JSON.stringify(craft.index));
+
+    results.craft = craft;
+    fs.writeFileSync(path.join(OUT, "craft.json"), JSON.stringify(craft, null, 2));
+  }
+
+  // ------------------------------------------------- B2-04 / D6: the displayed face is shipped
+  {
+    const fontPage = await browser.newPage();
+    await fontPage.setViewport({ width: 1366, height: 900 });
+    const fontRequests = [];
+    fontPage.on("request", (r) => fontRequests.push(r.url()));
+    await fontPage.goto(`${origin}/index.html`, { waitUntil: "load" });
+    const font = await fontPage.evaluate(async () => {
+      await document.fonts.ready;
+      const faces = [...document.fonts].map((f) => ({
+        family: f.family, weight: f.weight, status: f.status,
+        url: (f.src || "").split("(")[1] ? f.src.split("(")[1].split(")")[0] : "",
+      }));
+      const probe = document.createElement("span");
+      probe.style.cssText = 'position:absolute;visibility:hidden;font-size:100px;'
+        + 'white-space:nowrap;font-weight:400;font-family:"DejaVu Serif Subset"';
+      probe.textContent = "Hamburgefonstiv";
+      document.body.appendChild(probe);
+      const shipped = probe.getBoundingClientRect().width;
+      // Compare against a face family that is definitely NOT the shipped serif: on this host
+      // "Georgia" is absent and would fall back to the system DejaVu Serif — metrically the same
+      // face the subset came from, which would make the comparison meaningless.
+      probe.style.fontFamily = "sans-serif";
+      const fallback = probe.getBoundingClientRect().width;
+      probe.remove();
+      const h1 = getComputedStyle(document.querySelector("h1"));
+      const usedFace = getComputedStyle(document.querySelector("h1")).fontFamily;
+      return { faces, shipped: Math.round(shipped), fallback: Math.round(fallback),
+        h1Family: usedFace, h1Weight: h1.fontWeight };
+    });
+    const loaded = font.faces.filter((f) => f.status === "loaded");
+    check(loaded.length >= 2 && loaded.every((f) => f.family.includes("DejaVu Serif Subset")),
+      "D6: the display faces load from this origin (no system fallback is doing the work)",
+      JSON.stringify(font.faces));
+    check(font.h1Family.includes("DejaVu Serif Subset"),
+      "D6: the hero resolves to the shipped display face, so the identity is OS-independent",
+      font.h1Family);
+    check(font.shipped !== font.fallback && font.shipped > 0,
+      "D6: the shipped face shapes text with its own metrics (distinct from the sans fallback)",
+      `shipped=${font.shipped}px fallback=${font.fallback}px`);
+    const fontFiles = fontRequests.filter((u) => u.includes("/assets/fonts/"));
+    check(fontFiles.length >= 1 && fontFiles.every((u) => u.startsWith(origin)),
+      "D6: the font is served from this origin — 0 third-party font requests",
+      JSON.stringify(fontFiles));
+    results.font = font;
+    fs.writeFileSync(path.join(OUT, "fonts.json"),
+      JSON.stringify({ ...font, requests: fontRequests.filter((u) => u.includes("font")) }, null, 2));
+    await fontPage.close();
   }
 
   await browser.close();

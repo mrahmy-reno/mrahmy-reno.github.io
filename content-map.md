@@ -2,7 +2,7 @@
 
 **Purpose.** Every factual claim rendered by the published site is listed here against the `FACTS_LEDGER.md` row that authorises it. This file is the audited artefact behind acceptance criterion **A1** (0 unsourced claims) and the PRD's rule **R4** (a rendered factual sentence that cannot be mapped is deleted, not reworded).
 
-**Generated** by `python3 tools/gen_content_map.py` from `tools/site_content.py` — the same content model that renders `docs/`. Blocks rendered by the generator: **995**; distinct strings: **16** global + **710** page-specific.
+**Generated** by `python3 tools/gen_content_map.py` from `tools/site_content.py` — the same content model that renders `docs/`. Blocks rendered by the generator: **927**; distinct strings: **11** global + **702** page-specific.
 
 ### Ref scheme
 
@@ -76,16 +76,11 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 4 | Mohammed Tawfiq Rahmy — Associate Solutions Engineer — AI / GenAI Solutions, Renosystems · https://www.linkedin.com/in/mohammed-rahmy | `L1.1`, `S5-R2`, `S5-R1`, `L8.3` | print | Print-only header line assembled from mapped blocks (A17: name, current role + employer and the LinkedIn URL readable on the first printed page). |
 | 5 | Menu | *(structural)* | structural |  |
 | 6 | LinkedIn | `L8.3` | structural | Link text is the platform name; href is the L8.3 URL. |
-| 7 | S1 — authorized LinkedIn profile | *(structural)* | structural |  |
-| 8 | S2 — owner résumé | *(structural)* | structural |  |
-| 9 | S3 — owner profile material | *(structural)* | structural |  |
-| 10 | S5 — owner résumé (newer) | *(structural)* | structural |  |
-| 11 | Back to top | *(structural)* | structural |  |
-| 12 | Every claim on this site is sourced. | *(structural)* | structural | Process statement about this site; true by construction (A1). |
-| 13 | © Mohammed Tawfiq Rahmy | `L1.1` | structural | Name only; deliberately no year token (PRD 4.8). |
-| 14 | Source tiers | *(structural)* | structural | Process metadata: the ledger's own Sources table, restated. |
-| 15 | Mohammed Tawfiq Rahmy · https://www.linkedin.com/in/mohammed-rahmy | `L1.1`, `L8.3` | print | Print-only header line on a non-index page: name + LinkedIn URL only, so no employer name appears next to a project description (D17). Uses the same mapped blocks as the index variant. |
-| 16 | All work | *(structural)* | structural |  |
+| 7 | Back to top | *(structural)* | structural |  |
+| 8 | Every claim on this site is sourced. | *(structural)* | structural | Process statement about this site; true by construction (A1). |
+| 9 | © Mohammed Tawfiq Rahmy | `L1.1` | structural | Name only; deliberately no year token (PRD 4.8). |
+| 10 | Mohammed Tawfiq Rahmy · https://www.linkedin.com/in/mohammed-rahmy | `L1.1`, `L8.3` | print | Print-only header line on a non-index page: name + LinkedIn URL only, so no employer name appears next to a project description (D17). Uses the same mapped blocks as the index variant. |
+| 11 | All work | *(structural)* | structural |  |
 
 ---
 
@@ -96,12 +91,12 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 
 | # | Rendered text | Ref | Mode | Note |
 |---|---|---|---|---|
-| 1 | Active | *(structural)* | structural | Signal label (DESIGN_LANGUAGE.md §3.6). Condition C1 ACTIVE: the current role is true now and was not true before. Label is a noun-of-state, not an encouragement (DNA §5.6). |
+| 1 | Agentic systems are only useful if their answers can be checked: grounding/evidence controls, typed contracts, evaluation gates, approval binding, authority boundaries, evidence-linked findings, replayable traces, idempotent actions and reconciliation. | `L4.1`, `L4.2`, `L4.3`, `L3.4` | composed | PROOF_PLAN.md section 7's sanctioned construction, at the phrase level: the framing clause is PROOF_PLAN section 7's own sentence, and every substantive phrase after the colon is a ledger phrase ('grounding/evidence controls', 'typed contracts' L4.1; 'evidence-linked findings', 'replayable traces' L4.2; 'approval binding', 'authority boundaries', 'idempotent actions and reconciliation' L4.3; 'evaluation gates' L4.1@4.1). No new noun, technology, employer, date, client or metric enters the sentence. |
 | 2 | Solutions Engineer \| Mechatronics × AI Systems | `L1.2` | verbatim | The live LinkedIn headline (S1). R9: the hero headline stays this string even though S5 has a newer keyword line. |
-| 3 | Mohammed Tawfiq Rahmy | `L1.1` | verbatim |  |
-| 4 | I build production agentic systems: | `L2.1`, `L3.4` | composed | ART_DIRECTION.md section 2, composition rule R2. Phrases: 'I build' (verb, free under R2) + 'production agentic systems' (L2.1, verbatim). No noun, technology, employer, date, client, metric or scope detail is added. |
-| 5 | grounded, evaluated, approval-bound. | `L3.4`, `L4.1`, `L4.3` | composed | ART_DIRECTION.md section 2, R2. Phrases: 'grounding/evidence controls' and 'grounding controls' (L3.4 / L4.1) -> 'grounded'; 'evaluation-gated agent development' (L3.4) and 'evaluation gates' (L4.1) -> 'evaluated'; 'approval binding' (L4.3) -> 'approval-bound'. The claim is a compression of phrases the ledger already prints, not a new assertion. |
-| 6 | Register | *(structural)* | structural | Archetype label for the rail column (A2 rail & content). Names the column, asserts nothing. |
+| 3 | Active | *(structural)* | structural | Signal label (DESIGN_LANGUAGE.md §3.6). Condition C1 ACTIVE: the current role is true now and was not true before. Label is a noun-of-state, not an encouragement (DNA §5.6). |
+| 4 | Mohammed Tawfiq Rahmy | `L1.1` | verbatim |  |
+| 5 | I build production agentic systems: | `L2.1`, `L3.4` | composed | ART_DIRECTION.md section 2, composition rule R2. Phrases: 'I build' (verb, free under R2) + 'production agentic systems' (L2.1, verbatim). No noun, technology, employer, date, client, metric or scope detail is added. |
+| 6 | grounded, evaluated, approval-bound. | `L3.4`, `L4.1`, `L4.3` | composed | ART_DIRECTION.md section 2, R2. Phrases: 'grounding/evidence controls' and 'grounding controls' (L3.4 / L4.1) -> 'grounded'; 'evaluation-gated agent development' (L3.4) and 'evaluation gates' (L4.1) -> 'evaluated'; 'approval binding' (L4.3) -> 'approval-bound'. The claim is a compression of phrases the ledger already prints, not a new assertion. |
 | 7 | Current role | *(structural)* | structural |  |
 | 8 | Associate Solutions Engineer — AI / GenAI Solutions | `S5-R2` | verbatim | The formal current role title (FACTS_LEDGER.md §11 R2, source S5). Used wherever a role is asserted as a field. The older L3.1 token 'AI Solutions Engineer' is retained only inside owner-authored summary prose. |
 | 9 | Employer | *(structural)* | structural |  |
@@ -114,177 +109,167 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 16 | multi-agent orchestration, RAG, MCP tooling, evaluation harnesses, and safety guardrails | `L2.2` | verbatim |  |
 | 17 | Languages | *(structural)* | structural |  |
 | 18 | Arabic (native) · English (C1) · German (A2) | `L5.1` | verbatim |  |
-| 19 | AI Solutions Engineer who ships production agentic systems. I've built multi-agent platforms for security operations and safety-first AI teammates with typed contracts, grounding, evaluation gates, and approval binding, and I've shipped independent products where coding agents wrote most of the code under my direction (65-test suites, signed APKs, live dashboards). Enterprise discipline + builder velocity. | `L2.1` | composed | L2.1 verbatim with the two ledger elisions resolved to the words present at those exact positions in the source the ledger cites (PRD E1: 'I've built' / 'and I've shipped'). No other text added. Declared composition exception E1. |
-| 20 | See selected work | *(structural)* | structural |  |
-| 21 | Connect on LinkedIn | `L8.3` | structural | Link text is a call to action; href is the L8.3 URL. |
-| 22 | Agentic systems are only useful if their answers can be checked: grounding/evidence controls, typed contracts, evaluation gates, approval binding, authority boundaries, evidence-linked findings, replayable traces, idempotent actions and reconciliation. | `L4.1`, `L4.2`, `L4.3`, `L3.4` | composed | PROOF_PLAN.md section 7's sanctioned construction, at the phrase level: the framing clause is PROOF_PLAN section 7's own sentence, and every substantive phrase after the colon is a ledger phrase ('grounding/evidence controls', 'typed contracts' L4.1; 'evidence-linked findings', 'replayable traces' L4.2; 'approval binding', 'authority boundaries', 'idempotent actions and reconciliation' L4.3; 'evaluation gates' L4.1@4.1). No new noun, technology, employer, date, client or metric enters the sentence. |
-| 23 | 01 / 07 | *(structural)* | structural | Section serial. A structural position marker for the section, not a claim. |
-| 24 | About | *(structural)* | structural |  |
-| 25 | Why this work matters, in the terms the work itself uses. | *(structural)* | structural |  |
-| 26 | AI Solutions Engineer building agentic and generative AI systems for security, operations, and analytics. Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, MCP/tool integrations, LLM evaluation, guardrails, and full-stack AI delivery; backed by AWS Professional and Associate certifications. | `S5-R9` | verbatim | The S5 summary, rendered verbatim in About (resolution R9: S5 summary feeds the About/positioning). |
-| 27 | AI Solutions Engineer building production agentic systems: multi-agent orchestration, RAG, MCP tooling, evaluation harnesses, and safety guardrails. Enterprise-grade grounding and test discipline from security-operations work; ships complete products (backend, UI, mobile) with AI coding agents. | `L2.2` | verbatim | L2.2 verbatim (retained: S5 does not contradict it, it describes the same work). |
-| 28 | — source: owner résumé (newer) | *(structural)* | structural |  |
-| 29 | Architect and implement evidence-grounded multi-agent SOC workflows using Strands Agents, Amazon Bedrock, Splunk/MCP integrations, and SOAR playbooks, with typed contracts, quality guards, verdict generation, and controlled write-back. | `S5-P1` | verbatim | S5 Renosystems bullet 1 (FACTS_LEDGER section 11, S5-P1). Describes the work without naming any project (D17 attribution guard preserved). |
-| 30 | Build brokered investigation systems that decompose tasks across specialist agents while enforcing scope, attribution, grounding, evidence-link integrity, replayable traces, and adversarial/compliance tests. | `S5-P1` | verbatim | S5 Renosystems bullet 2 (S5-P1). No project name asserted. |
-| 31 | Develop AI copilots across Splunk, Axiom, and Dremio with schema-grounded query/SQL generation, validation, visualization, session memory, telemetry, and React/Vite interfaces. | `S5-P1` | verbatim | S5 Renosystems bullet 3 (S5-P1). No project name asserted. |
-| 32 | Engineer and evaluate RAG/agent stacks using BM25 + ChromaDB hybrid retrieval, reciprocal-rank fusion, neural reranking, semantic caching, RAGAS, LLM-as-judge validation, approval boundaries, and automated E2E gates. | `S5-P1` | verbatim | S5 Renosystems bullet 4 (S5-P1). No project name asserted. |
-| 33 | Present | *(structural)* | structural | Factual state marker on the current role (L3.1 dates). |
-| 34 | Implement wiring-harness engineering changes from OEM documentation (DCS/PPMR, ECR) for Toyota, Stellantis, and Ford; produce BOMs, man-hour reports, and splice diagrams with production traceability. | `L3.4`, `S5-P2` | composed | Phrases: 'harness design changes from OEM documentation (DCS/PPMR, ECR) for Toyota, Stellantis, and Ford' (L3.4); 'produced BOMs, man-hour reports, and splice diagrams with production traceability' (S5-P2). Tense unified; no new noun, number or scope added. |
-| 35 | Coordinate design and production stakeholders to troubleshoot technical issues and validate updates against cost, quality, and manufacturability constraints. | `S5-P2` | verbatim | S5 SEWS-E bullet 2 (S5-P2). |
-| 36 | Automotive Drawing Office Engineer | `L3.2` | verbatim |  |
-| 37 | Sumitomo Electric Wiring Systems – Europe (SEWS-E), Cairo | `L3.2`, `S5-R4` | verbatim |  |
-| 38 | May 2024 – Feb 2026 | `L3.2`, `S5-R3` | verbatim |  |
-| 39 | Biocompatible magneto-sperm fabrication via electrospinning, and a 4-coil electromagnetic control system with closed-loop positioning (Arduino, OpenCV). | `L3.4` | verbatim | Retained per resolution R5: S5 omits this role for brevity, nothing contradicts it. |
-| 40 | Nano-Robotics Researcher | `L3.3` | verbatim |  |
-| 41 | MNR Lab (Cairo) | `L3.3` | verbatim |  |
-| 42 | Jun 2022 – Sep 2022 | `L3.3` | verbatim |  |
-| 43 | 02 / 07 | *(structural)* | structural | Section serial. |
-| 44 | Experience | *(structural)* | structural |  |
-| 45 | Roles and dates, newest first. | *(structural)* | structural |  |
-| 46 | Featured | *(structural)* | structural |  |
-| 47 | 01 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 48 | SAMA — Agentic SOC Triage & Response Automation | `L4.1` | verbatim |  |
-| 49 | Multistage agentic triage workflow, grounding/evidence controls, typed contracts. | `L4.1` | verbatim |  |
-| 50 | Open | *(structural)* | structural | Link text on a project row; the accessible name also carries the project name. |
-| 51 | 02 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 52 | SmartOps SOC App | `L4.2` | verbatim |  |
-| 53 | Brokered multi-agent investigation platform: task broker, domain analysts, evidence-linked findings, replayable traces. | `L4.2` | verbatim |  |
-| 54 | 03 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 55 | Milo AI Employee | `L4.3` | verbatim |  |
-| 56 | Safety-first agentic operations teammate over simulated Splunk/Cribl incidents; approval binding, authority boundaries, redaction, budget/time limits. | `L4.3` | verbatim |  |
-| 57 | 04 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 58 | PulseSec | `L4.4` | verbatim |  |
-| 59 | Multi-domain investigation copilot: domain-pack architecture, MCP connectors, schema-grounded query generation, React/Vite UI with agent-trace telemetry. | `L4.4` | verbatim |  |
-| 60 | Security operations & agent safety | *(structural)* | structural |  |
-| 61 | 05 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 62 | Tonsy-GPT | `L4.5` | verbatim |  |
-| 63 | Self-hosted RAG assistant: hybrid BM25 + ChromaDB, RRF, neural reranking, semantic caching, FastAPI/SSE + Next.js. | `L4.5` | verbatim |  |
-| 64 | 06 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 65 | Smart Care | `L4.6` | verbatim |  |
-| 66 | Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI. | `L4.6` | verbatim |  |
-| 67 | Applied RAG & analytics | *(structural)* | structural |  |
-| 68 | 07 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 69 | HalalBot | `L4.7` | verbatim |  |
-| 70 | Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E). | `L4.7` | verbatim |  |
-| 71 | 08 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 72 | ForWheelz | `L4.8` | verbatim |  |
-| 73 | Driver-risk intelligence: 28-feature trip pipeline from vehicle telemetry, RF/XGBoost with ablation, output contracts. | `L4.8` | verbatim |  |
-| 74 | 09 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 75 | email-MCP | `L4.9` | verbatim |  |
-| 76 | MCP tool server, 29 tests, documented. | `L4.9` | verbatim |  |
-| 77 | 10 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
-| 78 | Voice agent core | `L4.10` | verbatim |  |
-| 79 | VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English. | `L4.10` | verbatim |  |
-| 80 | Shipped products & ML systems | *(structural)* | structural |  |
-| 81 | 03 / 07 | *(structural)* | structural | Section serial. |
-| 82 | Selected work | *(structural)* | structural |  |
-| 83 | Ten projects across security-operations agents, applied RAG and analytics, and shipped products. | *(structural)* | structural | Structural deck: names the three groups that the rows themselves render. |
-| 84 | — source: owner résumé | *(structural)* | structural |  |
-| 85 | Artefact | *(structural)* | structural |  |
-| 86 | Brokered investigation: broker, analysts, evidence bus, trace lane. | `L4.2` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
-| 87 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
-| 88 | Also drawn | *(structural)* | structural |  |
-| 89 | All ten projects | *(structural)* | structural |  |
-| 90 | 04 / 07 | *(structural)* | structural | Section serial. |
-| 91 | Work, shown | *(structural)* | structural |  |
-| 92 | One system, drawn from published material. | *(structural)* | structural |  |
-| 93 | Ten projects — how they fit together. | `L4.1`, `L4.2`, `L4.3`, `L4.4`, `L4.5`, `L4.6`, `L4.7`, `L4.8`, `L4.9`, `L4.10` | composed | Structural caption for the system map. The ten node labels are the ledger project names; the three group labels are the structural grouping. |
-| 94 | See one, drawn | *(structural)* | structural |  |
-| 95 | multi-agent orchestration (Strands Agents) | `L5.1` | verbatim |  |
-| 96 | Claude Code / coding-agent workflows | `L5.1` | verbatim |  |
-| 97 | MCP servers | `L5.1` | verbatim |  |
-| 98 | agent evals (LLM-as-judge, RAGAS, blind-vs-shown) | `L5.1` | verbatim |  |
-| 99 | approval binding & safety boundaries | `L5.1` | verbatim |  |
-| 100 | grounding/evidence controls | `L5.1` | verbatim |  |
-| 101 | LangChain | `S5-P6` | verbatim |  |
-| 102 | Agentic AI | *(structural)* | structural |  |
-| 103 | ChromaDB | `L5.1` | verbatim |  |
-| 104 | BM25 + reciprocal-rank fusion | `L5.1` | verbatim |  |
-| 105 | RRF | `S5-P6` | verbatim |  |
-| 106 | neural reranking | `L5.1` | verbatim |  |
-| 107 | FAISS | `L5.1` | verbatim |  |
-| 108 | semantic caching | `L5.1` | verbatim |  |
-| 109 | RAG | *(structural)* | structural |  |
-| 110 | Amazon Bedrock | `L5.1` | verbatim |  |
-| 111 | Azure OpenAI | `L5.1` | verbatim |  |
-| 112 | Gemini | `L5.1` | verbatim |  |
-| 113 | OpenAI | `L5.1` | verbatim |  |
-| 114 | DeepSeek | `L5.1` | verbatim |  |
-| 115 | LLM platforms | *(structural)* | structural |  |
-| 116 | Python (asyncio, FastAPI, SSE) | `L5.1` | verbatim |  |
-| 117 | TypeScript | `L5.1` | verbatim |  |
-| 118 | Splunk | `L5.1` | verbatim |  |
-| 119 | Cribl | `L5.1` | verbatim |  |
-| 120 | Elasticsearch | `L5.1` | verbatim |  |
-| 121 | Dremio | `L5.1` | verbatim |  |
-| 122 | Axiom | `S5-P6` | verbatim |  |
-| 123 | Pydantic | `L5.1` | verbatim |  |
-| 124 | SQL | `L5.1` | verbatim |  |
-| 125 | SQLite | `S5-P6` | verbatim |  |
-| 126 | REST APIs | `S5-P6` | verbatim |  |
-| 127 | Docker | `L5.1` | verbatim |  |
-| 128 | Backend & data | *(structural)* | structural |  |
-| 129 | React/Vite | `L5.1` | verbatim |  |
-| 130 | Vite | `S5-P6` | verbatim |  |
-| 131 | Next.js | `L5.1` | verbatim |  |
-| 132 | Android WebView packaging & signing | `L5.1` | verbatim |  |
-| 133 | Frontend & mobile | *(structural)* | structural |  |
-| 134 | scikit-learn | `L5.1` | verbatim |  |
-| 135 | XGBoost | `L5.1` | verbatim |  |
-| 136 | Random Forest | `S5-P6` | verbatim |  |
-| 137 | SentenceTransformers | `S5-P6` | verbatim |  |
-| 138 | OpenCV | `L5.1` | verbatim |  |
-| 139 | feature engineering | `L5.1` | verbatim |  |
-| 140 | ML/CV | *(structural)* | structural |  |
-| 141 | WhatsApp Business Cloud API | `L5.1` | verbatim |  |
-| 142 | Twilio voice pipelines | `L5.1` | verbatim |  |
-| 143 | Git/GitHub | `L5.1` | verbatim |  |
-| 144 | web scraping | `L5.1` | verbatim |  |
-| 145 | Pytest | `S5-P6` | verbatim |  |
-| 146 | Playwright | `S5-P6` | verbatim |  |
-| 147 | Also | *(structural)* | structural |  |
-| 148 | Arabic (native) | `L5.1` | verbatim |  |
-| 149 | English (C1) | `L5.1` | verbatim |  |
-| 150 | German (A2) | `L5.1` | verbatim |  |
-| 151 | 05 / 07 | *(structural)* | structural | Section serial. |
-| 152 | Skills | *(structural)* | structural |  |
-| 153 | The stack, grouped. Names are the ledger's own. | *(structural)* | structural |  |
-| 154 | CND Digital IC Design Diploma | `L6.1` | verbatim |  |
-| 155 | American University in Cairo | `L6.1` | verbatim |  |
-| 156 | ASIC RTL-to-GDSII · Verilog/SystemVerilog · Synopsys | `L6.1` | verbatim |  |
-| 157 | Sep 2023 – Aug 2024 | `S5-P5` | verbatim |  |
-| 158 | BSc Mechatronics Engineering | `L6.2` | verbatim |  |
-| 159 | German University in Cairo | `L6.2` | verbatim |  |
-| 160 | Thesis: magneto-sperm fabrication & characterisation | `L6.2` | verbatim |  |
-| 161 | Oct 2018 – Jun 2023 | `S5-P5` | verbatim |  |
-| 162 | Jul 2026 | `S5-P4` | verbatim |  |
-| 163 | AWS Certified Generative AI Developer – Professional (AIP-C01) | `L7.1` | verbatim |  |
-| 164 | Amazon Web Services | `L7.1` | verbatim |  |
-| 165 | May 2026 | `S5-P4` | verbatim |  |
-| 166 | AWS Certified Machine Learning Engineer – Associate (MLA-C01) | `L7.2` | verbatim |  |
-| 167 | Amazon Web Services | `L7.2` | verbatim |  |
-| 168 | Apr 2026 | `S5-P4` | verbatim |  |
-| 169 | AWS Certified Solutions Architect – Associate (SAA-C03) | `L7.3` | verbatim |  |
-| 170 | Amazon Web Services | `L7.3` | verbatim |  |
-| 171 | Jun 2026 | `S5-P4` | verbatim |  |
-| 172 | Cribl Certified Admin – Stream | `L7.4`, `S5-R6` | verbatim |  |
-| 173 | Cribl | `L7.4` | verbatim |  |
-| 174 | Generative AI with AWS | `L7.5` | verbatim |  |
-| 175 | Udacity | `L7.5` | verbatim |  |
-| 176 | 06 / 07 | *(structural)* | structural | Section serial. |
-| 177 | Education & certifications | *(structural)* | structural |  |
-| 178 | Credentials and the bodies that issued them. | *(structural)* | structural |  |
-| 179 | Certifications | *(structural)* | structural |  |
-| 180 | 07 / 07 | *(structural)* | structural | Section serial. |
-| 181 | Contact | *(structural)* | structural |  |
-| 182 | One route, and it is LinkedIn. | *(structural)* | structural |  |
-| 183 | Connect with me on LinkedIn | `L8.3` | structural | Link text is a call to action; href is the L8.3 URL. |
-| 184 | linkedin.com/in/mohammed-rahmy | `L8.3` | verbatim |  |
-| 185 | This site links to LinkedIn only. | *(structural)* | structural | Statement about this site's configured state, not a claim about the person. |
-| 186 | Mohammed Tawfiq Rahmy — Associate Solutions Engineer — AI / GenAI Solutions | `L1.1`, `S5-R2` | composed | Title composed from the ledger name (L1.1) and the formal current role (FACTS_LEDGER §11 R2, source S5). The older L3.1 token 'AI Solutions Engineer' is not used as a title field; it survives only inside the owner-authored summary prose. |
-| 187 | AI Solutions Engineer building agentic and generative AI systems for security, operations, and analytics. Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, MCP/tool integrations, LLM evaluation, guardrails, and full-stack AI delivery. | `S5-R9` | verbatim | The S5 summary (authoritative positioning per resolution R9); the closing clause 'backed by AWS Professional and Associate certifications' is rendered in the About section rather than the meta description. |
-| 188 | Work | *(structural)* | structural |  |
-| 189 | Education | *(structural)* | structural |  |
+| 19 | See selected work | *(structural)* | structural |  |
+| 20 | Connect on LinkedIn | `L8.3` | structural | Link text is a call to action; href is the L8.3 URL. |
+| 21 | About | *(structural)* | structural |  |
+| 22 | Why this work matters, in the terms the work itself uses. | *(structural)* | structural |  |
+| 23 | AI Solutions Engineer building agentic and generative AI systems for security, operations, and analytics. Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, MCP/tool integrations, LLM evaluation, guardrails, and full-stack AI delivery; backed by AWS Professional and Associate certifications. | `S5-R9` | verbatim | The S5 summary, rendered verbatim in About (resolution R9: S5 summary feeds the About/positioning). |
+| 24 | AI Solutions Engineer who ships production agentic systems. I've built multi-agent platforms for security operations and safety-first AI teammates with typed contracts, grounding, evaluation gates, and approval binding, and I've shipped independent products where coding agents wrote most of the code under my direction (65-test suites, signed APKs, live dashboards). Enterprise discipline + builder velocity. | `L2.1` | composed | L2.1 verbatim with the two ledger elisions resolved to the words present at those exact positions in the source the ledger cites (PRD E1: 'I've built' / 'and I've shipped'). No other text added. Declared composition exception E1. |
+| 25 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
+| 26 | Architect and implement evidence-grounded multi-agent SOC workflows using Strands Agents, Amazon Bedrock, Splunk/MCP integrations, and SOAR playbooks, with typed contracts, quality guards, verdict generation, and controlled write-back. | `S5-P1` | verbatim | S5 Renosystems bullet 1 (FACTS_LEDGER section 11, S5-P1). Describes the work without naming any project (D17 attribution guard preserved). |
+| 27 | Build brokered investigation systems that decompose tasks across specialist agents while enforcing scope, attribution, grounding, evidence-link integrity, replayable traces, and adversarial/compliance tests. | `S5-P1` | verbatim | S5 Renosystems bullet 2 (S5-P1). No project name asserted. |
+| 28 | Develop AI copilots across Splunk, Axiom, and Dremio with schema-grounded query/SQL generation, validation, visualization, session memory, telemetry, and React/Vite interfaces. | `S5-P1` | verbatim | S5 Renosystems bullet 3 (S5-P1). No project name asserted. |
+| 29 | Engineer and evaluate RAG/agent stacks using BM25 + ChromaDB hybrid retrieval, reciprocal-rank fusion, neural reranking, semantic caching, RAGAS, LLM-as-judge validation, approval boundaries, and automated E2E gates. | `S5-P1` | verbatim | S5 Renosystems bullet 4 (S5-P1). No project name asserted. |
+| 30 | Present | *(structural)* | structural | Factual state marker on the current role (L3.1 dates). |
+| 31 | Implement wiring-harness engineering changes from OEM documentation (DCS/PPMR, ECR) for Toyota, Stellantis, and Ford; produce BOMs, man-hour reports, and splice diagrams with production traceability. | `L3.4`, `S5-P2` | composed | Phrases: 'harness design changes from OEM documentation (DCS/PPMR, ECR) for Toyota, Stellantis, and Ford' (L3.4); 'produced BOMs, man-hour reports, and splice diagrams with production traceability' (S5-P2). Tense unified; no new noun, number or scope added. |
+| 32 | Coordinate design and production stakeholders to troubleshoot technical issues and validate updates against cost, quality, and manufacturability constraints. | `S5-P2` | verbatim | S5 SEWS-E bullet 2 (S5-P2). |
+| 33 | Automotive Drawing Office Engineer | `L3.2` | verbatim |  |
+| 34 | Sumitomo Electric Wiring Systems – Europe (SEWS-E), Cairo | `L3.2`, `S5-R4` | verbatim |  |
+| 35 | May 2024 – Feb 2026 | `L3.2`, `S5-R3` | verbatim |  |
+| 36 | Biocompatible magneto-sperm fabrication via electrospinning, and a 4-coil electromagnetic control system with closed-loop positioning (Arduino, OpenCV). | `L3.4` | verbatim | Retained per resolution R5: S5 omits this role for brevity, nothing contradicts it. |
+| 37 | Nano-Robotics Researcher | `L3.3` | verbatim |  |
+| 38 | MNR Lab (Cairo) | `L3.3` | verbatim |  |
+| 39 | Jun 2022 – Sep 2022 | `L3.3` | verbatim |  |
+| 40 | Experience | *(structural)* | structural |  |
+| 41 | Roles and dates, newest first. | *(structural)* | structural |  |
+| 42 | Featured | *(structural)* | structural |  |
+| 43 | 01 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 44 | SAMA — Agentic SOC Triage & Response Automation | `L4.1` | verbatim |  |
+| 45 | Multistage agentic triage workflow, grounding/evidence controls, typed contracts. | `L4.1` | verbatim |  |
+| 46 | Open | *(structural)* | structural | Link text on a project row; the accessible name also carries the project name. |
+| 47 | 02 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 48 | SmartOps SOC App | `L4.2` | verbatim |  |
+| 49 | Brokered multi-agent investigation platform: task broker, domain analysts, evidence-linked findings, replayable traces. | `L4.2` | verbatim |  |
+| 50 | 03 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 51 | Milo AI Employee | `L4.3` | verbatim |  |
+| 52 | Safety-first agentic operations teammate over simulated Splunk/Cribl incidents; approval binding, authority boundaries, redaction, budget/time limits. | `L4.3` | verbatim |  |
+| 53 | 04 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 54 | PulseSec | `L4.4` | verbatim |  |
+| 55 | Multi-domain investigation copilot: domain-pack architecture, MCP connectors, schema-grounded query generation, React/Vite UI with agent-trace telemetry. | `L4.4` | verbatim |  |
+| 56 | Security operations & agent safety | *(structural)* | structural |  |
+| 57 | 05 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 58 | Tonsy-GPT | `L4.5` | verbatim |  |
+| 59 | Self-hosted RAG assistant: hybrid BM25 + ChromaDB, RRF, neural reranking, semantic caching, FastAPI/SSE + Next.js. | `L4.5` | verbatim |  |
+| 60 | 06 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 61 | Smart Care | `L4.6` | verbatim |  |
+| 62 | Network-ops analytics copilot: intent → grounded SQL → stats → visualisation agents, Dremio, streaming React UI. | `L4.6` | verbatim |  |
+| 63 | Applied RAG & analytics | *(structural)* | structural |  |
+| 64 | 07 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 65 | HalalBot | `L4.7` | verbatim |  |
+| 66 | Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E). | `L4.7` | verbatim |  |
+| 67 | 08 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 68 | ForWheelz | `L4.8` | verbatim |  |
+| 69 | Driver-risk intelligence: 28-feature trip pipeline from vehicle telemetry, RF/XGBoost with ablation, output contracts. | `L4.8` | verbatim |  |
+| 70 | 09 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 71 | email-MCP | `L4.9` | verbatim |  |
+| 72 | MCP tool server, 29 tests, documented. | `L4.9` | verbatim |  |
+| 73 | 10 | *(structural)* | structural | Project catalogue position, in the ledger's own L4.1-L4.10 order. |
+| 74 | Voice agent core | `L4.10` | verbatim |  |
+| 75 | VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English. | `L4.10` | verbatim |  |
+| 76 | Shipped products & ML systems | *(structural)* | structural |  |
+| 77 | Selected work | *(structural)* | structural |  |
+| 78 | Ten projects across security-operations agents, applied RAG and analytics, and shipped products. | *(structural)* | structural | Structural deck: names the three groups that the rows themselves render. |
+| 79 | Artefact | *(structural)* | structural |  |
+| 80 | One triage run: the ledger's five stages, controls across all of them, evaluation at the verdict. | `L4.1`, `L4.1@4.1` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 81 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
+| 82 | The verdict's contract, as a shape. | `L4.1` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 83 | Schematic — interface shape only. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
+| 84 | Also drawn | *(structural)* | structural |  |
+| 85 | All ten projects | *(structural)* | structural |  |
+| 86 | Work, shown | *(structural)* | structural |  |
+| 87 | How one of them runs: the stages, the controls bound across them, and the contract at the end. | *(structural)* | structural | Structural deck describing what the two objects below it draw. It no longer claims a map of the series (B2-04 / D3: the section used to draw the ten project names). |
+| 88 | multi-agent orchestration (Strands Agents) | `L5.1` | verbatim |  |
+| 89 | Claude Code / coding-agent workflows | `L5.1` | verbatim |  |
+| 90 | MCP servers | `L5.1` | verbatim |  |
+| 91 | agent evals (LLM-as-judge, RAGAS, blind-vs-shown) | `L5.1` | verbatim |  |
+| 92 | approval binding & safety boundaries | `L5.1` | verbatim |  |
+| 93 | grounding/evidence controls | `L5.1` | verbatim |  |
+| 94 | LangChain | `S5-P6` | verbatim |  |
+| 95 | Agentic AI | *(structural)* | structural |  |
+| 96 | ChromaDB | `L5.1` | verbatim |  |
+| 97 | BM25 + reciprocal-rank fusion | `L5.1` | verbatim |  |
+| 98 | RRF | `S5-P6` | verbatim |  |
+| 99 | neural reranking | `L5.1` | verbatim |  |
+| 100 | FAISS | `L5.1` | verbatim |  |
+| 101 | semantic caching | `L5.1` | verbatim |  |
+| 102 | RAG | *(structural)* | structural |  |
+| 103 | Amazon Bedrock | `L5.1` | verbatim |  |
+| 104 | Azure OpenAI | `L5.1` | verbatim |  |
+| 105 | Gemini | `L5.1` | verbatim |  |
+| 106 | OpenAI | `L5.1` | verbatim |  |
+| 107 | DeepSeek | `L5.1` | verbatim |  |
+| 108 | LLM platforms | *(structural)* | structural |  |
+| 109 | Python (asyncio, FastAPI, SSE) | `L5.1` | verbatim |  |
+| 110 | TypeScript | `L5.1` | verbatim |  |
+| 111 | Splunk | `L5.1` | verbatim |  |
+| 112 | Cribl | `L5.1` | verbatim |  |
+| 113 | Elasticsearch | `L5.1` | verbatim |  |
+| 114 | Dremio | `L5.1` | verbatim |  |
+| 115 | Axiom | `S5-P6` | verbatim |  |
+| 116 | Pydantic | `L5.1` | verbatim |  |
+| 117 | SQL | `L5.1` | verbatim |  |
+| 118 | SQLite | `S5-P6` | verbatim |  |
+| 119 | REST APIs | `S5-P6` | verbatim |  |
+| 120 | Docker | `L5.1` | verbatim |  |
+| 121 | Backend & data | *(structural)* | structural |  |
+| 122 | React/Vite | `L5.1` | verbatim |  |
+| 123 | Vite | `S5-P6` | verbatim |  |
+| 124 | Next.js | `L5.1` | verbatim |  |
+| 125 | Android WebView packaging & signing | `L5.1` | verbatim |  |
+| 126 | Frontend & mobile | *(structural)* | structural |  |
+| 127 | scikit-learn | `L5.1` | verbatim |  |
+| 128 | XGBoost | `L5.1` | verbatim |  |
+| 129 | Random Forest | `S5-P6` | verbatim |  |
+| 130 | SentenceTransformers | `S5-P6` | verbatim |  |
+| 131 | OpenCV | `L5.1` | verbatim |  |
+| 132 | feature engineering | `L5.1` | verbatim |  |
+| 133 | ML/CV | *(structural)* | structural |  |
+| 134 | WhatsApp Business Cloud API | `L5.1` | verbatim |  |
+| 135 | Twilio voice pipelines | `L5.1` | verbatim |  |
+| 136 | Git/GitHub | `L5.1` | verbatim |  |
+| 137 | web scraping | `L5.1` | verbatim |  |
+| 138 | Pytest | `S5-P6` | verbatim |  |
+| 139 | Playwright | `S5-P6` | verbatim |  |
+| 140 | Also | *(structural)* | structural |  |
+| 141 | Arabic (native) | `L5.1` | verbatim |  |
+| 142 | English (C1) | `L5.1` | verbatim |  |
+| 143 | German (A2) | `L5.1` | verbatim |  |
+| 144 | Skills | *(structural)* | structural |  |
+| 145 | The stack, grouped. Names are the ledger's own. | *(structural)* | structural |  |
+| 146 | CND Digital IC Design Diploma | `L6.1` | verbatim |  |
+| 147 | American University in Cairo | `L6.1` | verbatim |  |
+| 148 | ASIC RTL-to-GDSII · Verilog/SystemVerilog · Synopsys | `L6.1` | verbatim |  |
+| 149 | Sep 2023 – Aug 2024 | `S5-P5` | verbatim |  |
+| 150 | BSc Mechatronics Engineering | `L6.2` | verbatim |  |
+| 151 | German University in Cairo | `L6.2` | verbatim |  |
+| 152 | Thesis: magneto-sperm fabrication & characterisation | `L6.2` | verbatim |  |
+| 153 | Oct 2018 – Jun 2023 | `S5-P5` | verbatim |  |
+| 154 | Jul 2026 | `S5-P4` | verbatim |  |
+| 155 | AWS Certified Generative AI Developer – Professional (AIP-C01) | `L7.1` | verbatim |  |
+| 156 | Amazon Web Services | `L7.1` | verbatim |  |
+| 157 | May 2026 | `S5-P4` | verbatim |  |
+| 158 | AWS Certified Machine Learning Engineer – Associate (MLA-C01) | `L7.2` | verbatim |  |
+| 159 | Amazon Web Services | `L7.2` | verbatim |  |
+| 160 | Apr 2026 | `S5-P4` | verbatim |  |
+| 161 | AWS Certified Solutions Architect – Associate (SAA-C03) | `L7.3` | verbatim |  |
+| 162 | Amazon Web Services | `L7.3` | verbatim |  |
+| 163 | Jun 2026 | `S5-P4` | verbatim |  |
+| 164 | Cribl Certified Admin – Stream | `L7.4`, `S5-R6` | verbatim |  |
+| 165 | Cribl | `L7.4` | verbatim |  |
+| 166 | Generative AI with AWS | `L7.5` | verbatim |  |
+| 167 | Udacity | `L7.5` | verbatim |  |
+| 168 | Education & certifications | *(structural)* | structural |  |
+| 169 | Credentials and the bodies that issued them. | *(structural)* | structural |  |
+| 170 | Certifications | *(structural)* | structural |  |
+| 171 | Contact | *(structural)* | structural |  |
+| 172 | One route, and it is LinkedIn. | *(structural)* | structural |  |
+| 173 | Connect with me on LinkedIn | `L8.3` | structural | Link text is a call to action; href is the L8.3 URL. |
+| 174 | linkedin.com/in/mohammed-rahmy | `L8.3` | verbatim |  |
+| 175 | This site links to LinkedIn only. | *(structural)* | structural | Statement about this site's configured state, not a claim about the person. |
+| 176 | Mohammed Tawfiq Rahmy — Associate Solutions Engineer — AI / GenAI Solutions | `L1.1`, `S5-R2` | composed | Title composed from the ledger name (L1.1) and the formal current role (FACTS_LEDGER §11 R2, source S5). The older L3.1 token 'AI Solutions Engineer' is not used as a title field; it survives only inside the owner-authored summary prose. |
+| 177 | I build agentic and generative AI systems for security, operations, and analytics. Hands-on with Amazon Bedrock, Strands Agents, multi-agent orchestration, RAG, MCP/tool integrations, LLM evaluation, guardrails, and full-stack AI delivery. | `S5-R9` | composed | B2-04 / D11 repair: the S5 summary with its opening clause recast to a first-person, non-title phrase — 'I build …' replaces 'AI Solutions Engineer building …' — so that the meta description no longer repeats the job title beside the <title> field in a search result or link preview. Every substantive word after the opening clause is the S5 summary's own (the closing clause about certifications is rendered in About). No new fact is added. |
+| 178 | Work | *(structural)* | structural |  |
+| 179 | Education | *(structural)* | structural |  |
 
 ### P3 — 404 recovery page
 
@@ -322,64 +307,66 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 
 | # | Rendered text | Ref | Mode | Note |
 |---|---|---|---|---|
-| 1 | The triage workflow, stage by stage. | `L4.1` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 1 | One triage run: the ledger's five stages, controls across all of them, evaluation at the verdict. | `L4.1` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
 | 2 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
-| 3 | Multistage agentic triage workflow | `L4.1` | verbatim |  |
-| 4 | Multi-agent triage, investigation and response | `L3.4` | verbatim |  |
-| 5 | Context construction, active investigation, threat modeling, quality guards, and verdict generation | `L4.1@4.1` | verbatim |  |
-| 6 | Grounding and evidence controls | `L4.1` | verbatim |  |
-| 7 | Typed contracts | `L4.1` | verbatim |  |
-| 8 | Strands Agents and Amazon Bedrock | `L3.4` | verbatim |  |
-| 9 | MCP connectors | `L3.4` | verbatim |  |
-| 10 | LLM-as-judge checks, RAGAS, blind-vs-shown evals | `L3.4` | verbatim |  |
-| 11 | Contract, adversarial and compliance test suites | `L3.4` | verbatim |  |
-| 12 | Scope | *(structural)* | structural |  |
-| 13 | Describes capability and engineering practice; no client or third-party internals are disclosed. | *(structural)* | structural | Identical on all ten detail pages (PRD 4.4 template); asserts nothing about the person. |
-| 14 | Strands Agents | `L3.4` | verbatim |  |
-| 15 | Amazon Bedrock | `L3.4` | verbatim |  |
-| 16 | Technology | *(structural)* | structural |  |
-| 17 | Next project | *(structural)* | structural |  |
-| 18 | SmartOps SOC App | `L4.2` | verbatim |  |
-| 19 | An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls. | `L4.1`, `L3.4` | composed | Phrases: 'agentic ... Triage & Response Automation' (L4.1 row name), 'security operations' (L3.4), 'multistage agentic triage workflow' (L4.1), 'Strands Agents', 'Amazon Bedrock', 'MCP connectors', 'typed contracts', 'grounding controls' (L4.1/L3.4). Connective verbs only. |
-| 20 | The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites. | `L4.1@4.1`, `L3.4` | composed | Phrases: 'context construction, active investigation, threat modeling, quality guards, and verdict generation' (ledger 4.1, SAMA row), 'LLM-as-judge', 'RAGAS', 'blind-vs-shown', 'contract/adversarial/compliance suites' (L3.4). |
-| 21 | Grounding/evidence controls keep its output traceable to its source. | `L4.1` | composed | Phrases: 'grounding/evidence controls' (L4.1). No claim about the client, its data, its environment or its outcomes (SAMA rule: mention depth, never internals). |
-| 22 | All work | *(structural)* | structural |  |
-| 23 | SAMA — Agentic SOC Triage & Response Automation | `L4.1` | verbatim |  |
-| 24 | Multistage agentic triage workflow, grounding/evidence controls, typed contracts. | `L4.1` | verbatim |  |
-| 25 | Security operations & agent safety | *(structural)* | structural |  |
-| 26 | Overview | *(structural)* | structural |  |
-| 27 | 01 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 28 | Problem | *(structural)* | structural |  |
-| 29 | Security operations triage is the work: an agentic triage and response automation system runs a multistage agentic triage workflow. | `L4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 30 | Decision gate | *(structural)* | structural | Archetype label for the gate between two stages (A4 stage-gate). |
-| 31 | 02 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 32 | Approach | *(structural)* | structural |  |
-| 33 | Context construction, active investigation, threat modeling, quality guards, and verdict generation — with typed contracts and grounding controls around every stage. | `L4.1`, `L4.1@4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 34 | 03 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 35 | Architecture | *(structural)* | structural |  |
-| 36 | 04 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 37 | The hard part | *(structural)* | structural |  |
-| 38 | Grounding and evidence controls have to hold at every stage, so the output stays traceable to its source. | `L4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 39 | 05 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 40 | Evidence | *(structural)* | structural |  |
-| 41 | Capabilities & practices | *(structural)* | structural |  |
-| 42 | 06 / 06 | *(structural)* | structural | Case-study stage serial. |
-| 43 | Outcome | *(structural)* | structural |  |
-| 44 | Verdict generation at the end of an evaluation-gated workflow: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites. | `L4.1@4.1`, `L3.4` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 45 | — source: owner résumé | *(structural)* | structural |  |
-| 46 | SAMA — Agentic SOC Triage & Response Automation — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
-| 47 | About | *(structural)* | structural |  |
-| 48 | Experience | *(structural)* | structural |  |
-| 49 | Work | *(structural)* | structural |  |
-| 50 | Skills | *(structural)* | structural |  |
-| 51 | Education | *(structural)* | structural |  |
-| 52 | Contact | *(structural)* | structural |  |
+| 3 | The verdict's contract, as a shape. | `L4.1` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 4 | Schematic — interface shape only. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
+| 5 | Multistage agentic triage workflow | `L4.1` | verbatim |  |
+| 6 | Multi-agent triage, investigation and response | `L3.4` | verbatim |  |
+| 7 | Context construction, active investigation, threat modeling, quality guards, and verdict generation | `L4.1@4.1` | verbatim |  |
+| 8 | Grounding and evidence controls | `L4.1` | verbatim |  |
+| 9 | Typed contracts | `L4.1` | verbatim |  |
+| 10 | Strands Agents and Amazon Bedrock | `L3.4` | verbatim |  |
+| 11 | MCP connectors | `L3.4` | verbatim |  |
+| 12 | LLM-as-judge checks, RAGAS, blind-vs-shown evals | `L3.4` | verbatim |  |
+| 13 | Contract, adversarial and compliance test suites | `L3.4` | verbatim |  |
+| 14 | Scope | *(structural)* | structural |  |
+| 15 | Describes capability and engineering practice; no client or third-party internals are disclosed. | *(structural)* | structural | Identical on all ten detail pages (PRD 4.4 template); asserts nothing about the person. |
+| 16 | Strands Agents | `L3.4` | verbatim |  |
+| 17 | Amazon Bedrock | `L3.4` | verbatim |  |
+| 18 | Technology | *(structural)* | structural |  |
+| 19 | Next project | *(structural)* | structural |  |
+| 20 | SmartOps SOC App | `L4.2` | verbatim |  |
+| 21 | An agentic triage and response automation system for security operations. It runs a multistage agentic triage workflow built on Strands Agents and Amazon Bedrock, with MCP connectors, typed contracts and grounding controls. | `L4.1`, `L3.4` | composed | Phrases: 'agentic ... Triage & Response Automation' (L4.1 row name), 'security operations' (L3.4), 'multistage agentic triage workflow' (L4.1), 'Strands Agents', 'Amazon Bedrock', 'MCP connectors', 'typed contracts', 'grounding controls' (L4.1/L3.4). Connective verbs only. |
+| 22 | The workflow covers context construction, active investigation, threat modeling, quality guards, and verdict generation, and it was developed under evaluation gates: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites. | `L4.1@4.1`, `L3.4` | composed | Phrases: 'context construction, active investigation, threat modeling, quality guards, and verdict generation' (ledger 4.1, SAMA row), 'LLM-as-judge', 'RAGAS', 'blind-vs-shown', 'contract/adversarial/compliance suites' (L3.4). |
+| 23 | Grounding/evidence controls keep its output traceable to its source. | `L4.1` | composed | Phrases: 'grounding/evidence controls' (L4.1). No claim about the client, its data, its environment or its outcomes (SAMA rule: mention depth, never internals). |
+| 24 | All work | *(structural)* | structural |  |
+| 25 | SAMA — Agentic SOC Triage & Response Automation | `L4.1` | verbatim |  |
+| 26 | Multistage agentic triage workflow, grounding/evidence controls, typed contracts. | `L4.1` | verbatim |  |
+| 27 | Security operations & agent safety | *(structural)* | structural |  |
+| 28 | Overview | *(structural)* | structural |  |
+| 29 | 01 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 30 | Problem | *(structural)* | structural |  |
+| 31 | Security operations triage is the work: an agentic triage and response automation system runs a multistage agentic triage workflow. | `L4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
+| 32 | Decision gate | *(structural)* | structural | Archetype label for the gate between two stages (A4 stage-gate). |
+| 33 | 02 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 34 | Approach | *(structural)* | structural |  |
+| 35 | Context construction, active investigation, threat modeling, quality guards, and verdict generation — with typed contracts and grounding controls around every stage. | `L4.1`, `L4.1@4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
+| 36 | 03 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 37 | Architecture | *(structural)* | structural |  |
+| 38 | 04 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 39 | The hard part | *(structural)* | structural |  |
+| 40 | Grounding and evidence controls have to hold at every stage, so the output stays traceable to its source. | `L4.1` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
+| 41 | 05 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 42 | Evidence | *(structural)* | structural |  |
+| 43 | Capabilities & practices | *(structural)* | structural |  |
+| 44 | 06 / 06 | *(structural)* | structural | Case-study stage serial. |
+| 45 | Outcome | *(structural)* | structural |  |
+| 46 | Verdict generation at the end of an evaluation-gated workflow: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites. | `L4.1@4.1`, `L3.4` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
+| 47 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
+| 48 | SAMA — Agentic SOC Triage & Response Automation — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
+| 49 | About | *(structural)* | structural |  |
+| 50 | Experience | *(structural)* | structural |  |
+| 51 | Work | *(structural)* | structural |  |
+| 52 | Skills | *(structural)* | structural |  |
+| 53 | Education | *(structural)* | structural |  |
+| 54 | Contact | *(structural)* | structural |  |
 
 ### P2 — project detail page `projects/smartops-soc-app.html`
 
 | # | Rendered text | Ref | Mode | Note |
 |---|---|---|---|---|
-| 1 | Brokered investigation: broker, analysts, evidence bus, trace lane. | `L4.2` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 1 | A brokered investigation run: broker, the analyst set, evidence-linked findings, trace lane. | `L4.2` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
 | 2 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
 | 3 | Brokered multi-agent investigation platform | `L4.2` | verbatim |  |
 | 4 | Task broker | `L4.2` | verbatim |  |
@@ -420,7 +407,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 39 | 06 / 06 | *(structural)* | structural | Case-study stage serial. |
 | 40 | Outcome | *(structural)* | structural |  |
 | 41 | A brokered multi-agent investigation platform whose traces can be replayed. | `L4.2` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 42 | — source: owner résumé | *(structural)* | structural |  |
+| 42 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 43 | SmartOps SOC App — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 44 | About | *(structural)* | structural |  |
 | 45 | Experience | *(structural)* | structural |  |
@@ -433,7 +420,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 
 | # | Rendered text | Ref | Mode | Note |
 |---|---|---|---|---|
-| 1 | Approval binding and the authority boundary. | `L4.3` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 1 | Approval binding and the authority boundary, on one request path. | `L4.3` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
 | 2 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
 | 3 | Safety-first agentic operations teammate | `L4.3` | verbatim |  |
 | 4 | Simulated Splunk and Cribl incidents | `L4.3` | verbatim |  |
@@ -476,7 +463,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 41 | 05 / 06 | *(structural)* | structural | Case-study stage serial. |
 | 42 | Evidence | *(structural)* | structural |  |
 | 43 | Capabilities & practices | *(structural)* | structural |  |
-| 44 | — source: owner résumé | *(structural)* | structural |  |
+| 44 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 45 | Milo AI Employee — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 46 | About | *(structural)* | structural |  |
 | 47 | Experience | *(structural)* | structural |  |
@@ -489,7 +476,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 
 | # | Rendered text | Ref | Mode | Note |
 |---|---|---|---|---|
-| 1 | Domain packs, connectors and the trace lane. | `L4.4` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
+| 1 | Domain packs, connectors, grounded queries and the trace lane. | `L4.4` | composed | Artefact caption (PROOF_PLAN.md section 4). Names only what the diagram draws; asserts nothing beyond the project's ledger row. |
 | 2 | Schematic — structure only. No operational data. | *(structural)* | structural | Mandatory scope caption on every artefact (PROOF_PLAN.md section 5 rule 9). A statement about the drawing, not about the person. |
 | 3 | Multi-domain investigation copilot | `L4.4` | verbatim |  |
 | 4 | Domain-pack architecture | `L4.4` | verbatim |  |
@@ -529,7 +516,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 38 | Multi-domain investigation copilot: domain-pack architecture, MCP connectors, schema-grounded query generation, React/Vite UI with agent-trace telemetry. | `L4.4` | verbatim |  |
 | 39 | Security operations & agent safety | *(structural)* | structural |  |
 | 40 | Overview | *(structural)* | structural |  |
-| 41 | — source: owner résumé | *(structural)* | structural |  |
+| 41 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 42 | PulseSec — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 43 | About | *(structural)* | structural |  |
 | 44 | Experience | *(structural)* | structural |  |
@@ -588,7 +575,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 44 | 06 / 06 | *(structural)* | structural | Case-study stage serial. |
 | 45 | Outcome | *(structural)* | structural |  |
 | 46 | A self-hosted RAG assistant. | `L4.5` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 47 | — source: owner résumé | *(structural)* | structural |  |
+| 47 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 48 | Tonsy-GPT — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 49 | About | *(structural)* | structural |  |
 | 50 | Experience | *(structural)* | structural |  |
@@ -643,7 +630,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 40 | 06 / 06 | *(structural)* | structural | Case-study stage serial. |
 | 41 | Outcome | *(structural)* | structural |  |
 | 42 | A network-ops analytics copilot. | `L4.6` | composed | Case-study stage copy. Composed under PRD 3.4 from this project's own ledger / approved-extension phrases; connective verbs only. |
-| 43 | — source: owner résumé | *(structural)* | structural |  |
+| 43 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 44 | Smart Care — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 45 | About | *(structural)* | structural |  |
 | 46 | Experience | *(structural)* | structural |  |
@@ -700,7 +687,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 42 | Shipped WhatsApp ordering product (signed Android APK, owner dashboard, 65-test suite, Arabic/English parsing, live tunnel E2E). | `L4.7` | verbatim |  |
 | 43 | Shipped products & ML systems | *(structural)* | structural |  |
 | 44 | Overview | *(structural)* | structural |  |
-| 45 | — source: owner résumé | *(structural)* | structural |  |
+| 45 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 46 | HalalBot — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 47 | About | *(structural)* | structural |  |
 | 48 | Experience | *(structural)* | structural |  |
@@ -755,7 +742,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 40 | 05 / 06 | *(structural)* | structural | Case-study stage serial. |
 | 41 | Evidence | *(structural)* | structural |  |
 | 42 | Capabilities & practices | *(structural)* | structural |  |
-| 43 | — source: owner résumé | *(structural)* | structural |  |
+| 43 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 44 | ForWheelz — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 45 | About | *(structural)* | structural |  |
 | 46 | Experience | *(structural)* | structural |  |
@@ -803,7 +790,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 33 | MCP tool server, 29 tests, documented. | `L4.9` | verbatim |  |
 | 34 | Shipped products & ML systems | *(structural)* | structural |  |
 | 35 | Overview | *(structural)* | structural |  |
-| 36 | — source: owner résumé | *(structural)* | structural |  |
+| 36 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 37 | email-MCP — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 38 | About | *(structural)* | structural |  |
 | 39 | Experience | *(structural)* | structural |  |
@@ -853,7 +840,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 | 35 | VAD→Whisper→LLM→TTS pipeline, Twilio-ready, Arabic + English. | `L4.10` | verbatim |  |
 | 36 | Shipped products & ML systems | *(structural)* | structural |  |
 | 37 | Overview | *(structural)* | structural |  |
-| 38 | — source: owner résumé | *(structural)* | structural |  |
+| 38 | Sources: the owner's own profile, résumé and project notes. | *(structural)* | structural | B2-04 / D5: the human-readable form of the attribution rule. It replaces the visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, which were QA vocabulary published to the visitor. The tier taxonomy still governs the build and still reaches the DOM as data-source-tiers on the attribution rule; it asserts nothing about the person. |
 | 39 | Voice agent core — Mohammed Tawfiq Rahmy | `L1.1` | composed | Title = the ledger project name plus the ledger name. |
 | 40 | About | *(structural)* | structural |  |
 | 41 | Experience | *(structural)* | structural |  |
@@ -867,7 +854,7 @@ These appear in the header, navigation, contact block or footer of **all 12 page
 ## 3. Coverage summary
 
 - mapped factual blocks (with at least one ledger ref): **341**
-- structural blocks (assert no fact about the person): **385**
+- structural blocks (assert no fact about the person): **372**
 - unsourced rendered lines found by the mechanical checker: **0**
 - Tier-B/§9 content: **0 occurrences** (ledger §7 Tier-B names are not present anywhere in the repository)
 

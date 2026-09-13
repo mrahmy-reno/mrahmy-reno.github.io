@@ -70,18 +70,12 @@ ROLE_LEDGER = b("Associate Solutions Engineer — AI / GenAI Solutions", ["S5-R2
                 "a role is asserted as a field. The older L3.1 token 'AI Solutions Engineer' is "
                 "retained only inside owner-authored summary prose.")
 
-# ---------------------------------------------------------------- section serials & decks
-
-SERIALS = {
-    "about": b("01 / 07", [], "structural",
-               "Section serial. A structural position marker for the section, not a claim."),
-    "experience": b("02 / 07", [], "structural", "Section serial."),
-    "work": b("03 / 07", [], "structural", "Section serial."),
-    "evidence": b("04 / 07", [], "structural", "Section serial."),
-    "skills": b("05 / 07", [], "structural", "Section serial."),
-    "education": b("06 / 07", [], "structural", "Section serial."),
-    "contact": b("07 / 07", [], "structural", "Section serial."),
-}
+# ---------------------------------------------------------------- section decks & stage serials
+#
+# B2-04 / D4: the index's `NN / 07` section serials are gone (the critique named them as a
+# report's page numbering applied to a portfolio), so there is no SERIALS table here any more.
+# The CASE-STUDY stage serials stay: `01 / 06 · PROBLEM` is the six-stage shape Q5 asks for, and
+# it is a device of the case study, not of the index.
 
 STAGE_SERIALS = {
     1: b("01 / 06", [], "structural", "Case-study stage serial."),
@@ -103,7 +97,11 @@ EXTRA = {
                    "and shipped products.", [], "structural",
                    "Structural deck: names the three groups that the rows themselves render."),
     "evidence_h2": b("Work, shown", [], "structural"),
-    "evidence_deck": b("One system, drawn from published material.", [], "structural"),
+    "evidence_deck": b("How one of them runs: the stages, the controls bound across them, and "
+                       "the contract at the end.", [], "structural",
+                       "Structural deck describing what the two objects below it draw. It no "
+                       "longer claims a map of the series (B2-04 / D3: the section used to draw "
+                       "the ten project names)."),
     "evidence_index_h": b("Also drawn", [], "structural"),
     "evidence_more": b("All ten projects", [], "structural"),
     "map_caption": b("Ten projects — how they fit together.", [], "structural"),
@@ -117,12 +115,12 @@ EXTRA = {
     "scope_label": b("Scope", [], "structural"),
     "overview_label": b("Overview", [], "structural"),
     "artefact_label": b("Artefact", [], "structural"),
-    "legend_h": b("Source tiers", [], "structural",
-                  "Process metadata: the ledger's own Sources table, restated."),
-    "legend_s1": b("S1 — authorized LinkedIn profile", [], "structural"),
-    "legend_s2": b("S2 — owner résumé", [], "structural"),
-    "legend_s3": b("S3 — owner profile material", [], "structural"),
-    "legend_s5": b("S5 — owner résumé (newer)", [], "structural"),
+    "src_human": b("Sources: the owner's own profile, résumé and project notes.", [], "structural",
+                   "B2-04 / D5: the human-readable form of the attribution rule. It replaces the "
+                   "visible source-tier token (S1/S2/S3/S5) and the SOURCE TIERS footer legend, "
+                   "which were QA vocabulary published to the visitor. The tier taxonomy still "
+                   "governs the build and still reaches the DOM as data-source-tiers on the "
+                   "attribution rule; it asserts nothing about the person."),
     "src_sourced": b("SOURCED", [], "structural"),
     "empty_label": b("NOT YET PUBLISHED", [], "structural"),
     "empty_body": b("This block is withheld until its source is published on this site.", [],
@@ -138,14 +136,9 @@ EXTRA = {
     "all_projects": b("All ten projects", [], "structural"),
 }
 
-# The attribution-rule tag expansion: a structural statement of where the adjacent block comes
-# from. Rendered visually-hidden beside the tier token.
-SOURCE_TAGS = {
-    "S1": b("— source: authorized LinkedIn profile", [], "structural"),
-    "S2": b("— source: owner résumé", [], "structural"),
-    "S3": b("— source: owner profile material", [], "structural"),
-    "S5": b("— source: owner résumé (newer)", [], "structural"),
-}
+# B2-04 / D5: the SOURCE_TAGS table (the visually-hidden expansion of the S1/S2/S3/S5 tokens) is
+# gone with the visible token itself. The tiers remain a build-level fact: `attribution()` writes
+# them to the DOM as data-source-tiers, and the content map records the tier of every block.
 
 # ---------------------------------------------------------------- SIGNAL / MTR: the signal
 

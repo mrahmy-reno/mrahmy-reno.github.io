@@ -8,10 +8,18 @@
 # median; any individual run is visible in the log and in the JSON files.
 #
 # Usage: bash tests/run_lighthouse.sh <evidence dir> [port]
+#
+# B2-04 / D13: the port is no longer assumed. When no port is given one is probed (tools/
+# free_port.py), and a server that fails to bind is reported as an ENVIRONMENT ERROR (exit 3)
+# instead of being scored — a reviewer's own probe can no longer silently corrupt this step.
 set -uo pipefail
 cd "$(dirname "$0")/.."
 OUT="${1:-/root/company/BENCHMARK_01/evidence/B1-03}"
-PORT="${2:-8123}"
+PORT="${2:-}"
+if [ -z "${PORT}" ]; then
+  PORT="$(python3 tools/free_port.py)" || { echo "could not probe a free port"; exit 3; }
+  echo "port      : probed free port ${PORT} (tools/free_port.py)"
+fi
 RUNS="${LIGHTHOUSE_RUNS:-3}"
 mkdir -p "$OUT"
 
@@ -34,10 +42,20 @@ python3 -m http.server -d docs "$PORT" --bind 127.0.0.1 >/dev/null 2>&1 &
 SERVER_PID=$!
 trap 'kill ${SERVER_PID} >/dev/null 2>&1 || true' EXIT
 
+BOUND=0
 for i in $(seq 1 20); do
-  if curl -sf -o /dev/null "http://127.0.0.1:${PORT}/index.html"; then break; fi
+  if curl -sf -o /dev/null "http://127.0.0.1:${PORT}/index.html"; then BOUND=1; break; fi
   sleep 0.5
 done
+
+# B2-04 / D13: a server that never came up is an environment error, never a score.
+if [ "${BOUND}" -ne 1 ]; then
+  echo "ENVIRONMENT ERROR: the static server never answered on port ${PORT}."
+  echo "  A port collision or a missing docs/ tree is a problem with the RUN, not with the site:"
+  echo "  Lighthouse was not executed and no score is reported for it."
+  echo "  Re-run: bash tests/run_lighthouse.sh \"${OUT}\"        (a free port is probed automatically)"
+  exit 3
+fi
 
 rc=0
 for spec in "index:index.html" "sama-soc-triage:projects/sama-soc-triage.html"; do

@@ -108,8 +108,9 @@ class Canvas:
 
 # --------------------------------------------------------------------------- labels
 
-def _unit(label: str, kind: str = "node", signal: bool = False) -> dict:
-    return {"label": label, "kind": kind, "signal": signal}
+def _unit(label: str, kind: str = "node", signal: bool = False,
+          band: list[str] | None = None) -> dict:
+    return {"label": label, "kind": kind, "signal": signal, "band": band}
 
 
 def _units_height(units: list[dict], chars: int) -> float:
@@ -347,6 +348,171 @@ def system_map(projects: dict[str, str], uid: str, title: str, desc: str) -> tup
     return wide, tall
 
 
+# --------------------------------------------------------------------------- trace (B2-04)
+#
+# The B2-03 critique's central finding (D3): every artefact was a stack of large outlined boxes
+# each holding one 1-3-word label, so all 13 drew the same object, and the index's "Work, shown"
+# plane drew the ten project *names*. The trace model answers that with the structure of a real
+# run: the project's own stages left to right with typed edges, a stage that is a SET bracketed
+# with its own properties, a boundary rule the path sits behind, a trace lane beneath, and
+# cross-cutting annotation rows that span every stage instead of sitting between two of them
+# (D7: typed contracts / grounding controls are properties of the project, not inter-stage gates).
+#
+# Geometry still carries no quantity: the band is one set, not a count, and there is no axis,
+# bar, gauge, tick count or number anywhere. Every label is a ledger phrase or a declared
+# structural word — audited by tests/design_checks.py section 6.
+
+def trace(stages: list[dict], uid: str, title: str, desc: str, *, crosscut: dict | None = None,
+          band: dict | None = None, boundary: str | None = None, notes: list[str] | None = None,
+          lane: str | None = None) -> tuple[str, str]:
+    """A run trace (landscape) + the same labels relaid as a vertical rail.
+
+    stages   : [{"label", kind?, signal?, band?: [labels]}] — band labels are the stage's own
+               properties, drawn as a bracketed set under that stage.
+    crosscut : {"items": [labels]} — drawn as a row ABOVE the whole rail, bracketed down onto
+               three points of it, so the reader sees them applying to every stage.
+    boundary : a dashed rule across the diagram with its label at the left.
+    notes    : annotation boxes under the rail.
+    lane     : a labelled lane closing the bottom of the diagram.
+    """
+    units: list[dict] = []          # the tall variant's reading order, filled as we draw
+    c = Canvas(WIDE_W, 0.0)
+    avail = WIDE_W - 2 * PAD
+    n = len(stages)
+    box_w = min(184.0, (avail - (n - 1) * BOX_GAP) / n)
+    chars = max(8, int(box_w / CH_W) - 1)
+    box_h = _units_height(stages, chars)
+
+    y = PAD
+    if crosscut:
+        items = crosscut["items"]
+        units.append(_unit("annotations", "note"))
+        c.text(PAD, y + 11, "annotations", "dg-label-meta", anchor="start")
+        y += 20.0
+        iw = (avail - (len(items) - 1) * 12.0) / len(items)
+        iw_chars = max(8, int(iw / CH_W) - 1)
+        ch = max(_units_height([_unit(i) for i in items], iw_chars), 2 * PAD)
+        for i, label in enumerate(items):
+            units.append(_unit(label, "note"))
+            c.node(PAD + i * (iw + 12.0), y, iw, ch, wrap(label, iw_chars), "dg-note",
+                   "dg-label-meta")
+        y += ch + 6.0
+        # the bracket: one rule under the row, ticked down onto the rail at three points
+        c.line(PAD, y, WIDE_W - PAD, y, "dg-rule")
+        for i in range(3):
+            xx = PAD + avail * (i + 1) / 4.0
+            c.line(xx, y, xx, y + 14.0, "dg-rule")
+        y += 26.0
+
+    y_rail = y
+    total = n * box_w + (n - 1) * BOX_GAP
+    x0 = (WIDE_W - total) / 2
+    centres = [x0 + i * (box_w + BOX_GAP) + box_w / 2 for i in range(n)]
+    for i, unit in enumerate(stages):
+        lines = wrap(unit["label"], chars)
+        cls = {"node": "dg-box", "gate": "dg-gate", "source": "dg-box dg-src"}.get(
+            unit.get("kind", "node"), "dg-box")
+        units.append(_unit(unit["label"], unit.get("kind", "node"), unit.get("signal", False)))
+        c.node(x0 + i * (box_w + BOX_GAP), y_rail, box_w, box_h, lines, cls)
+        if i < n - 1:
+            c.line(x0 + i * (box_w + BOX_GAP) + box_w + 2, y_rail + box_h / 2,
+                   x0 + (i + 1) * (box_w + BOX_GAP) - 2, y_rail + box_h / 2,
+                   "dg-signal" if unit.get("signal") else "dg-edge")
+    y = y_rail + box_h
+
+    for i, unit in enumerate(stages):
+        sub = unit.get("band")
+        if not sub:
+            continue
+        bx = x0 + i * (box_w + BOX_GAP)
+        lines = [ln for label in sub for ln in wrap(label, chars)]
+        bh = 2 * PAD + (len(lines) - 1) * LINE_H
+        c.line(bx + box_w * 0.3, y + 2, bx + box_w * 0.3, y + 20, "dg-edge")
+        c.line(bx + box_w * 0.7, y + 20, bx + box_w * 0.7, y + 2, "dg-edge")
+        c.node(bx, y + 20, box_w, bh, lines, "dg-note", "dg-label-meta")
+        units.extend(_unit(label, "note") for label in sub)
+        y += 20 + bh
+
+    if boundary:
+        y += 22.0
+        units.append(_unit(boundary, "note"))
+        c.text(PAD, y - 6, boundary, "dg-label-meta", anchor="start")
+        c.add(f'<line class="dg-boundary dg-dashed" x1="{PAD:g}" y1="{y:g}" '
+              f'x2="{WIDE_W - PAD:g}" y2="{y:g}" />')
+        y += 6.0
+
+    if notes:
+        y += 30.0
+        units.append(_unit("annotations", "note"))
+        c.text(PAD, y - 10, "annotations", "dg-label-meta", anchor="start")
+        nx = PAD
+        nh = 0.0
+        boxes: list[tuple[float, float, float, list[str]]] = []
+        for label in notes:
+            lines = wrap(label, 28)
+            w = min(300.0, max(120.0, max(len(ln) for ln in lines) * CH_W + 24))
+            h = 2 * PAD + (len(lines) - 1) * LINE_H
+            nh = max(nh, h)
+            boxes.append((nx, w, h, lines))
+            nx += w + 12.0
+        for bx, w, h, lines in boxes:
+            units.append(_unit(" ".join(lines), "note"))
+            c.node(bx, y, w, h, lines, "dg-note", "dg-label-meta")
+        y += nh
+
+    if lane:
+        y += 26.0
+        units.append(_unit(lane, "note"))
+        c.text(PAD, y - 8, lane, "dg-label-meta", anchor="start")
+        c.line(PAD, y + 6, WIDE_W - PAD, y + 6, "dg-edge")
+        y += 10.0
+
+    c.height = y + PAD
+    wide = c.svg(uid, title, desc, "art-wide")
+    tall = _vrail_svg(units, uid, title, desc)
+    return wide, tall
+
+
+# --------------------------------------------------------------------------- typed contract (B2-04)
+#
+# The second object type the B2-03 critique named as missing (D3): "a schema or typed-contract
+# excerpt". It is drawn as a code surface — a header line, field rows, a gutter — not as a stack
+# of boxes with one label each, so it is visibly a different kind of object from a schematic.
+# The field names are the ledger's own nouns; types, values and counts are omitted, which is what
+# the caption says.
+
+def contract(uid: str, title: str, desc: str, *, head: str, rows: list[str],
+             notes: list[str]) -> tuple[str, str]:
+    left_w = 600.0
+    right_x = PAD + left_w + 20.0
+    right_w = WIDE_W - PAD - right_x
+    left_h = 2 * PAD + 22.0 + len(rows) * 26.0
+
+    c = Canvas(WIDE_W, 0.0)
+    c.rect(PAD, PAD, left_w, left_h, "dg-shape")
+    c.text(PAD + 20.0, PAD + PAD + 6.0, head, "dg-label", anchor="start")
+    c.line(PAD + 14.0, PAD + PAD + 18.0, PAD + left_w - 14.0, PAD + PAD + 18.0, "dg-rule")
+    for i, row in enumerate(rows):
+        ry = PAD + PAD + 18.0 + (i + 1) * 26.0
+        c.line(PAD + 16.0, ry - 5.0, PAD + 28.0, ry - 5.0, "dg-edge")
+        c.text(PAD + 40.0, ry, row, "dg-label-meta", anchor="start")
+        if i < len(rows) - 1:
+            c.line(PAD + 14.0, ry + 9.0, PAD + left_w - 14.0, ry + 9.0, "dg-rule")
+
+    ny = PAD
+    for label in notes:
+        lines = wrap(label, max(8, int(right_w / CH_W) - 1))
+        h = 2 * PAD + (len(lines) - 1) * LINE_H
+        c.node(right_x, ny, right_w, h, lines, "dg-note", "dg-label-meta")
+        ny += h + 8.0
+    c.height = max(PAD + left_h, ny) + PAD
+
+    wide = c.svg(uid, title, desc, "art-wide")
+    tall = _vrail_svg([_unit(head)] + [_unit(r) for r in rows]
+                      + [_unit(note, "note") for note in notes], uid, title, desc)
+    return wide, tall
+
+
 # --------------------------------------------------------------------------- figures
 
 def figure(uid: str, wide: str, tall: str, caption: str, scope: str) -> str:
@@ -379,73 +545,105 @@ ARTEFACT_META: dict[str, dict] = {
         "scope": CAPTION,
     },
     "sama-soc-triage": {
-        "title": "SAMA — stage rail with contract gates",
-        "desc": ("A left-to-right stage rail: context construction, active investigation, threat "
-                 "modeling, quality guards, verdict generation, with typed contracts and "
-                 "grounding/evidence controls as gates between stages, and the evaluation "
-                 "surfaces the ledger names as annotations."),
-        "caption": "The triage workflow, stage by stage.",
+        # B2-04 / D7 repair: the previous artefact asserted a SIX-element ordered chain and put
+        # "typed contracts" / "grounding/evidence controls" BETWEEN stages. The ledger names
+        # exactly five workflow components for SAMA and lists those two as properties of the
+        # project, so they are drawn here as cross-cutting annotations ABOVE the rail, and the
+        # rail carries the ledger's five components in the ledger's own order.
+        "title": "SAMA — one triage run",
+        "desc": ("One triage run, drawn left to right: the ledger's five workflow components in "
+                 "the ledger's own order — context construction, active investigation, threat "
+                 "modeling, quality guards, verdict generation — with typed contracts and "
+                 "grounding/evidence controls drawn as cross-cutting annotations above the whole "
+                 "run (they are properties of the project, not gates between stages), and the "
+                 "evaluation surfaces the role names as annotations beneath the verdict. "
+                 "Structure only — no counts, no timestamps."),
+        "caption": "One triage run: the ledger's five stages, controls across all of them, evaluation at the verdict.",
         "scope": CAPTION,
-        "model": "rail",
-        "units": [
-            _unit("context construction"), _unit("typed contracts", "gate"),
-            _unit("active investigation"), _unit("threat modeling"),
-            _unit("quality guards", "gate"), _unit("verdict generation", signal=True),
-            _unit("grounding/evidence controls", "note"), _unit("LLM-as-judge", "note"),
-            _unit("RAGAS", "note"), _unit("blind-vs-shown", "note"),
-            _unit("contract/adversarial/compliance suites", "note"),
+        "model": "trace",
+        "stages": [
+            _unit("context construction"), _unit("active investigation"),
+            _unit("threat modeling"), _unit("quality guards"),
+            _unit("verdict generation", signal=True),
         ],
+        "crosscut": {"items": ["typed contracts", "grounding/evidence controls"]},
+        "notes": ["LLM-as-judge", "RAGAS", "blind-vs-shown",
+                  "contract/adversarial/compliance suites"],
+        "second": "typed-contract",
+    },
+    "typed-contract": {
+        # B2-04 / D3: the object type the critique named as missing — a typed-contract excerpt,
+        # drawn as a code surface rather than a chain of boxes. Field names are the ledger's own
+        # nouns for this project; types, values and counts are omitted (see the caption).
+        "title": "The verdict's contract, as a shape",
+        "desc": ("A typed-contract excerpt drawn as a code surface: the verdict generation "
+                 "interface, the four controls bound to it (evidence, grounding/evidence "
+                 "controls, quality guards, typed contracts) and the evaluation surfaces that "
+                 "sit on it. Field types, field names and values are omitted; the shape is "
+                 "structural."),
+        "caption": "The verdict's contract, as a shape.",
+        "scope": CAPTION_INTERFACE,
+        "model": "contract",
+        "head": "verdict generation",
+        "rows": ["evidence", "grounding/evidence controls", "quality guards", "typed contracts"],
+        "notes": ["LLM-as-judge", "RAGAS", "blind-vs-shown",
+                  "contract/adversarial/compliance suites"],
     },
     "smartops-soc-app": {
-        "title": "SmartOps SOC App — broker, analysts, evidence bus, trace lane",
-        "desc": ("A task broker coordinating domain analysts, with the analysts band carrying "
-                 "hypothesis-blind analysis and scope constraints; findings flow to an "
-                 "evidence-linked findings bus, with VirusTotal enrichment beside it, and a "
-                 "replayable traces lane beneath. Structure only — no counts, no timestamps."),
-        "caption": "Brokered investigation: broker, analysts, evidence bus, trace lane.",
+        "title": "SmartOps SOC App — a brokered investigation run",
+        "desc": ("A task broker coordinating the domain-analyst set — the set carries "
+                 "hypothesis-blind analysis and scope as its own bracketed properties — whose "
+                 "findings flow into evidence-linked findings, with VirusTotal enrichment as an "
+                 "annotation and a replayable traces lane closing the diagram. Structure only — "
+                 "no counts, no timestamps."),
+        "caption": "A brokered investigation run: broker, the analyst set, evidence-linked findings, trace lane.",
         "scope": CAPTION,
-        "model": "hub",
-        "centre": "task broker",
-        "band": "domain analysts",
-        "band_notes": ["hypothesis-blind analysis", "scope"],
-        "bus": "evidence-linked findings",
-        "bus_side": "VirusTotal enrichment",
+        "model": "trace",
+        "stages": [
+            _unit("task broker"),
+            _unit("domain analysts", "node", False, ["hypothesis-blind analysis", "scope"]),
+            _unit("evidence-linked findings", signal=True),
+        ],
+        "notes": ["VirusTotal enrichment"],
         "lane": "replayable traces",
     },
     "milo-ai-employee": {
-        "title": "Milo — approval binding and authority boundaries",
+        "title": "Milo — approval binding behind the authority boundary",
         "desc": ("A request path through a safety-first agentic operations teammate to a "
-                 "proposed action, held at an approval binding gate before controlled write-back, "
-                 "with idempotent actions and reconciliation as the return path. An authority "
-                 "boundaries line crosses the diagram; budget/time limits and redaction "
-                 "constrain it. Source material is simulated."),
-        "caption": "Approval binding and the authority boundary.",
+                 "proposed action — the action carries budget/time limits and redaction as its "
+                 "own bracketed properties — then approval binding (the gate), then controlled "
+                 "write-back. A dashed authority boundaries rule crosses the diagram, and "
+                 "idempotent actions and reconciliation close it as a lane. Source material is "
+                 "simulated."),
+        "caption": "Approval binding and the authority boundary, on one request path.",
         "scope": CAPTION,
-        "model": "rail",
-        "units": [
+        "model": "trace",
+        "stages": [
             _unit("request"), _unit("safety-first agentic operations teammate"),
-            _unit("proposed action"), _unit("approval binding", "gate"),
-            _unit("controlled write-back", signal=True),
-            _unit("authority boundaries", "note"), _unit("budget/time limits", "note"),
-            _unit("redaction", "note"), _unit("idempotent actions and reconciliation", "note"),
-            _unit("simulated Splunk/Cribl incidents", "note"),
+            _unit("proposed action", "node", False, ["budget/time limits", "redaction"]),
+            _unit("approval binding", "gate"), _unit("controlled write-back", "node", True),
         ],
+        "boundary": "authority boundaries",
+        "notes": ["simulated Splunk/Cribl incidents"],
+        "lane": "idempotent actions and reconciliation",
     },
     "pulsesec": {
-        "title": "PulseSec — domain packs and the trace lane",
-        "desc": ("A multi-domain investigation copilot on a domain-pack architecture with a "
-                 "seated domain pack and an empty pack receptacle, MCP connectors beneath, "
-                 "schema-grounded query generation between them, a React/Vite UI surface with an "
-                 "agent-trace telemetry rail above, and a guardrails band below."),
-        "caption": "Domain packs, connectors and the trace lane.",
+        "title": "PulseSec — domain packs, connectors and the trace lane",
+        "desc": ("A multi-domain investigation copilot whose domain-pack architecture carries its "
+                 "MCP connectors as a bracketed set, then schema-grounded query generation, then "
+                 "the React/Vite UI. A dashed guardrails rule crosses the diagram and the "
+                 "agent-trace telemetry lane closes it."),
+        "caption": "Domain packs, connectors, grounded queries and the trace lane.",
         "scope": CAPTION,
-        "model": "hub",
-        "centre": "multi-domain investigation copilot",
-        "band": "React/Vite UI",
-        "band_notes": ["agent-trace telemetry"],
-        "bus": "domain-pack architecture",
-        "bus_side": "MCP connectors",
-        "lane": "timeline/case handling, guardrails",
+        "model": "trace",
+        "stages": [
+            _unit("multi-domain investigation copilot"),
+            _unit("domain-pack architecture", "node", False, ["MCP connectors"]),
+            _unit("schema-grounded query generation"),
+            _unit("React/Vite UI", "node", True),
+        ],
+        "boundary": "guardrails",
+        "lane": "agent-trace telemetry, timeline/case handling",
     },
     "tonsy-gpt": {
         "title": "Tonsy-GPT — hybrid retrieval pipeline",
@@ -551,6 +749,13 @@ def artefact_pair(slug: str) -> tuple[str, str]:
     model = meta.get("model", "rail")
     if model == "rail":
         wide, tall = rail(meta["units"], uid, meta["title"], meta["desc"])
+    elif model == "trace":
+        wide, tall = trace(meta["stages"], uid, meta["title"], meta["desc"],
+                           crosscut=meta.get("crosscut"), boundary=meta.get("boundary"),
+                           notes=meta.get("notes"), lane=meta.get("lane"))
+    elif model == "contract":
+        wide, tall = contract(uid, meta["title"], meta["desc"], head=meta["head"],
+                              rows=meta["rows"], notes=meta["notes"])
     elif model == "hub":
         wide, tall = hub(meta["centre"], meta["band"], meta["band_notes"], meta["bus"],
                          meta["bus_side"], meta["lane"], uid, meta["title"], meta["desc"])

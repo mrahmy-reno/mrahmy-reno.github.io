@@ -19,6 +19,34 @@
 @layer reset, tokens, base, layout, components, states, print;
 
 /* ==========================================================================
+   THE DISPLAY VOICE IS SHIPPED (B2-04 / D6)
+   ==========================================================================
+   The B2-03 critique's D6: the site's "three voices" were system font stacks, with a display
+   chain that resolves to Times New Roman on a stock Windows machine — the gap (G1: "system fonts,
+   neutral palette, no signature") the redesign was commissioned to close. The display face is now
+   a self-hosted subset: DejaVu Serif, a Bitstream Vera derivative, redistributable, sub-setted by
+   `tools/make_font.py` (stdlib only, no network) to the glyphs this site can set in that voice.
+   `font-display: swap` keeps the visitor's first paint immediate and the fallback stack below is
+   kept as the safety net. Verified by tests/design_checks.py check 13 and tests/browser_checks.mjs
+   (the document.fonts API reports the shipped face as loaded, and no request leaves the origin). */
+
+@font-face {
+  font-family: "DejaVu Serif Subset";
+  src: url("/assets/fonts/DejaVuSerif-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DejaVu Serif Subset";
+  src: url("/assets/fonts/DejaVuSerif-Bold.ttf") format("truetype");
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ==========================================================================
    TOKENS  (DESIGN_SYSTEM.md §2-§5 — the only place a literal value may live)
    ========================================================================== */
 
@@ -79,7 +107,11 @@
     --grain: url("/assets/grain.png");
 
     /* -- 3. typography: three voices, three jobs -------------------------- */
-    --font-display: "Bitstream Charter", Charter, "Iowan Old Style",
+    /* B2-04 / D6: the display voice leads with the SHIPPED subset, so the identity no longer
+       changes with the visitor's operating system. The system faces behind it are a fallback
+       safety net, not the identity. (D6b: one name — --font-display — is used by the DNA, the
+       application kit and this stylesheet.) */
+    --font-display: "DejaVu Serif Subset", "Bitstream Charter", Charter, "Iowan Old Style",
       "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
     --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter,
       Roboto, "DejaVu Sans", "Liberation Sans", Arial, sans-serif;
@@ -127,7 +159,7 @@
     --space-8: 6rem;
     --space-9: 8rem;
     --space-10: 12rem;
-    --section-rhythm: clamp(72px, 9vw, 176px);
+    --section-rhythm: clamp(56px, 6.5vw, 112px);
     --gutter: clamp(16px, 2vw, 24px);
 
     /* -- 5.2 radius ------------------------------------------------------- */
@@ -633,7 +665,18 @@
   /* -- hero --------------------------------------------------------------- */
 
   .hero {
-    padding-block: var(--space-7) var(--space-8);
+    padding-block: var(--space-6) var(--space-7);
+  }
+
+  /* B2-04 / D4 + the holistic call: the hero carries the page's POINT OF VIEW (Q9) — a claim in
+     the human voice, in the first screen — instead of the six-row attributes table that made the
+     first screen read as a CV header. The register survives as one quiet instrument line. */
+  .hero .band-statement {
+    margin-block: var(--space-4) 0;
+    padding-block-start: 0;
+    border-block-start: 0;
+    font-size: clamp(var(--fs-lg), 1.1rem + 1.5vw, var(--fs-2xl));
+    max-inline-size: 34ch;
   }
 
   .hero-inner {
@@ -700,26 +743,26 @@
   /* -- the instrument row (at-a-glance) ---------------------------------- */
 
   .glance-strip {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    background-color: var(--surface-raise);
-    border-radius: var(--radius-2);
-    box-shadow: var(--elev-1);
-    overflow: hidden;   /* the strip is one lifted surface, not a card wall */
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    margin-block-start: var(--space-4);
+    padding-block-start: var(--space-3);
+    border-block-start: 1px solid var(--rule-decor);
   }
 
   .glance-item {
-    padding: var(--space-3);
-    border-block-start: 1px solid var(--rule-decor);
-    border-inline-start: 1px solid var(--rule-decor);
+    display: flex;
+    gap: var(--space-1);
   }
 
-  .glance-item:nth-child(odd) {
-    border-inline-start: 0;
+  .glance-item::after {
+    content: "·";
+    color: var(--text-meta);
   }
 
-  .glance-item:nth-child(-n + 2) {
-    border-block-start: 0;
+  .glance-item:last-child::after {
+    content: "";
   }
 
   .glance-item dt {
@@ -769,7 +812,19 @@
     line-height: var(--lh-meta);
   }
 
-  .art-tall {
+  /* B2-04 / D1 — the responsive variants are ALTERNATIVES, never both.
+     The previous single-class rule `.art-tall { display: none }` (0,1,0) lost to the container
+     rules that turn SVGs into block boxes (`.artefact svg`, `.system-map svg`,
+     `.evidence-figure svg`, `.diagram-panel svg` — all 0,1,1), so both variants rendered at
+     >=768px and every diagram was drawn twice. The rule below is written as a class chain so it
+     out-specifies every container rule in this layer, whatever their order. Asserted in
+     tests/design_checks.py check 10 (source) and tests/browser_checks.mjs (one variant visible
+     at 390/768/1366). */
+  .dg.art-tall,
+  .artefact svg.art-tall,
+  .system-map svg.art-tall,
+  .evidence-figure svg.art-tall,
+  .diagram-panel svg.art-tall {
     display: none;
   }
 
@@ -778,7 +833,7 @@
   .section-head {
     display: grid;
     gap: var(--space-2);
-    margin-block-end: var(--space-6);
+    margin-block-end: var(--space-5);
   }
 
   .serial {
@@ -965,7 +1020,12 @@
     gap: var(--space-3);
   }
 
+  /* B2-04 / D2 — the ordinal is a fixed-width token, not a shrinkable flex item. The first
+     project row has the longest title, and with `flex: 0 1 auto` the two mono digits were
+     squeezed to 13px and wrapped onto two lines ("0" over "1") at every width. */
   .rank {
+    flex: none;
+    white-space: nowrap;
     color: var(--text-meta);
     font-family: var(--font-mono);
     font-size: var(--fs-label);
@@ -1527,6 +1587,12 @@
     stroke: var(--rule-boundary);
     stroke-width: 1;
     fill: none;
+  }
+
+  /* B2-04: a boundary the path may not cross is drawn dashed, so it reads as a boundary rather
+     than as another edge in the rail. */
+  .dg-dashed {
+    stroke-dasharray: 6 6;
   }
 
   .dg-rule {
@@ -2091,6 +2157,46 @@
     }
   }
 
+  @media (min-width: 1024px) {
+    /* B2-04 / D4 — density pass. The critique's "documentation feel" complaint was measurable:
+       the index was 13,396 px / 17.4 screens / 1,186 words against the rejected build's 5,383 /
+       7.0 / 473. The four sections it named (Selected work, Skills, Education, Contact) are
+       re-laid here as a reading page rather than a form: the work register puts the one-liner
+       beside its title instead of under it, the attendance registers run tighter, and the
+       certification rows become name | issuer · date. No entry is dropped and no clause of the
+       coverage check changes. */
+    .card .row-inner {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) auto;
+      align-items: baseline;
+      column-gap: var(--space-5);
+      padding-block: var(--space-3);
+    }
+
+    .card .row-one-liner {
+      max-inline-size: none;
+    }
+
+    .card .row-foot {
+      justify-content: end;
+    }
+
+    .skill-list {
+      gap: var(--space-3) var(--space-5);
+    }
+
+    .certs li {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: baseline;
+      column-gap: var(--space-4);
+      padding-block: var(--space-1);
+    }
+
+    .edu-list {
+      gap: var(--space-3);
+    }
+  }
+
   @media (min-width: 1440px) {
     :root {
       --fs-hero: 7.1344rem;
@@ -2102,11 +2208,21 @@
   }
 
   @media (max-width: 767.98px) {
-    .art-wide {
+    /* B2-04 / D1: the mirror of the desktop rule above, at the same specificity, later in the
+       cascade — exactly one variant is displayed at every width. */
+    .dg.art-wide,
+    .artefact svg.art-wide,
+    .system-map svg.art-wide,
+    .evidence-figure svg.art-wide,
+    .diagram-panel svg.art-wide {
       display: none;
     }
 
-    .art-tall {
+    .dg.art-tall,
+    .artefact svg.art-tall,
+    .system-map svg.art-tall,
+    .evidence-figure svg.art-tall,
+    .diagram-panel svg.art-tall {
       display: block;
     }
   }

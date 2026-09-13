@@ -95,81 +95,156 @@
               <div class="diagram-panel" data-reveal>
         <figure class="artefact">
           <div class="artefact-frame">
-            <svg class="dg art-wide" viewBox="0 0 1000 149" role="img" aria-labelledby="dg-sama-soc-triage-t dg-sama-soc-triage-d" preserveAspectRatio="xMidYMid meet">
-              <title id="dg-sama-soc-triage-t">SAMA — stage rail with contract gates</title>
-              <desc id="dg-sama-soc-triage-d">A left-to-right stage rail: context construction, active investigation, threat modeling, quality guards, verdict generation, with typed contracts and grounding/evidence controls as gates between stages, and the evaluation surfaces the ledger names as annotations.</desc>
-              <rect class="dg-box" x="16" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="88.3333" y="36.76" text-anchor="middle">context</text>
-              <text class="dg-label" x="88.3333" y="55.76" text-anchor="middle">construction</text>
-              <line class="dg-edge" x1="162.667" y1="41.5" x2="178.667" y2="41.5" />
-              <rect class="dg-gate" x="180.667" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="253" y="36.76" text-anchor="middle">typed</text>
-              <text class="dg-label" x="253" y="55.76" text-anchor="middle">contracts</text>
-              <line class="dg-edge" x1="327.333" y1="41.5" x2="343.333" y2="41.5" />
-              <rect class="dg-box" x="345.333" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="417.667" y="36.76" text-anchor="middle">active</text>
-              <text class="dg-label" x="417.667" y="55.76" text-anchor="middle">investigation</text>
-              <line class="dg-edge" x1="492" y1="41.5" x2="508" y2="41.5" />
-              <rect class="dg-box" x="510" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="582.333" y="36.76" text-anchor="middle">threat</text>
-              <text class="dg-label" x="582.333" y="55.76" text-anchor="middle">modeling</text>
-              <line class="dg-edge" x1="656.667" y1="41.5" x2="672.667" y2="41.5" />
-              <rect class="dg-gate" x="674.667" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="747" y="46.26" text-anchor="middle">quality guards</text>
-              <line class="dg-edge" x1="821.333" y1="41.5" x2="837.333" y2="41.5" />
-              <rect class="dg-box" x="839.333" y="16" width="144.667" height="51" rx="8" />
-              <text class="dg-label" x="911.667" y="36.76" text-anchor="middle">verdict</text>
-              <text class="dg-label" x="911.667" y="55.76" text-anchor="middle">generation</text>
-              <text class="dg-label-meta" x="16" y="93" text-anchor="start">annotations</text>
-              <rect class="dg-note" x="16" y="99" width="277.8" height="30" rx="8" />
-              <text class="dg-label-meta" x="154.9" y="118.76" text-anchor="middle">grounding/evidence controls</text>
-              <rect class="dg-note" x="305.8" y="99" width="136.8" height="30" rx="8" />
-              <text class="dg-label-meta" x="374.2" y="118.76" text-anchor="middle">LLM-as-judge</text>
-              <rect class="dg-note" x="454.6" y="99" width="120" height="30" rx="8" />
-              <text class="dg-label-meta" x="514.6" y="118.76" text-anchor="middle">RAGAS</text>
-              <rect class="dg-note" x="586.6" y="99" width="155.6" height="30" rx="8" />
-              <text class="dg-label-meta" x="664.4" y="118.76" text-anchor="middle">blind-vs-shown</text>
-              <rect class="dg-note" x="754.2" y="99" width="221.4" height="30" rx="8" />
-              <text class="dg-label-meta" x="864.9" y="109.26" text-anchor="middle">contract/adversarial/</text>
-              <text class="dg-label-meta" x="864.9" y="128.26" text-anchor="middle">compliance suites</text>
+            <svg class="dg art-wide" viewBox="0 0 1000 248" role="img" aria-labelledby="dg-sama-soc-triage-t dg-sama-soc-triage-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-sama-soc-triage-t">SAMA — one triage run</title>
+              <desc id="dg-sama-soc-triage-d">One triage run, drawn left to right: the ledger&#x27;s five workflow components in the ledger&#x27;s own order — context construction, active investigation, threat modeling, quality guards, verdict generation — with typed contracts and grounding/evidence controls drawn as cross-cutting annotations above the whole run (they are properties of the project, not gates between stages), and the evaluation surfaces the role names as annotations beneath the verdict. Structure only — no counts, no timestamps.</desc>
+              <text class="dg-label-meta" x="16" y="27" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="36" width="478" height="32" rx="8" />
+              <text class="dg-label-meta" x="255" y="56.76" text-anchor="middle">typed contracts</text>
+              <rect class="dg-note" x="506" y="36" width="478" height="32" rx="8" />
+              <text class="dg-label-meta" x="745" y="56.76" text-anchor="middle">grounding/evidence controls</text>
+              <line class="dg-rule" x1="16" y1="74" x2="984" y2="74" />
+              <line class="dg-rule" x1="258" y1="74" x2="258" y2="88" />
+              <line class="dg-rule" x1="500" y1="74" x2="500" y2="88" />
+              <line class="dg-rule" x1="742" y1="74" x2="742" y2="88" />
+              <rect class="dg-box" x="16" y="100" width="177.6" height="51" rx="8" />
+              <text class="dg-label" x="104.8" y="120.76" text-anchor="middle">context</text>
+              <text class="dg-label" x="104.8" y="139.76" text-anchor="middle">construction</text>
+              <line class="dg-edge" x1="195.6" y1="125.5" x2="211.6" y2="125.5" />
+              <rect class="dg-box" x="213.6" y="100" width="177.6" height="51" rx="8" />
+              <text class="dg-label" x="302.4" y="120.76" text-anchor="middle">active</text>
+              <text class="dg-label" x="302.4" y="139.76" text-anchor="middle">investigation</text>
+              <line class="dg-edge" x1="393.2" y1="125.5" x2="409.2" y2="125.5" />
+              <rect class="dg-box" x="411.2" y="100" width="177.6" height="51" rx="8" />
+              <text class="dg-label" x="500" y="130.26" text-anchor="middle">threat modeling</text>
+              <line class="dg-edge" x1="590.8" y1="125.5" x2="606.8" y2="125.5" />
+              <rect class="dg-box" x="608.8" y="100" width="177.6" height="51" rx="8" />
+              <text class="dg-label" x="697.6" y="130.26" text-anchor="middle">quality guards</text>
+              <line class="dg-edge" x1="788.4" y1="125.5" x2="804.4" y2="125.5" />
+              <rect class="dg-box" x="806.4" y="100" width="177.6" height="51" rx="8" />
+              <text class="dg-label" x="895.2" y="120.76" text-anchor="middle">verdict</text>
+              <text class="dg-label" x="895.2" y="139.76" text-anchor="middle">generation</text>
+              <text class="dg-label-meta" x="16" y="171" text-anchor="start">annotations</text>
+              <rect class="dg-note" x="16" y="181" width="136.8" height="32" rx="8" />
+              <text class="dg-label-meta" x="84.4" y="201.76" text-anchor="middle">LLM-as-judge</text>
+              <rect class="dg-note" x="164.8" y="181" width="120" height="32" rx="8" />
+              <text class="dg-label-meta" x="224.8" y="201.76" text-anchor="middle">RAGAS</text>
+              <rect class="dg-note" x="296.8" y="181" width="155.6" height="32" rx="8" />
+              <text class="dg-label-meta" x="374.6" y="201.76" text-anchor="middle">blind-vs-shown</text>
+              <rect class="dg-note" x="464.4" y="181" width="221.4" height="51" rx="8" />
+              <text class="dg-label-meta" x="575.1" y="201.76" text-anchor="middle">contract/adversarial/</text>
+              <text class="dg-label-meta" x="575.1" y="220.76" text-anchor="middle">compliance suites</text>
             </svg>
-            <svg class="dg art-tall" viewBox="0 0 400 569" role="img" aria-labelledby="dg-sama-soc-triage-v-t dg-sama-soc-triage-v-d" preserveAspectRatio="xMidYMid meet">
-              <title id="dg-sama-soc-triage-v-t">SAMA — stage rail with contract gates</title>
-              <desc id="dg-sama-soc-triage-v-d">A left-to-right stage rail: context construction, active investigation, threat modeling, quality guards, verdict generation, with typed contracts and grounding/evidence controls as gates between stages, and the evaluation surfaces the ledger names as annotations.</desc>
-              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="36.76" text-anchor="middle">context construction</text>
+            <svg class="dg art-tall" viewBox="0 0 400 707" role="img" aria-labelledby="dg-sama-soc-triage-v-t dg-sama-soc-triage-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-sama-soc-triage-v-t">SAMA — one triage run</title>
+              <desc id="dg-sama-soc-triage-v-d">One triage run, drawn left to right: the ledger&#x27;s five workflow components in the ledger&#x27;s own order — context construction, active investigation, threat modeling, quality guards, verdict generation — with typed contracts and grounding/evidence controls drawn as cross-cutting annotations above the whole run (they are properties of the project, not gates between stages), and the evaluation surfaces the role names as annotations beneath the verdict. Structure only — no counts, no timestamps.</desc>
+              <rect class="dg-note" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="36.76" text-anchor="middle">annotations</text>
               <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
-              <rect class="dg-gate" x="16" y="68" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="88.76" text-anchor="middle">typed contracts</text>
+              <rect class="dg-note" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="88.76" text-anchor="middle">typed contracts</text>
               <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
-              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="140.76" text-anchor="middle">active investigation</text>
+              <rect class="dg-note" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="140.76" text-anchor="middle">grounding/evidence controls</text>
               <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
               <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="192.76" text-anchor="middle">threat modeling</text>
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">context construction</text>
               <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
-              <rect class="dg-gate" x="16" y="224" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="244.76" text-anchor="middle">quality guards</text>
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">active investigation</text>
               <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
               <rect class="dg-box" x="16" y="276" width="368" height="32" rx="8" />
-              <text class="dg-label" x="200" y="296.76" text-anchor="middle">verdict generation</text>
-              <text class="dg-label-meta" x="16" y="324" text-anchor="start">annotations</text>
-              <rect class="dg-note" x="16" y="334" width="368" height="32" rx="8" />
-              <text class="dg-label-meta" x="200" y="354.76" text-anchor="middle">grounding/evidence controls</text>
-              <rect class="dg-note" x="16" y="374" width="368" height="32" rx="8" />
-              <text class="dg-label-meta" x="200" y="394.76" text-anchor="middle">LLM-as-judge</text>
-              <rect class="dg-note" x="16" y="414" width="368" height="32" rx="8" />
-              <text class="dg-label-meta" x="200" y="434.76" text-anchor="middle">RAGAS</text>
-              <rect class="dg-note" x="16" y="454" width="368" height="32" rx="8" />
-              <text class="dg-label-meta" x="200" y="474.76" text-anchor="middle">blind-vs-shown</text>
-              <rect class="dg-note" x="16" y="494" width="368" height="51" rx="8" />
-              <text class="dg-label-meta" x="200" y="514.76" text-anchor="middle">contract/adversarial/compliance</text>
-              <text class="dg-label-meta" x="200" y="533.76" text-anchor="middle">suites</text>
+              <text class="dg-label" x="200" y="296.76" text-anchor="middle">threat modeling</text>
+              <line class="dg-edge" x1="200" y1="310" x2="200" y2="326" />
+              <rect class="dg-box" x="16" y="328" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="348.76" text-anchor="middle">quality guards</text>
+              <line class="dg-edge" x1="200" y1="362" x2="200" y2="378" />
+              <rect class="dg-box" x="16" y="380" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="400.76" text-anchor="middle">verdict generation</text>
+              <line class="dg-edge" x1="200" y1="414" x2="200" y2="430" />
+              <rect class="dg-note" x="16" y="432" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="452.76" text-anchor="middle">annotations</text>
+              <line class="dg-edge" x1="200" y1="466" x2="200" y2="482" />
+              <rect class="dg-note" x="16" y="484" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="504.76" text-anchor="middle">LLM-as-judge</text>
+              <line class="dg-edge" x1="200" y1="518" x2="200" y2="534" />
+              <rect class="dg-note" x="16" y="536" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="556.76" text-anchor="middle">RAGAS</text>
+              <line class="dg-edge" x1="200" y1="570" x2="200" y2="586" />
+              <rect class="dg-note" x="16" y="588" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="608.76" text-anchor="middle">blind-vs-shown</text>
+              <line class="dg-edge" x1="200" y1="622" x2="200" y2="638" />
+              <rect class="dg-note" x="16" y="640" width="368" height="51" rx="8" />
+              <text class="dg-label-meta" x="200" y="660.76" text-anchor="middle">contract/adversarial/</text>
+              <text class="dg-label-meta" x="200" y="679.76" text-anchor="middle">compliance suites</text>
             </svg>
           </div>
-          <figcaption>The triage workflow, stage by stage. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
+          <figcaption>One triage run: the ledger&#x27;s five stages, controls across all of them, evaluation at the verdict. <span class="scope-caption">Schematic — structure only. No operational data.</span></figcaption>
         </figure>
               </div>
+        <figure class="artefact">
+          <div class="artefact-frame">
+            <svg class="dg art-wide" viewBox="0 0 1000 211" role="img" aria-labelledby="dg-typed-contract-t dg-typed-contract-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-typed-contract-t">The verdict&#x27;s contract, as a shape</title>
+              <desc id="dg-typed-contract-d">A typed-contract excerpt drawn as a code surface: the verdict generation interface, the four controls bound to it (evidence, grounding/evidence controls, quality guards, typed contracts) and the evaluation surfaces that sit on it. Field types, field names and values are omitted; the shape is structural.</desc>
+              <rect class="dg-shape" x="16" y="16" width="600" height="158" rx="8" />
+              <text class="dg-label" x="36" y="38" text-anchor="start">verdict generation</text>
+              <line class="dg-rule" x1="30" y1="50" x2="602" y2="50" />
+              <line class="dg-edge" x1="32" y1="71" x2="44" y2="71" />
+              <text class="dg-label-meta" x="56" y="76" text-anchor="start">evidence</text>
+              <line class="dg-rule" x1="30" y1="85" x2="602" y2="85" />
+              <line class="dg-edge" x1="32" y1="97" x2="44" y2="97" />
+              <text class="dg-label-meta" x="56" y="102" text-anchor="start">grounding/evidence controls</text>
+              <line class="dg-rule" x1="30" y1="111" x2="602" y2="111" />
+              <line class="dg-edge" x1="32" y1="123" x2="44" y2="123" />
+              <text class="dg-label-meta" x="56" y="128" text-anchor="start">quality guards</text>
+              <line class="dg-rule" x1="30" y1="137" x2="602" y2="137" />
+              <line class="dg-edge" x1="32" y1="149" x2="44" y2="149" />
+              <text class="dg-label-meta" x="56" y="154" text-anchor="start">typed contracts</text>
+              <rect class="dg-note" x="636" y="16" width="348" height="32" rx="8" />
+              <text class="dg-label-meta" x="810" y="36.76" text-anchor="middle">LLM-as-judge</text>
+              <rect class="dg-note" x="636" y="56" width="348" height="32" rx="8" />
+              <text class="dg-label-meta" x="810" y="76.76" text-anchor="middle">RAGAS</text>
+              <rect class="dg-note" x="636" y="96" width="348" height="32" rx="8" />
+              <text class="dg-label-meta" x="810" y="116.76" text-anchor="middle">blind-vs-shown</text>
+              <rect class="dg-note" x="636" y="136" width="348" height="51" rx="8" />
+              <text class="dg-label-meta" x="810" y="156.76" text-anchor="middle">contract/adversarial/compliance</text>
+              <text class="dg-label-meta" x="810" y="175.76" text-anchor="middle">suites</text>
+            </svg>
+            <svg class="dg art-tall" viewBox="0 0 400 499" role="img" aria-labelledby="dg-typed-contract-v-t dg-typed-contract-v-d" preserveAspectRatio="xMidYMid meet">
+              <title id="dg-typed-contract-v-t">The verdict&#x27;s contract, as a shape</title>
+              <desc id="dg-typed-contract-v-d">A typed-contract excerpt drawn as a code surface: the verdict generation interface, the four controls bound to it (evidence, grounding/evidence controls, quality guards, typed contracts) and the evaluation surfaces that sit on it. Field types, field names and values are omitted; the shape is structural.</desc>
+              <rect class="dg-box" x="16" y="16" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="36.76" text-anchor="middle">verdict generation</text>
+              <line class="dg-edge" x1="200" y1="50" x2="200" y2="66" />
+              <rect class="dg-box" x="16" y="68" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="88.76" text-anchor="middle">evidence</text>
+              <line class="dg-edge" x1="200" y1="102" x2="200" y2="118" />
+              <rect class="dg-box" x="16" y="120" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="140.76" text-anchor="middle">grounding/evidence controls</text>
+              <line class="dg-edge" x1="200" y1="154" x2="200" y2="170" />
+              <rect class="dg-box" x="16" y="172" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="192.76" text-anchor="middle">quality guards</text>
+              <line class="dg-edge" x1="200" y1="206" x2="200" y2="222" />
+              <rect class="dg-box" x="16" y="224" width="368" height="32" rx="8" />
+              <text class="dg-label" x="200" y="244.76" text-anchor="middle">typed contracts</text>
+              <line class="dg-edge" x1="200" y1="258" x2="200" y2="274" />
+              <rect class="dg-note" x="16" y="276" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="296.76" text-anchor="middle">LLM-as-judge</text>
+              <line class="dg-edge" x1="200" y1="310" x2="200" y2="326" />
+              <rect class="dg-note" x="16" y="328" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="348.76" text-anchor="middle">RAGAS</text>
+              <line class="dg-edge" x1="200" y1="362" x2="200" y2="378" />
+              <rect class="dg-note" x="16" y="380" width="368" height="32" rx="8" />
+              <text class="dg-label-meta" x="200" y="400.76" text-anchor="middle">blind-vs-shown</text>
+              <line class="dg-edge" x1="200" y1="414" x2="200" y2="430" />
+              <rect class="dg-note" x="16" y="432" width="368" height="51" rx="8" />
+              <text class="dg-label-meta" x="200" y="452.76" text-anchor="middle">contract/adversarial/compliance</text>
+              <text class="dg-label-meta" x="200" y="471.76" text-anchor="middle">suites</text>
+            </svg>
+          </div>
+          <figcaption>The verdict&#x27;s contract, as a shape. <span class="scope-caption">Schematic — interface shape only.</span></figcaption>
+        </figure>
             </div>
           </div>
         </section>
@@ -235,7 +310,7 @@
             <div class="cs-body"><p>Verdict generation at the end of an evaluation-gated workflow: LLM-as-judge checks, RAGAS and blind-vs-shown evals, plus contract, adversarial and compliance test suites.</p></div>
           </div>
         </section>
-          <p class="attr-rule"><span class="srctag" title="source: owner résumé"><abbr>S2</abbr><span class="visually-hidden"> — source: owner résumé</span></span></p>
+          <p class="attr-rule" data-source-tiers="S2"><span class="srctag">Sources: the owner&#x27;s own profile, résumé and project notes.</span></p>
           <nav class="prev-next" aria-label="Project navigation">
           <a class="pn-link pn-next" href="/projects/smartops-soc-app.html"><span class="pn-label">Next project</span><span class="pn-name">SmartOps SOC App</span></a>
           </nav>
@@ -245,15 +320,6 @@
     <div class="wrap">
       <p class="footer-line"><span>Mohammed Tawfiq Rahmy</span> · <a href="https://www.linkedin.com/in/mohammed-rahmy" target="_blank" rel="noopener noreferrer">LinkedIn<span class="visually-hidden"> (opens in a new tab)</span></a> · <span>Every claim on this site is sourced.</span></p>
       <p class="footer-line muted">© Mohammed Tawfiq Rahmy</p>
-      <dl class="legend">
-        <div>
-          <dt>Source tiers</dt>
-          <dd>S1 — authorized LinkedIn profile</dd>
-          <dd>S2 — owner résumé</dd>
-          <dd>S3 — owner profile material</dd>
-          <dd>S5 — owner résumé (newer)</dd>
-        </div>
-      </dl>
       <p class="to-top"><a href="/index.html#projects">All work</a></p>
 
     </div>

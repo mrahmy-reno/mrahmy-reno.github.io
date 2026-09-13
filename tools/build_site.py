@@ -232,10 +232,9 @@ def render_header(cfg: dict, p: Page, is_index: bool) -> str:
 
 
 def render_footer(cfg: dict, p: Page, is_index: bool) -> str:
-    legend = "\n".join(
-        f'          <dd>{p.t(C2.EXTRA[key], global_=True)}</dd>'
-        for key in ("legend_s1", "legend_s2", "legend_s3", "legend_s5")
-    )
+    # B2-04 / D5: the SOURCE TIERS legend is gone. The tier taxonomy still governs the build and
+    # the content map, and still reaches the DOM as `data-source-tiers` on the attribution rule;
+    # it is simply not part of what a visitor reads. The footer keeps the human provenance line.
     allwork = "" if is_index else (
         f'      <p class="to-top"><a href="/index.html#projects">'
         + p.t(C.L["all_work"], global_=True) + "</a></p>")
@@ -245,12 +244,6 @@ def render_footer(cfg: dict, p: Page, is_index: bool) -> str:
     <div class="wrap">
       <p class="footer-line"><span>{p.t(C.NAME, global_=True)}</span> · <a href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["header_contact"], global_=True)}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a> · <span>{p.t(C.L["footer_provenance"], global_=True)}</span></p>
       <p class="footer-line muted">{p.t(C.L["copyright"], global_=True)}</p>
-      <dl class="legend">
-        <div>
-          <dt>{p.t(C2.EXTRA["legend_h"], global_=True)}</dt>
-{legend}
-        </div>
-      </dl>
 {allwork}
 {back}
     </div>
@@ -299,21 +292,33 @@ def render_photo(cfg: dict, p: Page) -> str:
 
 
 def attribution(p: Page, tags: str, tier: str = "S2") -> str:
-    """The attribution rule: a hairline with a mono source tag seated on it (DESIGN_SYSTEM 6.10)."""
+    """The attribution rule (DESIGN_SYSTEM 6.10 / PROOF_PLAN 5 rule 10).
+
+    B2-04 / D5 repair. The delivered form used to publish the internal source-tier taxonomy as
+    visible text ("S2" on the hairline, plus a SOURCE TIERS legend in the footer). Provenance
+    discipline is a locked requirement, but `S5 — owner résumé (newer)` is QA vocabulary on a
+    portfolio: it tells a recruiter the document has been annotated for audit. The rule now keeps
+    the machine-readable tier on the hairline (`data-source-tiers`, still switched by
+    `provenance.tags`) and puts a HUMAN sentence on the page instead. `off` still renders the
+    rule with no source statement, as before.
+    """
     if tags == "off":
         return '          <p class="attr-rule" aria-hidden="true"></p>'
     if tags == "plain":
         return (f'          <p class="attr-rule"><span class="srctag">'
                 f'{p.t(C2.EXTRA["src_sourced"])}</span></p>')
-    tag_block = C2.SOURCE_TAGS[tier]
-    expansion = p.t(tag_block)
-    return (f'          <p class="attr-rule"><span class="srctag" title="{esc(tag_block["text"].lstrip("— "))}">'
-            f'<abbr>{esc(tier)}</abbr><span class="visually-hidden"> {expansion}</span></span></p>')
+    return (f'          <p class="attr-rule" data-source-tiers="{esc(tier)}">'
+            f'<span class="srctag">{p.t(C2.EXTRA["src_human"])}</span></p>')
 
 
-def section_head(p: Page, serial: dict, h2: dict, deck: dict, anchor: str) -> str:
+def section_head(p: Page, h2: dict, deck: dict, anchor: str) -> str:
+    """B2-04 / D4: the `NN / 07` serial is gone.
+
+    The critique named the serial on every section head as a documentation device — "a report's
+    page numbering applied to a portfolio" — in the same breath as the SOURCE TIERS footer. The
+    section's signature (name + one structural deck) is kept; the page furniture is not.
+    """
     return f"""        <div class="section-head" data-reveal>
-          <p class="serial">{p.t(serial)}</p>
           <h2 id="{anchor}-h2">{p.t(h2)}</h2>
           <p class="deck">{p.t(deck)}</p>
         </div>"""
@@ -378,18 +383,20 @@ def render_system_map(p: Page, link: bool = True) -> str:
 
 
 def section_about(cfg: dict, p: Page) -> str:
-    tags = source_tags(cfg)
-    pov = C2.POINT_OF_VIEW
-    pov_html = p.raw(pov["text"], pov["refs"], "composed", pov["note"])
+    # B2-04 / D4 + Q9. Three changes: the page's point of view moved into the hero (it is the
+    # argument, not an appendix below the fold); the pitch moved out of the first screen into the
+    # opening prose (it says the same positioning the claim says, in 88 words — in the hero it
+    # pushed the CTAs below the fold), and the near-duplicate positioning paragraph was cut. What
+    # is left is the owner's own words, one paragraph each, and the source rule — with no source
+    # taxonomy on the page (D5).
     return f"""      <section class="plane section" data-surface="warm" data-plane="about" id="about" aria-labelledby="about-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["about"], C.L["h2_about"], C2.EXTRA["about_deck"], "about")}
+{section_head(p, C.L["h2_about"], C2.EXTRA["about_deck"], "about")}
         <div class="prose" data-reveal>
           <p>{p.t(C.S5_SUMMARY)}</p>
-          <p>{p.t(C.ABOUT_SUMMARY)}</p>
+          <p>{p.t(C.PITCH)}</p>
         </div>
-        <p class="band-statement">{pov_html}</p>
-{attribution(p, tags, "S5")}
+{attribution(p, source_tags(cfg), "S5")}
         </div>
       </section>"""
 
@@ -412,7 +419,7 @@ def section_experience(cfg: dict, p: Page) -> str:
           </article>""")
     return f"""      <section class="plane section" data-surface="warm" data-plane="experience" id="experience" aria-labelledby="experience-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["experience"], C.L["h2_experience"], C2.EXTRA["experience_deck"], "experience")}
+{section_head(p, C.L["h2_experience"], C2.EXTRA["experience_deck"], "experience")}
           <div class="exp-list" data-reveal>
 {chr(10).join(blocks)}
           </div>
@@ -451,7 +458,7 @@ def section_projects(cfg: dict, p: Page) -> str:
           </div>""")
     return f"""      <section class="plane section" data-surface="warm" data-plane="projects" id="projects" aria-labelledby="work-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["work"], C.L["h2_work"], C2.EXTRA["work_deck"], "work")}
+{section_head(p, C.L["h2_work"], C2.EXTRA["work_deck"], "work")}
 {chr(10).join(groups)}
 {attribution(p, tags, "S2")}
         </div>
@@ -459,6 +466,14 @@ def section_projects(cfg: dict, p: Page) -> str:
 
 
 def section_evidence(cfg: dict, p: Page) -> str:
+    """The plane the critique called the site's weakest (D3).
+
+    B2-04 replaces "the ten project names, drawn" with two objects of different kinds: a RUN
+    TRACE of the flagship (the ledger's five stages, the controls bracketed across all of them,
+    the evaluation surfaces under the verdict) and a TYPED-CONTRACT EXCERPT (a code surface, not
+    a chain of boxes). The system map — which drew a table of contents — is gone from the index;
+    it stays on the 404 as a recovery surface, where a list of every page is the right object.
+    """
     tags = source_tags(cfg)
     if tags == "off":
         inner = (f'        <div class="empty" data-reveal>\n'
@@ -466,8 +481,7 @@ def section_evidence(cfg: dict, p: Page) -> str:
                  f'          <p>{p.t(C2.EXTRA["empty_body"])}</p>\n'
                  f'        </div>')
     else:
-        featured = next(pr for pr in C.PROJECTS if pr["slug"] == "smartops-soc-app")
-        others = ["milo-ai-employee", "pulsesec", "halalbot", "sama-soc-triage"]
+        others = ["milo-ai-employee", "pulsesec", "halalbot", "smartops-soc-app"]
         items = []
         for slug in others:
             proj = next(pr for pr in C.PROJECTS if pr["slug"] == slug)
@@ -475,7 +489,10 @@ def section_evidence(cfg: dict, p: Page) -> str:
                 f'            <li><span class="index-label">{p.t(C2.EXTRA["artefact_label"])}</span>'
                 f'<a href="/projects/{slug}.html">{p.t(proj["name"])}</a></li>')
         inner = (f'        <div class="evidence-figure" data-reveal>\n'
-                 f'{render_figure(p, "dg-smartops", "smartops-soc-app", refs=featured["name"]["refs"])}\n'
+                 f'{render_figure(p, "dg-sama-trace", "sama-soc-triage", refs=["L4.1", "L4.1@4.1"])}\n'
+                 f'        </div>\n'
+                 f'        <div class="evidence-figure" data-reveal>\n'
+                 f'{render_figure(p, "dg-contract", "typed-contract", refs=["L4.1"])}\n'
                  f'        </div>\n'
                  f'        <h3 class="certs-h3">{p.t(C2.EXTRA["evidence_index_h"])}</h3>\n'
                  f'        <ul class="evidence-index">\n' + "\n".join(items) + "\n        </ul>")
@@ -483,8 +500,7 @@ def section_evidence(cfg: dict, p: Page) -> str:
             f'{p.t(C2.EXTRA["evidence_more"])}</a></p>')
     return f"""      <section class="plane section" data-surface="deep" data-plane="evidence" id="evidence" aria-labelledby="evidence-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["evidence"], C2.EXTRA["evidence_h2"], C2.EXTRA["evidence_deck"], "evidence")}
-{render_system_map(p)}
+{section_head(p, C2.EXTRA["evidence_h2"], C2.EXTRA["evidence_deck"], "evidence")}
 {inner}
 {more}
 {attribution(p, tags, "S2")}
@@ -506,7 +522,7 @@ def section_skills(cfg: dict, p: Page) -> str:
           </div>""")
     return f"""      <section class="plane section" data-surface="warm" data-plane="skills" id="skills" aria-labelledby="skills-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["skills"], C.L["h2_skills"], C2.EXTRA["skills_deck"], "skills")}
+{section_head(p, C.L["h2_skills"], C2.EXTRA["skills_deck"], "skills")}
           <div class="skill-list">
 {chr(10).join(groups)}
           </div>
@@ -548,7 +564,7 @@ def section_education(cfg: dict, p: Page) -> str:
                  '          <ul class="certs">\n' + "\n".join(rows) + "\n          </ul>")
     return f"""      <section class="plane section" data-surface="warm" data-plane="education" id="education" aria-labelledby="education-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["education"], C.L["h2_education"], C2.EXTRA["education_deck"], "education")}
+{section_head(p, C.L["h2_education"], C2.EXTRA["education_deck"], "education")}
           <div class="edu-list">
 {chr(10).join(edu)}
           </div>
@@ -565,7 +581,7 @@ def section_education(cfg: dict, p: Page) -> str:
 def section_contact(cfg: dict, p: Page) -> str:
     return f"""      <section class="plane section" data-surface="warm" data-plane="contact" id="contact" aria-labelledby="contact-h2">
         <div class="wrap">
-{section_head(p, C2.SERIALS["contact"], C.L["h2_contact"], C2.EXTRA["contact_deck"], "contact")}
+{section_head(p, C.L["h2_contact"], C2.EXTRA["contact_deck"], "contact")}
           <div class="contact-panel" data-reveal>
 {render_contact_block(cfg, p)}
           </div>
@@ -582,22 +598,27 @@ def build_index(cfg: dict, p: Page) -> str:
                       "owner-authored summary prose.")
     jsonld = render_jsonld(cfg)
     photo = render_photo(cfg, p)
+    pov = C2.POINT_OF_VIEW
+    pov_html = p.raw(pov["text"], pov["refs"], "composed", pov["note"])
+    # B2-04 / D10: the eyebrow's "Mechatronics × AI Systems" joint is protected with a
+    # non-breaking space, so the multiplication sign can never open a line on a narrow screen.
+    # (The rendered-text scan normalises NBSP to a space, so the line still traces to its source.)
+    eyebrow = p.t(C.HEADLINE).replace("Mechatronics ×", "Mechatronics\u00a0×")
     body = f"""      <section class="plane hero" data-surface="warm" data-plane="hero" id="top" aria-labelledby="hero-h1">
         <div class="wrap hero-inner">
           <div class="hero-lead" data-reveal="hero">
-            <p class="eyebrow">{signal_el(p, "active")} · {p.t(C.HEADLINE)}</p>
+            <p class="eyebrow">{signal_el(p, "active")} · {eyebrow}</p>
             <h1 id="hero-h1">{p.t(C.NAME)}</h1>
             <p class="claim">{p.t(C2.CLAIM_LEAD)} <span class="claim-tail">{p.t(C2.CLAIM_TAIL)}</span></p>
           </div>
           <div class="hero-rail" data-reveal>
-            <p class="serial">{p.t(C2.ARCH["rail"])}</p>
 {render_glance_strip(cfg, p)}
+            <p class="band-statement">{pov_html}</p>
           </div>
           <div class="hero-aside" data-reveal>
 {photo}
           </div>
           <div class="hero-close" data-reveal>
-            <p class="pitch">{p.t(C.PITCH)}</p>
             <p class="cta-row"><a class="btn" href="#projects">{p.t(C.L["cta_work"])}</a> <a class="btn btn-secondary" href="{C.LINKEDIN_URL}" target="_blank" rel="noopener noreferrer">{p.t(C.L["cta_linkedin"])}<span class="visually-hidden"> {p.t(C.L["newtab"], global_=True)}</span></a></p>
           </div>
         </div>
@@ -731,7 +752,7 @@ class ProjectCtx:
 
     def __init__(self, *, p: Page, proj: dict, stages: dict, artefact: str, caps: str,
                  tech: str, scope_note: str, domain: dict, lead: str, close: str | None,
-                 signal: str | None) -> None:
+                 signal: str | None, second: str = "") -> None:
         self.p = p
         self.proj = proj
         self.stages = stages
@@ -743,6 +764,7 @@ class ProjectCtx:
         self.lead = lead
         self.close = close
         self.signal = signal
+        self.second = second
 
 
 def _plane(p: Page, surface: str, cls: str, label: str, inner: str) -> str:
@@ -785,7 +807,7 @@ def _architecture_body(p: Page, ctx: ProjectCtx) -> str:
             f'            <div class="cs-body">\n'
             f'              <h2>{p.t(C.L["stage_architecture"])}</h2>\n'
             f'              <div class="diagram-panel" data-reveal>\n{ctx.artefact}\n'
-            f'              </div>\n            </div>')
+            f'              </div>{ctx.second}\n            </div>')
 
 
 def _evidence_body(p: Page, ctx: ProjectCtx) -> str:
@@ -1014,6 +1036,15 @@ def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
     close_surface = close[0] if close else None
     domain = C.L[GROUP_LABELS[proj["group"]]]
     artefact = render_figure(p, f"dg-{proj['slug']}", proj["slug"], refs=proj["name"]["refs"])
+    # B2-04 / D3: a project whose artefact metadata declares a second object renders it here —
+    # the SAMA page carries the typed-contract excerpt beside its run trace, so the flagship has
+    # two objects that could only exist if the system were real (a trace and a contract), not
+    # one schematic of its own words.
+    second = ""
+    if A.ARTEFACT_META[proj["slug"]].get("second"):
+        second = ("\n" + render_figure(p, f"dg-{proj['slug']}-contract",
+                                       A.ARTEFACT_META[proj["slug"]]["second"],
+                                       refs=proj["name"]["refs"]))
     caps = "\n".join(f'                <li>{p.t(cap)}</li>' for cap in proj["capabilities"])
     scope_note = (f'<p class="callout"><span class="callout-label">'
                   f'{p.t(C2.EXTRA["scope_label"])}</span>{p.t(C.SCOPE_NOTE)}</p>')
@@ -1039,7 +1070,7 @@ def build_project(cfg: dict, p: Page, proj: dict, idx: int) -> str:
     sig = signal_el(p, "scope") if proj["slug"] == "sama-soc-triage" else None
     ctx = ProjectCtx(p=p, proj=proj, stages=stages, artefact=artefact, caps=caps, tech=tech,
                      scope_note=scope_note, domain=domain, lead=lead, close=close_surface,
-                     signal=sig)
+                     signal=sig, second=second)
     core = ARCH_RENDER[arch](ctx)
     body = f"""      <article class="project-detail" data-arch="{arch}" data-mode="{ex["mode"]}">
 {core}

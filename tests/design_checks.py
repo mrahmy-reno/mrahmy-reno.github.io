@@ -437,16 +437,35 @@ def check_artefacts(docs: Path, ledger: str) -> None:
     unapproved: list[str] = []
     measure_hits: list[str] = []
     digit_hits: list[str] = []
+    pair_fails: list[str] = []
     parity_fails: list[str] = []
     all_labels: set[str] = set()
 
     def audit(page_name: str, fig: str, kind: str) -> None:
         svgs = svg_blocks(fig)
-        if len(svgs) == 2 and svg_words(svgs[0]) != svg_words(svgs[1]):
-            only_wide = sorted(set(svg_words(svgs[0])) - set(svg_words(svgs[1])))
-            only_tall = sorted(set(svg_words(svgs[1])) - set(svg_words(svgs[0])))
-            parity_fails.append(f"{page_name} ({kind}): wide-only={only_wide[:4]} "
-                                f"tall-only={only_tall[:4]}")
+        # B2-04 / D1: the pair audit is now structural. Every figure must carry COMPLETE
+        # wide/tall pairs (one of each, matched by the aria-labelledby uid), and the two
+        # variants of a pair must carry identical label words. The old check only looked at
+        # figures that happened to contain exactly two SVGs.
+        groups: dict[str | None, list[str]] = {}
+        for svg in svgs:
+            m = re.search(r'aria-labelledby="([^"]+)"', svg)
+            base = None
+            if m:
+                first = m.group(1).split()[0]
+                base = first[:-2] if first.endswith("-t") else first
+                if base.endswith("-v"):
+                    base = base[:-2]
+            groups.setdefault(base, []).append(svg)
+        for base, group in groups.items():
+            if base is None or len(group) != 2:
+                pair_fails.append(f"{page_name} ({kind}): {base} has {len(group)} variant(s)")
+                continue
+            if svg_words(group[0]) != svg_words(group[1]):
+                only_wide = sorted(set(svg_words(group[0])) - set(svg_words(group[1])))
+                only_tall = sorted(set(svg_words(group[1])) - set(svg_words(group[0])))
+                parity_fails.append(f"{page_name} ({kind}): {base} wide-only={only_wide[:4]} "
+                                    f"tall-only={only_tall[:4]}")
         for svg in svgs:
             for label in svg_labels(svg):
                 all_labels.add(label)
@@ -473,11 +492,12 @@ def check_artefacts(docs: Path, ledger: str) -> None:
                 uncaptioned.append(f"{page.name} (system map)")
             audit(f"{page.name} (system map)", fig, "system map")
 
-    check(figures == 13,
-          "13 artefacts render (hero system map + SmartOps band + 10 project pages + 404 map)",
+    check(figures == 14,
+          "14 artefacts render (index: run trace + typed-contract excerpt; 10 project pages; the "
+          "SAMA page's second object; 404 system map)",
           f"found {figures}")
     check(not uncaptioned, "every artefact carries the mandatory scope caption",
-          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "13/13 captioned")
+          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "14/14 captioned")
     check(not unapproved,
           "label diff: every word of every diagram label is a ledger word or structural",
           f"{len(unapproved)} unapproved: {unapproved[:6]}" if unapproved else
@@ -487,8 +507,11 @@ def check_artefacts(docs: Path, ledger: str) -> None:
           f"{len(MEASUREMENT_VOCAB)} patterns checked against {len(all_labels)} labels")
     check(not digit_hits, "digits in diagram labels: only the permitted proper nouns (BM25, E2E)",
           f"hits={digit_hits[:4]}" if digit_hits else "0 quantity-bearing labels")
-    check(not parity_fails, "wide and vertical-rail variants carry identical label words",
-          f"{parity_fails[:3]}" if parity_fails else "13/13 artefacts label-identical")
+    check(not pair_fails, "every artefact ships a complete wide + vertical-rail pair",
+          f"{pair_fails[:3]}" if pair_fails else "14/14 figures carry matched pairs")
+    check(not parity_fails, "wide and vertical-rail variants of every artefact carry identical "
+          "label words",
+          f"{parity_fails[:3]}" if parity_fails else "14/14 artefacts label-identical")
     print(f"        distinct diagram labels: {len(all_labels)}")
 
 
@@ -513,13 +536,18 @@ def check_provenance_switch() -> None:
         return "\n".join(line for line in text.splitlines() if line.strip())
 
     tier = B.render_all(copy.deepcopy(cfg), None)
-    check("<abbr>S" in tier["index.html"] and "srctag" in tier["index.html"],
-          "tags=tier: the source tier is seated on the hairline")
+    # B2-04 / D5: "tier" no longer publishes the tier token as visible text. It writes the tier
+    # to the DOM (data-source-tiers) and renders a human source sentence instead; the visible
+    # form must not contain a tier ID.
+    check('data-source-tiers="S' in tier["index.html"] and "srctag" in tier["index.html"],
+          "tags=tier: the tier is seated on the hairline as machine-readable data, not as text")
+    check(not re.search(r">\s*S[1235]\s*<", tier["index.html"]),
+          "tags=tier: no bare tier token is rendered as visible text (D5)")
 
     cfg_plain = copy.deepcopy(cfg)
     cfg_plain["provenance"]["tags"] = "plain"
     plain = B.render_all(cfg_plain, None)
-    check("SOURCED" in plain["index.html"] and "<abbr>" not in plain["index.html"],
+    check("SOURCED" in plain["index.html"] and "data-source-tiers" not in plain["index.html"],
           "tags=plain: one step down to a plain SOURCED mark, no other design change",
           "index carries the plain mark" if "SOURCED" in plain["index.html"] else "mark missing")
     check(sig(re.sub(r'<p class="attr-rule".*?</p>', "", plain["index.html"]))
@@ -531,7 +559,7 @@ def check_provenance_switch() -> None:
     cfg_off = copy.deepcopy(cfg)
     cfg_off["provenance"]["tags"] = "off"
     off = B.render_all(cfg_off, None)
-    check("NOT YET PUBLISHED" in off["index.html"] and "<abbr>" not in off["index.html"],
+    check("NOT YET PUBLISHED" in off["index.html"] and "data-source-tiers" not in off["index.html"],
           "tags=off: the evidence band renders the designed empty state, never a blank area",
           "empty block present" if "NOT YET PUBLISHED" in off["index.html"] else "missing")
     check("Project page" not in off["index.html"] and "srctag" not in off["index.html"],
@@ -682,8 +710,38 @@ def resolve_css_numbers(css: str) -> dict[str, float]:
     return vals
 
 
+def _artefact_signature(docs: Path, rel: str) -> tuple:
+    """B2-04 / D8, dimension D6: the artefact's own structure, read from the built SVG.
+
+    The proxy's first five dimensions are declared (mode, arch, token ratio, surface share,
+    motif) and cannot tell two pages apart when their declarations match. This one is measured
+    from the object itself: how many nodes, gates, notes and panels it has, whether it draws a
+    bracketed set, a boundary rule or a closing lane. Two pages that differ in what their
+    artefact draws are different artefacts.
+    """
+    page = docs / rel
+    if not page.exists():
+        return ()
+    html_ = page.read_text(encoding="utf-8")
+    figs = re.findall(r"<figure class=\"artefact\".*?</figure>", html_, re.S)
+    if not figs:
+        return ()
+    sig = []
+    for fig in figs:
+        wide = _wide_svg(fig)
+        if not wide:
+            continue
+        sig.append((
+            wide.count('class="dg-box"'), wide.count('class="dg-gate"'),
+            wide.count('class="dg-note"'), wide.count('class="dg-shape"'),
+            wide.count("dg-dashed") > 0,
+            len(set(t for _y, t in _svg_texts(wide))),
+        ))
+    return tuple(sig)
+
+
 def check_variability(docs: Path, css: str) -> None:
-    print("\n-- 9. anti-template: the variability proxy D1-D5 (DESIGN_LANGUAGE.md 6.3) --")
+    print("\n-- 9. anti-template: the variability proxy D1-D6 (DESIGN_LANGUAGE.md 6.3) --")
     vals = resolve_css_numbers(css)
     body_px = vals.get("--fs-base", 17.0)
     order = ["index.html"] + [f"projects/{s}.html" for s in PROJECT_ORDER]
@@ -713,13 +771,20 @@ def check_variability(docs: Path, css: str) -> None:
             "d1": [pl["label"] for pl in planes],
             "d2": emphasis, "d3": (info["arch"], len(planes)),
             "d4": (lead_surface, share), "d5": (n, motif),
+            "d6": _artefact_signature(docs, rel),
         })
 
-    print(f"        {'page':34} {'mode':5} {'arch':5} {'D2':>5}  {'D4 leading':14} {'D5 motif':10} D1")
+    print(f"        {'page':34} {'mode':5} {'arch':5} {'D2*':>5}  {'D4 leading':14} "
+          f"{'D5 motif':10} D1")
     for s in series:
         print(f"        {s['page']:34} {s['mode']:5} {s['arch']:5} {str(s['d2']):>5}  "
               f"{s['d4'][0] + ' ' + str(s['d4'][1]) + '%':14} {str(s['d5'][1]):10} "
               f"{'>'.join(s['d1'])}")
+    print("        D2* = the DECLARED token ratio (the mode's lead step / the body step read "
+          "from the stylesheet).")
+    print("        The RENDERED emphasis is viewport-dependent (the display steps are clamp()s) "
+          "and is measured in")
+    print("        tests/browser_checks.mjs against the 3.0 floor. See B2-03 D12.")
 
     def differs(a: dict, b: dict) -> list[str]:
         d = []
@@ -733,6 +798,8 @@ def check_variability(docs: Path, css: str) -> None:
             d.append("D4")
         if a["d5"] != b["d5"]:
             d.append("D5")
+        if a["d6"] != b["d6"]:
+            d.append("D6")
         return d
 
     archs = {s["arch"] for s in series}
@@ -748,9 +815,36 @@ def check_variability(docs: Path, css: str) -> None:
         d = differs(series[i], series[i + 1])
         if len(d) < 2:
             weak.append(f"{series[i]['page']} / {series[i + 1]['page']} differ on {d}")
-    check(not weak, "every adjacent pair differs on at least 2 of the 5 dimensions",
+    check(not weak, "every adjacent pair differs on at least 2 of the 6 dimensions",
           "; ".join(weak[:3]) if weak else
           f"{len(series) - 1} pairs, minimum 2 dimensions, prose not consulted")
+
+    # B2-04 / D8: the proxy used to compare ADJACENT pages only, so SAMA and Tonsy-GPT passed
+    # while being identical on all five measured dimensions. Every pair is now compared, and a
+    # sixth dimension measures the artefact itself. Two pages that share an expression profile
+    # (same mode AND same archetype) are the risky case the bar's §3.1 step 3 names: they must
+    # still be told apart, so they are required to differ on the measured dimension D6.
+    identical = []
+    profile_twins = []
+    n_pairs = 0
+    for i in range(len(series)):
+        for j in range(i + 1, len(series)):
+            n_pairs += 1
+            d = differs(series[i], series[j])
+            if not d:
+                identical.append(f"{series[i]['page']} == {series[j]['page']}")
+            same_profile = (series[i]["mode"] == series[j]["mode"]
+                            and series[i]["arch"] == series[j]["arch"])
+            if same_profile and "D6" not in d:
+                profile_twins.append(f"{series[i]['page']} vs {series[j]['page']}: {d}")
+    check(not identical,
+          "no two pages in the series are identical on all 6 dimensions (all pairs compared)",
+          "; ".join(identical[:4]) if identical else f"{n_pairs} pairs compared, 0 identical")
+    check(not profile_twins,
+          "pages sharing an expression profile (mode + archetype) still differ on the measured "
+          "artefact dimension D6",
+          "; ".join(profile_twins[:4]) if profile_twins else
+          f"every same-profile pair differs in what its artefact draws")
 
     demo = {s["page"]: s for s in series}
     trio = ["index.html", "projects/sama-soc-triage.html", "projects/pulsesec.html"]
@@ -769,6 +863,221 @@ def check_variability(docs: Path, css: str) -> None:
     modes = {s["mode"] for s in series}
     check(len(modes) >= 2, "the series uses more than one expression mode",
           f"{len(modes)} modes: {sorted(modes)}")
+
+
+# --------------------------------------------------------------------------- 10. the object kinds
+
+# B2-04 / D3 + D7. The critique's central finding was that every artefact was the same object —
+# a stack of outlined boxes each holding one label — and that the section built to show work drew
+# the ten project names. These checks assert the repair at the level of the objects themselves:
+# two object KINDS on the index, a run trace whose cross-cutting controls are drawn above the run
+# rather than between two stages, and a contract excerpt that is not a box stack.
+
+def _svg_texts(svg: str) -> list[tuple[float, str]]:
+    out = []
+    for m in re.finditer(r'<text[^>]*\by="([\d.]+)"[^>]*>(.*?)</text>', svg, re.S):
+        out.append((float(m.group(1)), re.sub(r"\s+", " ", html.unescape(m.group(2))).strip()))
+    return out
+
+
+def _wide_svg(fig: str) -> str:
+    for svg in svg_blocks(fig):
+        if 'class="dg art-wide"' in svg:
+            return svg
+    return ""
+
+
+def check_evidence_objects(docs: Path) -> None:
+    print("\n-- 10. the evidence objects (B2-04 / D3, D7) --")
+    index = (docs / "index.html").read_text(encoding="utf-8")
+    figs = re.findall(r"<figure class=\"artefact\".*?</figure>", index, re.S)
+    check(len(figs) == 2,
+          "the index's Work, shown plane draws two objects (a run trace and a contract excerpt)",
+          f"{len(figs)} artefact figure(s)")
+    if len(figs) != 2:
+        return
+
+    trace, contract = figs
+    stages = ["context construction", "active investigation", "threat modeling", "quality guards",
+              "verdict generation"]
+    lines = _svg_texts(_wide_svg(trace))
+    words = [w for _y, t in lines for w in t.split()]
+    positions = []
+    for stage in stages:
+        first = stage.split()[0]
+        positions.append(words.index(first) if first in words else -1)
+    check(-1 not in positions and positions == sorted(positions),
+          "D7: the run trace carries the ledger's five workflow components, in the ledger's order",
+          f"positions={positions}" if -1 in positions or positions != sorted(positions)
+          else f"5/5 in order: {', '.join(stages)}")
+
+    def top(label_first_word: str) -> float | None:
+        ys = [y for y, t in lines if label_first_word in t.split()]
+        return min(ys) if ys else None
+
+    cross = ["typed", "grounding/evidence"]
+    first_stage_y, cross_ys = top("context"), [top(w) for w in cross]
+    above = (first_stage_y is not None and all(y is not None and y < first_stage_y
+                                               for y in cross_ys))
+    check(above,
+          "D7: typed contracts and grounding/evidence controls are drawn as cross-cutting "
+          "annotations above the whole run, not as gates between two stages",
+          f"controls at y={cross_ys}, first stage at y={first_stage_y}")
+    between = []
+    stage_ys = sorted(y for y in (top(s.split()[0]) for s in stages) if y is not None)
+    for word, y in zip(cross, cross_ys):
+        if y is not None and any(a < y < b for a, b in zip(stage_ys, stage_ys[1:])):
+            between.append(word)
+    check(not between, "D7: no control label sits between two stages of the run",
+          f"between stages: {between}" if between else "0 labels interleaved")
+
+    wide = _wide_svg(contract)
+    rows = [t for _y, t in _svg_texts(wide)]
+    shapes = wide.count('class="dg-shape"')
+    boxes = wide.count('class="dg-box"')
+    check(shapes == 1 and boxes == 0 and len(rows) >= 5,
+          "D3: the contract excerpt is a code surface (header + field rows in one panel), not a "
+          "chain of outlined boxes",
+          f"dg-shape={shapes} dg-box={boxes} text rows={len(rows)}")
+    check(len(set(rows)) == len(rows),
+          "D3: every row of the contract excerpt is a distinct field line",
+          f"{len(set(rows))}/{len(rows)} distinct")
+
+    sama = (docs / "projects" / "sama-soc-triage.html").read_text(encoding="utf-8")
+    check(len(re.findall(r"<figure class=\"artefact\".*?</figure>", sama, re.S)) == 2,
+          "D3: the flagship page (SAMA) carries both objects — a run trace and a contract excerpt")
+
+
+# --------------------------------------------------------------------------- 11. craft regressions
+
+def _css_rules(css: str) -> list[tuple[str, str, str]]:
+    """(selector, declarations, ancestor at-rules) for every rule, in source order."""
+    rules: list[tuple[str, str, str]] = []
+    stack: list[str] = []
+    buf = ""
+    for ch in css:
+        if ch == "{":
+            stack.append(buf.strip())
+            buf = ""
+        elif ch == "}":
+            if stack:
+                selector = stack[-1]
+                at_rules = " ".join(a for a in stack[:-1] if a.startswith("@"))
+                rules.append((selector, buf, at_rules))
+                stack.pop()
+            buf = ""
+        else:
+            buf += ch
+    return rules
+
+
+def _specificity(selector: str) -> tuple[int, int, int]:
+    ids = len(re.findall(r"#[\w-]+", selector))
+    classes = len(re.findall(r"\.[\w-]+|\[[^\]]*\]|:(?!:)[\w-]+", selector))
+    types = len(re.findall(r"(?:^|[\s>+~])([a-zA-Z][\w-]*)", selector))
+    return (ids, classes, types)
+
+
+def check_craft_regressions(css: str) -> None:
+    """The two visible defects D1/D2 and the mobile measure D10, at the source level."""
+    print("\n-- 11. craft regressions (B2-04 / D1, D2, D10) --")
+    rules = _css_rules(css)
+    hide: list[tuple[tuple[int, int, int], str]] = []
+    show: list[tuple[tuple[int, int, int], str]] = []
+    for selector, body, at_rules in rules:
+        if "media" in at_rules:
+            continue
+        for one in selector.split(","):
+            one = one.strip()
+            if not one:
+                continue
+            if ".art-tall" in one and re.search(r"display\s*:\s*none", body):
+                hide.append((_specificity(one), one))
+            if "svg" in one and re.search(r"display\s*:\s*block", body):
+                show.append((_specificity(one), one))
+    check(bool(hide) and bool(show) and min(h[0] for h in hide) >= max(s[0] for s in show),
+          "D1: the rule hiding the tall variant out-specifies every container rule that makes a "
+          "figure SVG a block box (the exact specificity inversion that drew every diagram twice)",
+          f"hide={sorted({h[0] for h in hide}, reverse=True)[:2]} "
+          f"show={sorted({s[0] for s in show}, reverse=True)[:2]}"
+          if hide and show else "no rule found")
+
+    media = [r for r in rules if "max-width: 767.98px" in r[2]]
+    m_hide = any(".art-wide" in sel and re.search(r"display\s*:\s*none", body)
+                 for sel, body, _a in media)
+    m_show = any(".art-tall" in sel and re.search(r"display\s*:\s*block", body)
+                 for sel, body, _a in media)
+    check(m_hide and m_show,
+          "D1: below 768px the wide variant is hidden and the tall variant is shown, in the same "
+          "specificity class")
+    rank_rules = [(sel, body) for sel, body, a in rules
+                  if "media" not in a and ".rank" in sel]
+    check(bool(rank_rules) and not any(re.search(r"flex\s*:\s*0\s+1", body)
+                                       for _s, body in rank_rules),
+          "D2: the ordinal is not a shrinkable flex item")
+    check(any(re.search(r"flex\s*:\s*none", body) for _s, body in rank_rules),
+          "D2: .rank declares flex: none")
+    check(any(re.search(r"white-space\s*:\s*nowrap", body) for _s, body in rank_rules),
+          "D2: .rank cannot wrap its two digits")
+
+
+def check_visible_provenance_tokens(docs: Path) -> None:
+    """B2-04 / D5: the internal tier taxonomy is not on any page as visible text."""
+    print("\n-- 12. provenance vocabulary is not published (D5) --")
+    hits = []
+    for page in sorted(docs.rglob("*.html")):
+        html_ = page.read_text(encoding="utf-8")
+        body = html_.split("<body", 1)[-1]
+        text = re.sub(r"<[^>]+>", " ", body)
+        for tok in re.findall(r"\bS[1235]\b", text):
+            hits.append(f"{page.relative_to(docs)}: {tok}")
+    check(not hits, "no rendered page shows a source-tier token (S1/S2/S3/S5) to the visitor",
+          f"hits={hits[:5]}" if hits else "12 pages scanned, 0 tier tokens in visible text")
+    check(any('data-source-tiers="S' in p.read_text(encoding="utf-8")
+              for p in sorted(docs.rglob("*.html"))),
+          "the tier taxonomy still reaches the DOM as data-source-tiers (the audit trail is intact)")
+
+
+# --------------------------------------------------------------------------- 13. the shipped face
+
+def check_shipped_face(docs: Path, css: str) -> None:
+    """B2-04 / D6: the identity is deliverable — a face is shipped, not borrowed from the OS."""
+    print("\n-- 13. the display face is shipped (D6) --")
+    faces = re.findall(r"@font-face\s*\{(.*?)\}", css, re.S)
+    check(len(faces) >= 1, "the stylesheet declares at least one @font-face rule",
+          f"{len(faces)} declared")
+    srcs = []
+    for face in faces:
+        family = re.search(r'font-family:\s*"([^"]+)"', face)
+        url = re.search(r'url\("([^"]+)"\)', face)
+        display = re.search(r"font-display:\s*(\w+)", face)
+        if family and url:
+            srcs.append((family.group(1), url.group(1), display.group(1) if display else "-"))
+    check(bool(srcs), "every @font-face names a family and a local src")
+    check(all(u.startswith("/assets/") for _f, u, _d in srcs),
+          "the font files are self-hosted under /assets/ (no third-party request)",
+          f"{len(srcs)} faces: {[u for _f, u, _d in srcs]}")
+    check(all(d == "swap" for _f, _u, d in srcs),
+          "every shipped face uses font-display: swap (first paint is never blocked)")
+    missing = [docs / u.lstrip("/") for _f, u, _d in srcs
+               if not (docs / u.lstrip("/")).exists()
+               or (docs / u.lstrip("/")).stat().st_size < 1024]
+    check(not missing, "every declared font file exists in the published tree and is not empty",
+          f"missing/empty: {[str(m) for m in missing]}" if missing else
+          f"{len(srcs)} files, {sum((docs / u.lstrip('/')).stat().st_size for _f, u, _d in srcs) // 1024} KB total")
+    shipped_families = {f for f, _u, _d in srcs}
+    display_stack = re.search(r"--font-display:\s*([^;]+);", css)
+    stack = display_stack.group(1) if display_stack else ""
+    check(any(f'"{fam}"' in stack for fam in shipped_families),
+          "--font-display LEADS with the shipped family (the system stack is a fallback, not the "
+          "identity)", stack.strip()[:90])
+    check("<abbr>--font-human</abbr>" not in css and "--font-human" not in css,
+          "D6b: one token name for the display voice (--font-human is retired)")
+    # the subset must not be the whole face: shipping 300 KB to serve four glyph roles is the
+    # performance defect D0 that D6 must not re-introduce
+    biggest = max((docs / u.lstrip("/")).stat().st_size for _f, u, _d in srcs)
+    check(biggest < 120 * 1024, "the shipped face is a subset, not the full font file (D0)",
+          f"largest file {biggest // 1024} KB")
 
 
 # --------------------------------------------------------------------------- main
@@ -807,6 +1116,10 @@ def main() -> int:
     check_provenance_switch()
     check_signal_scarcity(docs)
     check_variability(docs, css)
+    check_evidence_objects(docs)
+    check_craft_regressions(css)
+    check_visible_provenance_tokens(docs)
+    check_shipped_face(docs, css)
 
     print("\n" + "=" * 78)
     print(f"checks run: {CHECKS}   failures: {len(FAILURES)}")

@@ -73,10 +73,26 @@ row() { # row <label> <exit-code> — 3 is rendered as SKIP, never as a pass
   fi
 }
 
+row_env() { # row_env <label> <exit-code> — B2-04 / D13: an environment error is not a score
+  if [ "$2" -eq 3 ]; then
+    printf '%-28s %s\n' "$1" "SKIP (environment error — no score reported; see the step log)"
+  else
+    printf '%-28s %s\n' "$1" "$2"
+  fi
+}
+
 echo "Benchmark #1 — full check suite"
 echo "repo     : ${REPO}"
 echo "evidence : ${OUT}"
 echo "started  : $(date -Is)"
+echo
+
+# B2-04 / D13: the server ports are PROBED, not assumed. The B2-03 critique's first Lighthouse
+# pass was invalidated because the suite served on 8123 and the reviewer's own probe was already
+# bound there; the suite's server never came up and the step reported a score from the wreckage.
+BROWSER_PORT="$(python3 tools/free_port.py 2>/dev/null || echo 8099)"
+LH_PORT="$(python3 tools/free_port.py 2>/dev/null || echo 8123)"
+echo "ports    : browser checks ${BROWSER_PORT} · lighthouse ${LH_PORT} (probed free ports)"
 echo
 
 # 0. tooling preflight (B1-05 / D-02): fail loudly and actionably instead of five opaque
@@ -161,7 +177,7 @@ GUARD_RC=$?
 
 # 3. browser audit: rendered text, axe on all 12 pages, console, overflow, first screen,
 #    keyboard walk, reduced motion, progressive enhancement, print/PDF, screenshots
-run_step 03_browser_checks.log node tests/browser_checks.mjs --out "${OUT}" --port 8099
+run_step 03_browser_checks.log node tests/browser_checks.mjs --out "${OUT}" --port "${BROWSER_PORT}"
 BROWSER_RC=$?
 
 # 4. rendered-text scans: provenance (A1), banned patterns (D1), numeric whitelist (A12/D12)
@@ -181,7 +197,7 @@ run_step 07_html_validation.txt bash tests/validate_html.sh "${OUT}"
 VALIDATE_RC=$?
 
 # 8. Lighthouse mobile (A5 / D5)
-run_step 08_lighthouse.log bash tests/run_lighthouse.sh "${OUT}"
+run_step 08_lighthouse.log bash tests/run_lighthouse.sh "${OUT}" "${LH_PORT}"
 LH_RC=$?
 
 # 9. fresh-clone reproduction (A11 / D11 — the builder's own rehearsal; B1-04 repeats it
@@ -216,7 +232,7 @@ echo "published files: $(find docs -type f | wc -l)" >>"${OUT}/10_manifest.txt"
   row 05_switch_integrity "${SWITCH_RC}"
   row 06_link_check "${LINK_RC}"
   row 07_html_validation "${VALIDATE_RC}"
-  row 08_lighthouse "${LH_RC}"
+  row_env 08_lighthouse "${LH_RC}"
   row 09_reproduce "${REPRO_RC}"
   echo
   echo "axe per page:"
@@ -252,6 +268,11 @@ for c in "${CODES[@]}"; do [ "${c}" -ne 0 ] && RC=1; done
 echo
 echo "=============================================================="
 echo "CHECK SUITE RESULT: $([ ${RC} -eq 0 ] && echo PASS || echo FAIL)   (evidence: ${OUT})"
+if [ "${LH_RC}" -eq 3 ]; then
+  echo "CAUSE (step 08): the Lighthouse step could not run — environment error (port collision or"
+  echo "  the static server never answered). No score is reported for it and this is NOT a site"
+  echo "  failure. Re-run: bash tests/run_lighthouse.sh \"${OUT}\"   (a free port is probed)."
+fi
 if [ "${RC}" -ne 0 ] && [ "${TOOLING_RC}" -ne 0 ]; then
   echo "CAUSE: prerequisite missing — at least one step could not run (not a site failure)."
   echo "  Install the test tooling and re-run: bash tools/install_dev_tooling.sh && bash tests/run_all.sh"
