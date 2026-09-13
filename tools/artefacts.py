@@ -634,7 +634,7 @@ ARTEFACT_META: dict[str, dict] = {
                  "run (they are properties of the project, not gates between stages), and the "
                  "evaluation surfaces the role names as annotations beneath the verdict. "
                  "Structure only — no counts, no timestamps."),
-        "caption": "One triage run: the ledger's five stages, controls across all of them, evaluation at the verdict.",
+        "caption": "SAMA — one triage run: the ledger's five stages, controls across all of them, evaluation at the verdict.",
         "scope": CAPTION,
         "model": "trace",
         "stages": [
@@ -657,13 +657,66 @@ ARTEFACT_META: dict[str, dict] = {
                  "controls, quality guards, typed contracts) and the evaluation surfaces that "
                  "sit on it. Field types, field names and values are omitted; the shape is "
                  "structural."),
-        "caption": "The verdict's contract, as a shape.",
+        "caption": "SAMA — the verdict's contract, as a shape.",
         "scope": CAPTION_INTERFACE,
         "model": "contract",
         "head": "verdict generation",
         "rows": ["evidence", "grounding/evidence controls", "quality guards", "typed contracts"],
         "notes": ["LLM-as-judge", "RAGAS", "blind-vs-shown",
                   "contract/adversarial/compliance suites"],
+    },
+    # ------------------------------------------------------------------ B2-09 / D3
+    # The critique's own finding (B2-05 §F.4): the typed-contract excerpt was "the object type
+    # B2-03 said would answer the owner's complaint", but it shipped on the index and on SAMA
+    # only — three of the four flagship pages still carried a single schematic. D3 asks for "at
+    # least one object per flagship page ... that could only exist if the system were real", and
+    # a typed interface excerpt is one of the object kinds it names. These three are built the
+    # same way as SAMA's: every field name and control is a phrase the FACTS_LEDGER already
+    # prints for that project, times and values omitted, caption "interface shape only".
+    "smartops-contract": {
+        "title": "The investigation record, as a shape",
+        "desc": ("A typed-contract excerpt drawn as a code surface: the evidence-linked findings "
+                 "interface with the broker and analyst nouns bound to it — task broker, domain "
+                 "analysts, hypothesis-blind analysis, scope, attribution, evidence-link "
+                 "integrity, replayable traces — and the adversarial/compliance tests that sit "
+                 "on it. Field types and values are omitted; the shape is structural."),
+        "caption": "The investigation record, as a shape.",
+        "scope": CAPTION_INTERFACE,
+        "model": "contract",
+        "head": "evidence-linked findings",
+        "rows": ["task broker", "domain analysts", "hypothesis-blind analysis", "scope",
+                 "attribution", "evidence-link integrity", "replayable traces"],
+        "notes": ["adversarial/compliance tests", "VirusTotal enrichment"],
+    },
+    "milo-contract": {
+        "title": "The approval record, as a shape",
+        "desc": ("A typed-contract excerpt drawn as a code surface: the approval binding "
+                 "interface with the safety nouns bound to it — authority boundaries, "
+                 "budget/time limits, redaction, idempotent actions, reconciliation — and the "
+                 "versioned agent skills and evaluation gates that sit on it. Field types and "
+                 "values are omitted; the shape is structural."),
+        "caption": "The approval record, as a shape.",
+        "scope": CAPTION_INTERFACE,
+        "model": "contract",
+        "head": "approval binding",
+        "rows": ["authority boundaries", "budget/time limits", "redaction",
+                 "idempotent actions", "reconciliation"],
+        "notes": ["versioned agent skills", "evaluation gates", "simulated Splunk/Cribl incidents"],
+    },
+    "pulsesec-contract": {
+        "title": "The domain pack, as a shape",
+        "desc": ("A typed-contract excerpt drawn as a code surface: the domain-pack architecture "
+                 "interface with the copilot's nouns bound to it — MCP connectors, "
+                 "schema-grounded query generation, timeline/case handling, guardrails, "
+                 "agent-trace telemetry — and the evaluation harnesses that sit on it. Field "
+                 "types and values are omitted; the shape is structural."),
+        "caption": "The domain pack, as a shape.",
+        "scope": CAPTION_INTERFACE,
+        "model": "contract",
+        "head": "domain-pack architecture",
+        "rows": ["MCP connectors", "schema-grounded query generation", "timeline/case handling",
+                 "guardrails", "agent-trace telemetry"],
+        "notes": ["evaluation harnesses", "E2E coverage", "pack selection", "grounding"],
     },
     "smartops-soc-app": {
         "title": "SmartOps SOC App — a brokered investigation run",
@@ -682,6 +735,7 @@ ARTEFACT_META: dict[str, dict] = {
         ],
         "notes": ["VirusTotal enrichment"],
         "lane": "replayable traces",
+        "second": "smartops-contract",
     },
     "milo-ai-employee": {
         "title": "Milo — approval binding behind the authority boundary",
@@ -702,6 +756,7 @@ ARTEFACT_META: dict[str, dict] = {
         "boundary": "authority boundaries",
         "notes": ["simulated Splunk/Cribl incidents"],
         "lane": "idempotent actions and reconciliation",
+        "second": "milo-contract",
     },
     "pulsesec": {
         "title": "PulseSec — domain packs, connectors and the trace lane",
@@ -720,6 +775,7 @@ ARTEFACT_META: dict[str, dict] = {
         ],
         "boundary": "guardrails",
         "lane": "agent-trace telemetry, timeline/case handling",
+        "second": "pulsesec-contract",
     },
     "tonsy-gpt": {
         "title": "Tonsy-GPT — hybrid retrieval pipeline",

@@ -177,10 +177,11 @@ def render_head(cfg: dict, p: Page, *, title_block: dict, desc_block: dict,
         # been laid out and the swap re-lays-out every display line on the page — the cost the
         # B2-03 critique's D0 measured as intermittent "style & layout" time (DESIGN_SYSTEM.md §4
         # names the mitigation: font-display: swap plus matched metrics/preload). Same origin,
-        # 53 KB, and `crossorigin` because fonts are fetched in CORS mode even same-origin.
-        '<link rel="preload" href="/assets/fonts/DejaVuSerif-Regular.ttf" as="font" '
+        # 50 KB (two 25 KB subsets), and `crossorigin` because fonts are fetched in CORS mode even
+        # same-origin.
+        '<link rel="preload" href="/assets/fonts/SpectralSubset-Regular.ttf" as="font" '
         'type="font/ttf" crossorigin>',
-        '<link rel="preload" href="/assets/fonts/DejaVuSerif-Bold.ttf" as="font" '
+        '<link rel="preload" href="/assets/fonts/SpectralSubset-Bold.ttf" as="font" '
         'type="font/ttf" crossorigin>',
         '<link rel="stylesheet" href="/assets/styles.css">',
         '<script src="/assets/main.js" defer></script>',
@@ -393,18 +394,21 @@ def render_system_map(p: Page, link: bool = True) -> str:
 
 
 def section_about(cfg: dict, p: Page) -> str:
-    # B2-04 / D4 + Q9. Three changes: the page's point of view moved into the hero (it is the
-    # argument, not an appendix below the fold); the pitch moved out of the first screen into the
-    # opening prose (it says the same positioning the claim says, in 88 words — in the hero it
-    # pushed the CTAs below the fold), and the near-duplicate positioning paragraph was cut. What
-    # is left is the owner's own words, one paragraph each, and the source rule — with no source
-    # taxonomy on the page (D5).
+    # B2-04 / D4 + Q9, tightened in B2-09 / D4.
+    # B2-04: the page's point of view moved into the hero (it is the argument, not an appendix
+    # below the fold) and the pitch moved into the opening prose.
+    # B2-09 / D4: the opening prose carried TWO positioning statements — the S5 summary (ledger
+    # §11 R9: "S5 summary … feeds the About/positioning") and the older S3 positioning paragraph
+    # (ledger §2). They say the same thing twice, 94 words for one argument, and R9 makes S5
+    # authoritative where the two overlap. One paragraph is enough to make the argument, so the
+    # superseded S3 paragraph is off the index. No fact is lost: every claim in it is either in
+    # the S5 paragraph or on the project card that owns it (the 65-test suite on HalalBot, the
+    # signed APK on HalalBot, the dashboards on the analytics and SOC rows).
     return f"""      <section class="plane section" data-surface="warm" data-plane="about" id="about" aria-labelledby="about-h2">
         <div class="wrap">
 {section_head(p, C.L["h2_about"], C2.EXTRA["about_deck"], "about")}
         <div class="prose" data-reveal>
           <p>{p.t(C.S5_SUMMARY)}</p>
-          <p>{p.t(C.PITCH)}</p>
         </div>
 {attribution(p, source_tags(cfg), "S5")}
         </div>
@@ -439,6 +443,16 @@ def section_experience(cfg: dict, p: Page) -> str:
 
 
 def section_projects(cfg: dict, p: Page) -> str:
+    """The work list (B2-04 / D4, tightened in B2-09 / D4).
+
+    The bar's `Fixed looks like` for D4 asks for *fewer, deeper entries rather than ten equal
+    rows*. The programme's locked coverage (A3 / D3) requires exactly ten project cards on the
+    index, so B2-09 does the half that does not breach a criterion: the four flagship projects
+    are rendered as DEEP entries (rank, title, the ledger's one-line, the featured mark, the open
+    affordance) and the other six as COMPACT index rows (rank, title, the open affordance). Ten
+    cards, two depths — not ten equal rows. The words the compact rows give back are the ones the
+    page spends on its evidence plane.
+    """
     tags = source_tags(cfg)
     groups = []
     index = 0
@@ -448,15 +462,18 @@ def section_projects(cfg: dict, p: Page) -> str:
             if proj["group"] != gid:
                 continue
             index += 1
-            cls = "card card-featured" if proj["featured"] else "card"
-            featured = (f'<span class="tag">{p.t(C.L["featured"])}</span>'
-                        if proj["featured"] else "")
+            featured = bool(proj["featured"])
+            cls = "card card-featured" if featured else "card card-compact"
+            featured_tag = (f'<span class="tag">{p.t(C.L["featured"])}</span>'
+                            if featured else "")
+            detail = (f'                  <p class="row-one-liner">{p.t(proj["one_liner"])}</p>\n'
+                      if featured else "")
             cards.append(
                 f'              <li class="{cls}">\n'
                 f'                <a class="row-inner" href="/projects/{proj["slug"]}.html">\n'
                 f'                  <div class="row-head"><span class="rank">{p.t(C2.RANKS[index])}</span><h4><span class="row-title">{p.t(proj["name"])}</span></h4></div>\n'
-                f'                  <p class="row-one-liner">{p.t(proj["one_liner"])}</p>\n'
-                f'                  <span class="row-foot">{featured}<span class="arrow">{p.t(C.L["row_open"])} →</span></span>\n'
+                f'{detail}'
+                f'                  <span class="row-foot">{featured_tag}<span class="arrow">{p.t(C.L["row_open"])} →</span></span>\n'
                 f'                </a>\n'
                 f'              </li>'
             )
@@ -920,7 +937,8 @@ def arch_a6(ctx: ProjectCtx) -> str:
     close = ctx.close or "warm"
     hard = (st["hard"][0], st["hard"][1]) if st["hard"] else (None, [])
     plate = (f'            <p class="cs-label">{p.t(C2.ARCH["plate"])}</p>\n'
-             f'            <div class="plate" data-reveal>\n{ctx.artefact}\n            </div>')
+             f'            <div class="plate" data-reveal>\n{ctx.artefact}\n            </div>'
+             f'{ctx.second}')
     closing = (f'            <p class="cs-label">{p.t(C2.ARCH["close"])}</p>\n'
                f'            <div class="cs-body">\n'
                f'              <p class="close-lede">{p.t(ctx.proj["one_liner"])}</p>\n'
@@ -961,7 +979,8 @@ def arch_a5(ctx: ProjectCtx) -> str:
     for num, key, text, refs, special in rows:
         if special == "architecture":
             cell = (f'                <div class="cs-body">\n{ctx.artefact}\n'
-                    f'                </div>')
+                    f'                </div>'
+                    f'{ctx.second}')
         elif special == "evidence":
             cell = (f'                <div class="cs-body">\n'
                     f'                  <ul class="bullets">\n{ctx.caps}\n'

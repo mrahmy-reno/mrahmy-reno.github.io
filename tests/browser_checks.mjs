@@ -765,7 +765,7 @@ async function main() {
     // tests/design_checks.py, which is both cheaper and stronger.
     const SURFACES = ".site-header, .glance-strip, .glance-item, .system-map, .artefact-frame,"
       + " .evidence-figure, .diagram-panel, .evidence-panel, .empty, .callout, .contact-panel,"
-      + " .card, .card-featured, .tag, .chips li, .cs-stage, .cs-architecture, .section,"
+      + " .card, .card-featured, .card-compact, .tag, .chips li, .cs-stage, .cs-architecture, .section,"
       + " .hero-aside, .hero-inner, .row-inner, .legend, .prev-next, .exp, .exp-list, .edu,"
       + " .edu-list, .skill-list, .cards, .cs-stage-inner";
     const INTERACTIVE = "a, button";
@@ -1129,13 +1129,12 @@ async function main() {
       }));
       const probe = document.createElement("span");
       probe.style.cssText = 'position:absolute;visibility:hidden;font-size:100px;'
-        + 'white-space:nowrap;font-weight:400;font-family:"DejaVu Serif Subset"';
+        + 'white-space:nowrap;font-weight:400;font-family:"Spectral Subset"';
       probe.textContent = "Hamburgefonstiv";
       document.body.appendChild(probe);
       const shipped = probe.getBoundingClientRect().width;
-      // Compare against a face family that is definitely NOT the shipped serif: on this host
-      // "Georgia" is absent and would fall back to the system DejaVu Serif — metrically the same
-      // face the subset came from, which would make the comparison meaningless.
+      // Compare against a face family that is definitely NOT the shipped serif: the shipped face
+      // (B2-09: a Spectral subset) is metrically its own, so the sans fallback is a valid control.
       probe.style.fontFamily = "sans-serif";
       const fallback = probe.getBoundingClientRect().width;
       probe.remove();
@@ -1145,10 +1144,10 @@ async function main() {
         h1Family: usedFace, h1Weight: h1.fontWeight };
     });
     const loaded = font.faces.filter((f) => f.status === "loaded");
-    check(loaded.length >= 2 && loaded.every((f) => f.family.includes("DejaVu Serif Subset")),
+    check(loaded.length >= 2 && loaded.every((f) => f.family.includes("Spectral Subset")),
       "D6: the display faces load from this origin (no system fallback is doing the work)",
       JSON.stringify(font.faces));
-    check(font.h1Family.includes("DejaVu Serif Subset"),
+    check(font.h1Family.includes("Spectral Subset"),
       "D6: the hero resolves to the shipped display face, so the identity is OS-independent",
       font.h1Family);
     check(font.shipped !== font.fallback && font.shipped > 0,

@@ -19,28 +19,30 @@
 @layer reset, tokens, base, layout, components, states, print;
 
 /* ==========================================================================
-   THE DISPLAY VOICE IS SHIPPED (B2-04 / D6)
+   THE DISPLAY VOICE IS SHIPPED AND DISTINCTIVE (B2-04 / D6, B2-09 / D6)
    ==========================================================================
    The B2-03 critique's D6: the site's "three voices" were system font stacks, with a display
    chain that resolves to Times New Roman on a stock Windows machine — the gap (G1: "system fonts,
    neutral palette, no signature") the redesign was commissioned to close. The display face is now
-   a self-hosted subset: DejaVu Serif, a Bitstream Vera derivative, redistributable, sub-setted by
+   a self-hosted subset: **Spectral** (Production Type, SIL OFL 1.1), sub-setted by
    `tools/make_font.py` (stdlib only, no network) to the glyphs this site can set in that voice.
+   The B2-04 face was DejaVu Serif — deliverable but generic; B2-09 replaced it with a
+   Charter/Iowan-class editorial serif that actually carries the identity.
    `font-display: swap` keeps the visitor's first paint immediate and the fallback stack below is
    kept as the safety net. Verified by tests/design_checks.py check 13 and tests/browser_checks.mjs
    (the document.fonts API reports the shipped face as loaded, and no request leaves the origin). */
 
 @font-face {
-  font-family: "DejaVu Serif Subset";
-  src: url("/assets/fonts/DejaVuSerif-Regular.ttf") format("truetype");
+  font-family: "Spectral Subset";
+  src: url("/assets/fonts/SpectralSubset-Regular.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "DejaVu Serif Subset";
-  src: url("/assets/fonts/DejaVuSerif-Bold.ttf") format("truetype");
+  font-family: "Spectral Subset";
+  src: url("/assets/fonts/SpectralSubset-Bold.ttf") format("truetype");
   font-weight: 600 700;
   font-style: normal;
   font-display: swap;
@@ -107,11 +109,12 @@
     --grain: url("/assets/grain.png");
 
     /* -- 3. typography: three voices, three jobs -------------------------- */
-    /* B2-04 / D6: the display voice leads with the SHIPPED subset, so the identity no longer
-       changes with the visitor's operating system. The system faces behind it are a fallback
-       safety net, not the identity. (D6b: one name — --font-display — is used by the DNA, the
-       application kit and this stylesheet.) */
-    --font-display: "DejaVu Serif Subset", "Bitstream Charter", Charter, "Iowan Old Style",
+    /* B2-04 / D6, B2-09 / D6: the display voice leads with the SHIPPED subset, so the identity no
+       longer changes with the visitor's operating system. B2-09 replaced the generic DejaVu Serif
+       subset with a subset of Spectral — a distinctive OFL editorial serif. The system faces behind
+       it are a fallback safety net, not the identity. (D6b: one name — --font-display — is used by
+       the DNA, the application kit and this stylesheet.) */
+    --font-display: "Spectral Subset", "Bitstream Charter", Charter, "Iowan Old Style",
       "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
     --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter,
       Roboto, "DejaVu Sans", "Liberation Sans", Arial, sans-serif;
@@ -1059,6 +1062,18 @@
 
   .card-featured h4 {
     font-size: var(--fs-xl);
+  }
+
+  /* B2-09 / D4 — ten cards, two depths. The four flagship projects are DEEP entries (larger
+     title, the ledger's one-line, the FEATURED mark); the six others are COMPACT index rows
+     (title + the open affordance). The locked coverage counts stay at ten; what changes is that
+     the list no longer reads as ten equal rows. */
+  .card-compact h4 {
+    font-size: var(--fs-md);
+  }
+
+  .card-compact .row-inner {
+    padding-block: var(--space-2);
   }
 
   .row-title {

@@ -497,12 +497,12 @@ def check_artefacts(docs: Path, ledger: str) -> None:
                 uncaptioned.append(f"{page.name} (system map)")
             audit(f"{page.name} (system map)", fig, "system map")
 
-    check(figures == 14,
-          "14 artefacts render (index: run trace + typed-contract excerpt; 10 project pages; the "
-          "SAMA page's second object; 404 system map)",
+    check(figures == 17,
+          "17 artefacts render (index: run trace + typed-contract excerpt; 10 project pages; the "
+          "second interface object on SAMA, SmartOps, Milo and PulseSec; 404 system map)",
           f"found {figures}")
     check(not uncaptioned, "every artefact carries the mandatory scope caption",
-          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "14/14 captioned")
+          f"uncaptioned={uncaptioned[:3]}" if uncaptioned else "17/17 captioned")
     check(not unapproved,
           "label diff: every word of every diagram label is a ledger word or structural",
           f"{len(unapproved)} unapproved: {unapproved[:6]}" if unapproved else
@@ -513,10 +513,10 @@ def check_artefacts(docs: Path, ledger: str) -> None:
     check(not digit_hits, "digits in diagram labels: only the permitted proper nouns (BM25, E2E)",
           f"hits={digit_hits[:4]}" if digit_hits else "0 quantity-bearing labels")
     check(not pair_fails, "every artefact ships a complete wide + vertical-rail pair",
-          f"{pair_fails[:3]}" if pair_fails else "14/14 figures carry matched pairs")
+          f"{pair_fails[:3]}" if pair_fails else "17/17 figures carry matched pairs")
     check(not parity_fails, "wide and vertical-rail variants of every artefact carry identical "
           "label words",
-          f"{parity_fails[:3]}" if parity_fails else "14/14 artefacts label-identical")
+          f"{parity_fails[:3]}" if parity_fails else "17/17 artefacts label-identical")
     print(f"        distinct diagram labels: {len(all_labels)}")
 
 
@@ -993,6 +993,42 @@ def check_evidence_objects(docs: Path) -> None:
     sama = (docs / "projects" / "sama-soc-triage.html").read_text(encoding="utf-8")
     check(len(re.findall(r"<figure class=\"artefact\".*?</figure>", sama, re.S)) == 2,
           "D3: the flagship page (SAMA) carries both objects — a run trace and a contract excerpt")
+
+    # ---------------------------------------------------------------- B2-09 / D3: per flagship
+    # B2-05's §F.4 finding: the code-surface object existed on the index and SAMA only; the other
+    # three flagship pages carried a single schematic, so "at least one object per flagship page
+    # that could only exist if the system were real" was not met. This asserts it page by page,
+    # in every displayed variant: a figure counts as an interface object only when EVERY variant
+    # is a code surface (dg-shape >= 1, dg-box == 0) with distinct field lines.
+    FLAGSHIPS = ["sama-soc-triage", "smartops-soc-app", "milo-ai-employee", "pulsesec"]
+    interface_missing: list[str] = []
+    for slug in FLAGSHIPS:
+        page_html = (docs / "projects" / f"{slug}.html").read_text(encoding="utf-8")
+        figs_ = re.findall(r"<figure class=\"artefact\".*?</figure>", page_html, re.S)
+        ok = False
+        for fig in figs_:
+            variants_ = svg_blocks(fig)
+            if not variants_:
+                continue
+            good = True
+            for svg in variants_:
+                rows_ = [t for _y, t in _svg_texts(svg)]
+                if not (svg.count('class="dg-shape"') >= 1 and svg.count('class="dg-box"') == 0
+                        and len(rows_) >= 5 and len(set(rows_)) == len(rows_)):
+                    good = False
+                    break
+            if good:
+                ok = True
+                break
+        if not ok:
+            interface_missing.append(slug)
+    check(not interface_missing,
+          "D3: every flagship page carries an interface object that could only exist if the "
+          "system were real — a code surface (dg-shape panel + field rows, dg-box = 0) in every "
+          "variant, not a chain of outlined boxes",
+          f"missing on: {interface_missing}" if interface_missing else
+          f"{len(FLAGSHIPS)}/4 flagship pages carry one "
+          f"(SAMA, SmartOps, Milo, PulseSec — plus the index)")
 
     # ------------------------------------------------------------------ B2-05b / N3: typed edges
     # The claim "the run trace is drawn with typed edges (signal edges where the ledger's own

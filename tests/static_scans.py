@@ -190,7 +190,7 @@ def main() -> int:
     idx_src = (docs / "index.html").read_text(encoding="utf-8")
     n_roles = len(re.findall(r'class="exp" id="exp-\d+"', idx_src))
     check(n_roles == 3, "index renders exactly 3 experience entries", f"found {n_roles}")
-    n_cards = len(re.findall(r'class="card(?: card-featured)?"', idx_src))
+    n_cards = len(re.findall(r'class="card(?: card-[a-z]+)?"', idx_src))
     check(n_cards == 10, "index renders exactly 10 project cards", f"found {n_cards}")
     n_skills = len(re.findall(r'class="skill-group"', idx_src))
     check(n_skills == 8, "index renders exactly 8 skill groups", f"found {n_skills}")
