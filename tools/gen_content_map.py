@@ -82,7 +82,8 @@ python3 tests/text_scans.py --text <evidence>/rendered-text
 that checker re-derives the authorised string set from the content model, extracts the rendered
 text of all 12 pages in a headless browser, and fails if any rendered line is not either a
 substring of an authorised string or an assembly of authorised pieces joined by legitimate
-separators. Current result: **0 unsourced lines of 632 checked**.
+separators. Current result: **0 unsourced lines of 988 checked** (evidence/B2-08,
+`04_text_scans.txt`).
 """
 
 
