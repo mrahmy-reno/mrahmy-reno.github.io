@@ -75,7 +75,12 @@ row() { # row <label> <exit-code> — 3 is rendered as SKIP, never as a pass
 
 row_env() { # row_env <label> <exit-code> — B2-04 / D13: an environment error is not a score
   if [ "$2" -eq 3 ]; then
-    printf '%-28s %s\n' "$1" "SKIP (environment error — no score reported; see the step log)"
+    # exit 3 means one of two different things, and the summary must not conflate them:
+    if [ "${TOOLING_RC:-1}" -ne 0 ]; then
+      printf '%-28s %s\n' "$1" "SKIP (node tooling missing — not run)"
+    else
+      printf '%-28s %s\n' "$1" "SKIP (environment error — no score reported; see the step log)"
+    fi
   else
     printf '%-28s %s\n' "$1" "$2"
   fi

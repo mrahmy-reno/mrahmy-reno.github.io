@@ -2166,18 +2166,26 @@
        certification rows become name | issuer · date. No entry is dropped and no clause of the
        coverage check changes. */
     .card .row-inner {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr) auto;
+      /* Two tracks, never three: a symmetric three-column grid is one of the banned defaults
+         (Q11) and tests/browser_checks.mjs measures the declared tracks of `.row-inner`.
+         The one-liner sits beside the title; the tag and the arrow close the second column. */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
       align-items: baseline;
       column-gap: var(--space-5);
       padding-block: var(--space-3);
     }
 
     .card .row-one-liner {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: center;
       max-inline-size: none;
     }
 
     .card .row-foot {
-      justify-content: end;
+      grid-column: 2;
+      grid-row: 3;
+      justify-content: start;
     }
 
     .skill-list {
