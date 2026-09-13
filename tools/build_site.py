@@ -172,6 +172,16 @@ def render_head(cfg: dict, p: Page, *, title_block: dict, desc_block: dict,
         '<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">',
         '<link rel="icon" href="/assets/favicon-32.png" sizes="32x32" type="image/png">',
         '<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">',
+        # B2-04 / D0 + D6: the display face is preloaded so it is available before the first
+        # paint of the display text. Without this the webfont arrives after the fallback has
+        # been laid out and the swap re-lays-out every display line on the page — the cost the
+        # B2-03 critique's D0 measured as intermittent "style & layout" time (DESIGN_SYSTEM.md §4
+        # names the mitigation: font-display: swap plus matched metrics/preload). Same origin,
+        # 53 KB, and `crossorigin` because fonts are fetched in CORS mode even same-origin.
+        '<link rel="preload" href="/assets/fonts/DejaVuSerif-Regular.ttf" as="font" '
+        'type="font/ttf" crossorigin>',
+        '<link rel="preload" href="/assets/fonts/DejaVuSerif-Bold.ttf" as="font" '
+        'type="font/ttf" crossorigin>',
         '<link rel="stylesheet" href="/assets/styles.css">',
         '<script src="/assets/main.js" defer></script>',
     ]
