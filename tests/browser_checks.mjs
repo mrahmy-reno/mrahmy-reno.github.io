@@ -1163,6 +1163,152 @@ async function main() {
     await fontPage.close();
   }
 
+  // ------------------------------------------------- B2-11 / P2: a displayed object must be BIG
+  // ENOUGH TO READ. Round 3 (B2-10 P1) shipped PulseSec's typed-contract code surface at 138 x 30 px
+  // on every desktop width — a smudge — and every gate passed it, because `design_checks.py` asserts
+  // the artefact's MARKUP (SVG class names: dg-shape >= 1, dg-box == 0) and never its rendered box,
+  // and `tools/b209_object_shots.mjs` recorded each figure's HEIGHT but never its WIDTH (its own
+  // objects.json recorded pulsesec@1366 fig1 height = 143 and went unread). These three checks
+  // measure the RENDERED box instead, on every page at every shipped breakpoint.
+  //
+  // THRESHOLDS, and why these ones:
+  //
+  //  * OBJ_MIN_W = 240 CSS px — the collapse floor on a DISPLAYED artefact SVG.
+  //    It cannot fail a layout the system intends: the smallest box the design's own layouts give an
+  //    artefact anywhere in the tree, at any shipped width, is 262 px (the 404's system map at 390,
+  //    an object the language deliberately draws narrower than its container), so a 240 px floor sits
+  //    under the tightest correct render and leaves every desktop layout far clear. It is far above
+  //    the defect: that object rendered at 86 px (768), 116.88 px (1024) and 138 px (1440) — 1.7x to
+  //    2.8x below the floor — so the check separates "in a column" from "auto-placed into a rail"
+  //    with real margin. It is also below the width at which the objects stop being drawings at all:
+  //    their labels are declared at 14 user units in a 1000-unit viewBox, so at 240 px a label
+  //    renders at 3.4 px — the point where a labelled node is texture rather than a node.
+  //
+  //  * OBJ_MIN_ROW_PX = 6 CSS px — the collapse floor on a code-surface panel's PER-ROW rendered
+  //    pitch (panel rendered height / the rows drawn inside it). The panel draws its field rows at a
+  //    26-unit pitch in a 1000-unit viewBox. The defect's panel rendered 25.4 px tall over 6 drawn
+  //    lines = 4.2 px per row at 1440 (2.6 px at 768): the rows and their rules merged into one grey
+  //    band. 6 px is the first pitch at which a row rule (1 px) plus two label baselines can still be
+  //    told apart, and the narrowest correct render in this tree measures 13.2 px per row — 2.2x
+  //    above the floor.
+  //
+  //  * PLACEMENT — a displayed `figure.artefact` must not be a DIRECT CHILD of a multi-column grid.
+  //    The A5 register row is `grid-template-columns: minmax(0,1fr) minmax(0,2fr) minmax(0,5fr)`; a
+  //    figure emitted outside the `.cs-body` wrapper becomes a fourth grid child and is auto-placed
+  //    into column 1 — the 138 px rail. This is the structural half of the same defect and it is
+  //    what makes the failure a layout bug rather than a styling bug.
+  {
+    const OBJ_MIN_W = 240;
+    const OBJ_MIN_ROW_PX = 6;
+    const OBJ_WIDTHS = [390, 768, 1024, 1440];
+
+    const objProbe = () => {
+      const round = (v) => Math.round(v * 100) / 100;
+      const shown = (el) => el.getBoundingClientRect().width > 1
+        && getComputedStyle(el).display !== "none";
+      const out = [];
+      for (const fig of document.querySelectorAll("figure.artefact, figure.system-map")) {
+        const svg = [...fig.querySelectorAll("svg")].filter(shown)[0] || null;
+        const r = fig.getBoundingClientRect();
+        const sr = svg ? svg.getBoundingClientRect() : null;
+        const parent = fig.parentElement;
+        const pcs = parent ? getComputedStyle(parent) : null;
+        let panel = null;
+        if (svg) {
+          const shape = svg.querySelector(".dg-shape");
+          const vb = (svg.getAttribute("viewBox") || "").split(/\s+/).map(Number);
+          if (shape) {
+            const sx = parseFloat(shape.getAttribute("x") || 0);
+            const sy = parseFloat(shape.getAttribute("y") || 0);
+            const sw = parseFloat(shape.getAttribute("width") || 0);
+            const sh = parseFloat(shape.getAttribute("height") || 0);
+            const rows = [...svg.querySelectorAll("text")].filter((t) => {
+              const tx = parseFloat(t.getAttribute("x") || NaN);
+              const ty = parseFloat(t.getAttribute("y") || NaN);
+              return Number.isFinite(tx) && Number.isFinite(ty)
+                && tx >= sx && tx <= sx + sw && ty >= sy && ty <= sy + sh;
+            }).length;
+            const scale = (vb.length === 4 && vb[2] > 0 && sr) ? sr.width / vb[2] : null;
+            panel = { rows, renderedH: scale === null ? null : round(sh * scale),
+              pitch: (scale === null || !rows) ? null : round((sh * scale) / rows) };
+          }
+        }
+        out.push({
+          label: (fig.querySelector("figcaption")?.textContent || "").trim().slice(0, 48),
+          parentTag: parent ? parent.tagName : null,
+          parentClass: parent ? parent.className : null,
+          parentDisplay: pcs ? pcs.display : null,
+          parentCols: (pcs && pcs.display.includes("grid"))
+            ? pcs.gridTemplateColumns.split(" ").length : 0,
+          parentTracks: (pcs && pcs.display.includes("grid")) ? pcs.gridTemplateColumns : null,
+          figureW: round(r.width),
+          svgW: sr ? round(sr.width) : null,
+          panel,
+        });
+      }
+      return out;
+    };
+
+    const objPage = await browser.newPage();
+    const geometry = {};
+    const tooNarrow = [];
+    const badPlacement = [];
+    const thinPanel = [];
+    let measured = 0;
+    for (const width of OBJ_WIDTHS) {
+      for (const rel of PAGES) {
+        await objPage.setViewport({ width, height: 900, deviceScaleFactor: 1 });
+        await objPage.goto(`${origin}/${rel}`, { waitUntil: "load" });
+        await objPage.evaluate(() => {
+          for (const el of document.querySelectorAll("[data-reveal]")) el.setAttribute("data-reveal", "on");
+          for (const s of document.querySelectorAll("section")) {
+            s.style.contentVisibility = "visible"; s.style.containIntrinsicSize = "none";
+          }
+        });
+        const figs = await objPage.evaluate(objProbe);
+        geometry[`${rel}@${width}`] = figs;
+        for (const f of figs) {
+          if (f.svgW === null) continue;
+          measured += 1;
+          if (f.svgW < OBJ_MIN_W) {
+            tooNarrow.push(`${rel}@${width}: "${f.label}" svg ${f.svgW}px < ${OBJ_MIN_W}px`);
+          }
+          if (f.parentCols > 1) {
+            badPlacement.push(`${rel}@${width}: "${f.label}" is a direct child of `
+              + `${f.parentTag}.${f.parentClass} [${f.parentTracks}]`);
+          }
+          if (f.panel && f.panel.rows > 0 && f.panel.pitch !== null
+              && f.panel.pitch < OBJ_MIN_ROW_PX) {
+            thinPanel.push(`${rel}@${width}: "${f.label}" panel ${f.panel.renderedH}px / `
+              + `${f.panel.rows} rows = ${f.panel.pitch}px per row < ${OBJ_MIN_ROW_PX}px`);
+          }
+        }
+      }
+    }
+    await objPage.close();
+
+    check(tooNarrow.length === 0,
+      `P2: every displayed artefact SVG renders at least ${OBJ_MIN_W}px wide at ` +
+      `${OBJ_WIDTHS.join("/")}px on every page (an object may not collapse)`,
+      tooNarrow.length ? JSON.stringify(tooNarrow.slice(0, 3))
+        : `${measured} displayed boxes measured, narrowest ` +
+          `${Math.min(...Object.values(geometry).flat().map((f) => f.svgW ?? Infinity))}px`);
+    check(badPlacement.length === 0,
+      "P2: no displayed figure.artefact is a direct child of a multi-column grid (no object is " +
+      "auto-placed into a rail column instead of the layout's body column)",
+      badPlacement.length ? JSON.stringify(badPlacement.slice(0, 3))
+        : `${measured} figures, every one inside a single-column content box`);
+    const panels = Object.values(geometry).flat().filter((f) => f.panel);
+    check(thinPanel.length === 0,
+      `P2: every code-surface panel renders its own rows legibly — panel height / rows drawn ` +
+      `inside it >= ${OBJ_MIN_ROW_PX}px, on every displayed variant`,
+      thinPanel.length ? JSON.stringify(thinPanel.slice(0, 3))
+        : `${panels.length} panels measured, narrowest pitch ` +
+          `${Math.min(...panels.map((f) => f.panel.pitch ?? Infinity))}px per row`);
+    results.objectGeometry = geometry;
+    fs.writeFileSync(path.join(OUT, "object-geometry.json"), JSON.stringify(geometry, null, 2));
+  }
+
   await browser.close();
   server.close();
 

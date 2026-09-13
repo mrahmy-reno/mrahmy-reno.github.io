@@ -978,9 +978,9 @@ def arch_a5(ctx: ProjectCtx) -> str:
     out = []
     for num, key, text, refs, special in rows:
         if special == "architecture":
-            cell = (f'                <div class="cs-body">\n{ctx.artefact}\n'
-                    f'                </div>'
-                    f'{ctx.second}')
+            cell = (f'                <div class="cs-body">\n{ctx.artefact}'
+                    f'{ctx.second}\n'
+                    f'                </div>')
         elif special == "evidence":
             cell = (f'                <div class="cs-body">\n'
                     f'                  <ul class="bullets">\n{ctx.caps}\n'
