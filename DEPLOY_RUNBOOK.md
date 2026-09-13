@@ -2,9 +2,10 @@
 
 **Status: FINAL — B1-07, 2026-09-12; repaired by B1-10, 2026-09-12** (rollback, pre-push guard and
 publishing rules, after the post-delivery incident `INCIDENT_2026-09-12_publish_rollback.md`).
-Publishing is **RED**: it requires the owner's explicit approval and is executed by **B1-08**, not by
-the implementing or verifying roles. Nothing in this repository publishes itself and no credentials
-are stored here.
+**Updated by B2-06, 2026-09-13** for the redesign publish (accepted tree is now 26 files; rollback
+§4.2 corrected to remove files the redesign added). Publishing is **RED**: it requires the owner's
+explicit approval and is executed by **B1-08** / the delivery role, not by the implementing or
+verifying roles. Nothing in this repository publishes itself and no credentials are stored here.
 
 - **Revision rule for a publish — there is no frozen SHA.** The gate is the **`docs/` manifest
   diff**. At publish time record `git rev-parse HEAD` — that recorded SHA *is* the published
@@ -15,13 +16,15 @@ are stored here.
   `7d22469e7541ab1d9dd683f631731bb7c8121a6f`.
 - **Target:** GitHub Pages, repository `mrahmy-reno.github.io`, serving the `/docs` folder at
   `https://mrahmy-reno.github.io/` (owner decisions Q1–Q4, `FACTS_LEDGER.md` §10).
-- **Accepted published tree:** 22 files under `docs/`, recorded in
-  `tests/accepted_manifest_hashes.txt` (`sha256  <path relative to docs/>`, 22 lines) — the same 22
-  hashes as `/root/company/BENCHMARK_01/evidence/B1-08/work/accepted_manifest_hashes.txt`, which
-  labels them with a `docs/` prefix. Use it to prove the published tree is the verified tree.
-- **Published revision today:** `7d22469e…`. The accepted B2 redesign is on local `master` and is
-  **not published**; it becomes the published revision only through the B2-06 acceptance + republish
-  (§6, "Updating the accepted manifest").
+- **Accepted published tree:** 26 files under `docs/`, recorded in
+  `tests/accepted_manifest_hashes.txt` (`sha256  <path relative to docs/>`, 26 lines). The B1 tree was
+  22 files; the B2 redesign added `assets/fonts/` (two Spectral subsets + `LICENCE.txt`) and
+  `assets/grain.png` and re-rendered the rest, so the manifest was regenerated in the same commit as
+  the accepted change (`bef2341`).
+- **Published revision today:** `bef234178476d755356fe34d4beca51e34bbef19` (the B2 redesign,
+  published 2026-09-13 by B2-06 after the round-4 independent verdict "merits owner acceptance: YES"
+  and the owner's publish decision). The previously published revision was
+  `7d22469e7541ab1d9dd683f631731bb7c8121a6f` (B1; `docs/index.html` sha256 `ae436c6c…`).
 
 ## What is published
 
@@ -92,7 +95,7 @@ git rev-parse HEAD                                    # RECORD this — it is th
 git status --porcelain                                # must print nothing
 (cd docs && find . -type f -print0 | sort -z | xargs -0 sha256sum | sed 's| \./| |' | sort) \
   > /tmp/publish-manifest.txt
-wc -l < /tmp/publish-manifest.txt                     # must be 22 for the accepted tree
+wc -l < /tmp/publish-manifest.txt                     # must be 26 for the accepted tree
 diff /tmp/publish-manifest.txt tests/accepted_manifest_hashes.txt   # must be EMPTY — this is the gate
 
 # 1. create the public repository (owner-approved in Q3) and push the product tree.
@@ -121,9 +124,24 @@ Step 0's `diff` **is** the publish gate. It is a manifest comparison, not a comm
 `docs/` is published, a commit that does not change `docs/` cannot invalidate an accepted publish
 (§2.8, §6). Record both the revision and the manifest of what was deployed, and keep the raw output.
 
-Post-publish evidence belongs in `evidence/B1-08/` (HTTP statuses, final URLs, a fetched copy of
-`index.html`, the CSS hash comparison, and the owner's confirmation for **A13**). A13 closes only
-when the owner confirms the site loads in a normal browser from outside this server.
+Post-publish evidence belongs in `evidence/B1-08/` (as published) or the publishing card's evidence
+directory (HTTP statuses, final URLs, a fetched copy of `index.html`, the CSS hash comparison, and the
+owner's confirmation for **A13**). A13 closes only when the site is fetched from outside this server
+and its bytes match the accepted manifest.
+
+### 3.1 Publish record — B2 redesign, 2026-09-13
+
+| Item | Value |
+|---|---|
+| Published revision | `bef234178476d755356fe34d4beca51e34bbef19` |
+| Previous published revision | `7d22469e7541ab1d9dd683f631731bb7c8121a6f` (B1) |
+| Accepted manifest | `tests/accepted_manifest_hashes.txt`, 26 lines, sha256 `46ce27867352d55b60dcd0e2180ed465adb4c835450f4c9a3300fd3a69b0aaa2` |
+| Gate at push time | `docs/` vs manifest: 26/26 identical, 0 deleted paths → pre-push guard printed `[pre-push] checks passed.`, no override used |
+| Push | `7d22469..bef2341  master -> master`, exit 0 |
+| Pages build | the build queued for ~7 min; a documented `POST /pages/builds` (HTTP 201) forced it, then the deploy completed |
+| Outside verification (A13) | 26/26 files byte-identical over HTTPS, `ssl_verify_result = 0`, project-tree paths 404, PII/token scan 0 hits |
+| Evidence | `/root/company/BENCHMARK_01/evidence/B2-06/` (`04_publish.txt`, `06_pages_status.txt`, `07_pages_deploy_wait.txt`, `08_outside_verify.txt`, `LIVE_VS_ACCEPTED_HASHES.txt`) |
+| Rollback | §4.2 two-step recipe, rehearsed in a scratch clone and verified to restore the 22-file B1 surface |
 
 ## 4. Rollback
 
@@ -153,9 +171,29 @@ switch you flipped in the same commit and re-run the suite. Do not delete or wea
 ### 4.2 Full revert of the published content
 
 ```bash
-git revert <publish-commit>        # or: git checkout <previous-sha> -- docs/
-git push origin master             # Pages redeploys from docs/ on the next build
+PREV=7d22469e7541ab1d9dd683f631731bb7c8121a6f    # the revision you are rolling back to
+# step B first: remove every path that is under docs/ now but was not published at $PREV
+comm -13 <(git ls-tree -r --name-only "$PREV" docs | sort) \
+         <(git ls-tree -r --name-only HEAD  docs | sort) | xargs -r git rm -q --
+# step A: restore the previous published content
+git checkout "$PREV" -- docs/
+git status --porcelain && git commit -m "rollback to $PREV"   # then: git push origin master
 ```
+
+Step B is not optional and was **added by B2-06 (2026-09-13)** after a scratch rehearsal showed why:
+`git checkout <prev> -- docs/` restores the *content* of every file that existed at `<prev>`, but it
+does **not** delete files the newer revision *added*. Rolling the redesign back with the old
+single-command recipe left `docs/assets/fonts/{LICENCE.txt,SpectralSubset-Bold.ttf,
+SpectralSubset-Regular.ttf}` and `docs/assets/grain.png` still published — a rollback that leaves new
+files served is not a rollback. Both steps were rehearsed in a **scratch clone** (never against the
+production repository) and verified: the restored tree was byte-identical to the B1 published surface
+(22 files, `docs/index.html` sha256 `ae436c6c…`), i.e. exactly the bytes the live site served before
+this publish. Raw output:
+`/root/company/BENCHMARK_01/evidence/B2-06/09_rollback_rehearsal.txt` (the finding) and
+`09b_rollback_rehearsal_verified.txt` (the verified two-step recipe).
+
+For a rollback of a single, later commit, `git revert <publish-commit>` remains correct — it removes
+what that commit added. Use the recipe above when the range to undo introduced new files.
 
 Verified for real in B1-08: `git reset --hard 7d22469 && git push --force origin master` → exit 0,
 remote tip = the accepted revision, live `index.html` sha256 back to `ae436c6c…598`. Then re-run the
@@ -306,8 +344,9 @@ new-ref base). It runs in a throwaway clone pushing to a throwaway bare remote �
 production repository — via `bash tests/test_prepush_guard.sh`, and as **step `02d_prepush_guard`** of
 `tests/run_all.sh`.
 
-**The recorded accepted manifest: `tests/accepted_manifest_hashes.txt`.** 23 lines of
-`sha256  <path relative to docs/>` — the accepted state of the published surface. Regenerate it with:
+**The recorded accepted manifest: `tests/accepted_manifest_hashes.txt`.** 26 lines of
+`sha256  <path relative to docs/>` — the accepted state of the published surface (22 lines until the
+B2 redesign was accepted in `bef2341`). Regenerate it with:
 ```bash
 (cd docs && find . -type f -print0 | sort -z | xargs -0 sha256sum | sed 's| \./| |' | sort)
 ```
@@ -386,14 +425,31 @@ bash tests/run_all.sh                   # full suite against the same content
 
 ## 9. Known residual risks carried into the publish decision
 
-- **A5 (Lighthouse ≥ 90) is host-sensitive.** On this shared 4-vCPU host the accepted reading is the
-  **median of three runs per page**; the detail page has scored median 88 in one run under CPU steal
-  while scoring 100 in another run of the byte-identical tree. CLS is 0 in every one of the 24
-  recorded single-run reports, so this is not an artefact defect. The criterion text's aggregation
-  rule is with the chief-of-staff (R2-04); the owner is asked to accept publish under this reading in
-  `OWNER_BRIEF.md`.
+- **A5 (Lighthouse ≥ 90) — measurement definition fixed by A5.1 (2026-09-13).** The criterion is met
+  when the **median of at least 5 kept runs on an idle host** (recorded load average < 1.0) is ≥ 90
+  for each of the four categories, on the index and on a project page; **all runs are kept and
+  reported**, including ones below the bar. The suite measures with `LIGHTHOUSE_RUNS=9` (forced odd)
+  and both halves of the suite use the single `tools/lh_median.py` definition. Observed on this shared
+  4-vCPU host during the B2-06 acceptance run: index performance median **97** (runs
+  98,96,97,99,95,97,98,98,97), SAMA **99** (91,98,98,99,99,99,99,97,99), a11y/best-practices/SEO
+  **100** on both, recorded load at step start `0.07 0.50 1.29`. The delivered site is served from
+  GitHub's CDN, not from this host.
 - **A7 (external link):** LinkedIn answers an unauthenticated automated client with HTTP 999 /
   authwall. The authwall redirect carries the exact requested profile path (a login wall, not a
   404), and the URL is also printed as text on the page. Anonymous human visitors may hit the same
   wall.
-- **A13 is not yet tested** — it can only be evaluated after publishing, from outside the host.
+- **A13 (public reachability) — VERIFIED and CLOSED, 2026-09-13.** Fetched from this host but over the
+  **public internet** (not the local server): all 26 accepted files returned HTTP 200 over HTTPS with
+  `ssl_verify_result = 0` and were **byte-identical** to `tests/accepted_manifest_hashes.txt`; the
+  project tree returned 404 for every probed path. Raw output:
+  `/root/company/BENCHMARK_01/evidence/B2-06/08_outside_verify.txt`. The owner's browser confirmation
+  is still the only remaining formality and is relayed through the chief-of-staff.
+- **Declared limitations travelling with the accepted B2 build** — `Q4` is PARTIAL **by owner
+  decision** (L1: no real screenshot/log/eval-table/live surface anywhere; `img = 1` site-wide, the
+  portrait; owner-supplied assets to follow), `Q3` depth and `Q7` pacing are recorded reservations
+  (L2), the hero's first object and its below-the-fold proof affordance are a stated programme
+  decision (L3), the suite's axe step samples the page mid-reveal and can produce a **false FAIL**
+  (P4, apparatus only — real contrast 5.07–5.82:1, 6/6 clean repeats), and one label on
+  `projects/smart-care.html` is clipped by its own SVG box (P6, LOW — 32.39 px at 1366). See
+  `/root/company/BENCHMARK_01/ACCEPTANCE.md` §L1/L2 and
+  `/root/company/BENCHMARK_01/evidence/B2-06/ACCEPTANCE_PASS.md`.
