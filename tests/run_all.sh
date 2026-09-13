@@ -255,7 +255,8 @@ PY
     echo "  UNAVAILABLE (step 03 did not run — see 03_browser_checks.log)"
   fi
   echo
-  echo "lighthouse scores (mobile, MEDIAN of every kept run per page; A5 bar = >= 90 everywhere):"
+  echo "lighthouse scores (mobile, ONE median definition — printed below — of every kept run per"
+  echo "page, on an ODD run count; A5 bar = >= 90 everywhere):"
   for n in index sama-soc-triage; do
     files=$(ls "${OUT}"/lighthouse-${n}-run*.json 2>/dev/null | sort)
     if [ -z "${files}" ]; then

@@ -14,9 +14,14 @@ Checks
   5. palette contrast       — computed per pair from the SHIPPED tokens, raw table recorded
   6. artefact audits        — label diff vs the ledger, measurement vocabulary, digits, captions,
                               wide/tall label parity (PROOF_PLAN.md §5 audit methods a/b/d)
+ 10. the evidence objects   — object KINDS per VARIANT (B2-05b / N2) and the typed `dg-signal`
+                              edges, asserted in the built SVG per page (B2-05b / N3)
+ 11. craft regressions      — the source half of D1/D2 and of the mid-word break class (N1/N7)
+ 13. the shipped face       — D6/D6b, including the token name across the kit and the DNA (N6)
 
 Usage: python3 tests/design_checks.py [--docs docs] [--css docs/assets/styles.css]
                                       [--ledger /root/company/BENCHMARK_01/FACTS_LEDGER.md]
+                                      [--company /root/company/BENCHMARK_01]
 Exit 0 = every check passed.
 """
 
@@ -887,6 +892,32 @@ def _wide_svg(fig: str) -> str:
     return ""
 
 
+def _variant_of(svg: str) -> str:
+    head = svg.split(">", 1)[0]
+    if "art-wide" in head:
+        return "wide"
+    if "art-tall" in head:
+        return "tall"
+    return "?"
+
+
+def _model_signals() -> dict[str, tuple[int, bool]]:
+    """{artefact <title>: (signalled units, whether the FIRST unit is signalled)} (B2-05b / N3).
+
+    Keyed by the artefact's own SVG `<title>`, so the audit resolves the diagram a page actually
+    publishes back to the model that drew it, instead of assuming which page draws which object.
+    """
+    out: dict[str, tuple[int, bool]] = {}
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "tools"))
+    import artefacts as _A  # noqa: PLC0415
+
+    for meta in _A.ARTEFACT_META.values():
+        units = list(meta.get("units") or meta.get("stages") or [])
+        out[meta["title"]] = (sum(1 for u in units if u.get("signal")),
+                              bool(units and units[0].get("signal")))
+    return out
+
+
 def check_evidence_objects(docs: Path) -> None:
     print("\n-- 10. the evidence objects (B2-04 / D3, D7) --")
     index = (docs / "index.html").read_text(encoding="utf-8")
@@ -931,21 +962,85 @@ def check_evidence_objects(docs: Path) -> None:
     check(not between, "D7: no control label sits between two stages of the run",
           f"between stages: {between}" if between else "0 labels interleaved")
 
-    wide = _wide_svg(contract)
-    rows = [t for _y, t in _svg_texts(wide)]
-    shapes = wide.count('class="dg-shape"')
-    boxes = wide.count('class="dg-box"')
-    check(shapes == 1 and boxes == 0 and len(rows) >= 5,
-          "D3: the contract excerpt is a code surface (header + field rows in one panel), not a "
-          "chain of outlined boxes",
-          f"dg-shape={shapes} dg-box={boxes} text rows={len(rows)}")
-    check(len(set(rows)) == len(rows),
-          "D3: every row of the contract excerpt is a distinct field line",
-          f"{len(set(rows))}/{len(rows)} distinct")
+    # B2-05b / N2 — the assertion is per VARIANT, not per figure. The old form called `_wide_svg`
+    # explicitly, so it was variant-blind by construction: it passed while the tall variant — the
+    # one a phone visitor gets — redrew the code surface as the retired chain of five `dg-box`
+    # rectangles. Every variant that can be displayed must be the same kind of object.
+    variants = svg_blocks(contract)
+    bad_variants = []
+    for svg in variants:
+        rows_ = [t for _y, t in _svg_texts(svg)]
+        shapes_ = svg.count('class="dg-shape"')
+        boxes_ = svg.count('class="dg-box"')
+        if not (shapes_ >= 1 and boxes_ == 0 and len(rows_) >= 5):
+            bad_variants.append(f"{_variant_of(svg)}: dg-shape={shapes_} dg-box={boxes_} "
+                                f"text rows={len(rows_)}")
+    check(len(variants) == 2 and not bad_variants,
+          "D3: EVERY variant of the contract excerpt is a code surface (header + field rows in "
+          "one panel), not a chain of outlined boxes",
+          "; ".join(bad_variants) if bad_variants else
+          f"{len(variants)} variants, each dg-shape>=1 dg-box=0 with >=5 field lines")
+    non_distinct = []
+    for svg in variants:
+        rows_ = [t for _y, t in _svg_texts(svg)]
+        if len(set(rows_)) != len(rows_):
+            non_distinct.append(f"{_variant_of(svg)}: {len(set(rows_))}/{len(rows_)} distinct")
+    check(not non_distinct,
+          "D3: every row of the contract excerpt is a distinct field line, in both variants",
+          "; ".join(non_distinct) if non_distinct else
+          f"{len(variants)} variants, all rows distinct")
 
     sama = (docs / "projects" / "sama-soc-triage.html").read_text(encoding="utf-8")
     check(len(re.findall(r"<figure class=\"artefact\".*?</figure>", sama, re.S)) == 2,
           "D3: the flagship page (SAMA) carries both objects — a run trace and a contract excerpt")
+
+    # ------------------------------------------------------------------ B2-05b / N3: typed edges
+    # The claim "the run trace is drawn with typed edges (signal edges where the ledger's own
+    # emphasis mark sits)" was true of the MODEL and false of the SHIPPED TREE: `dg-signal`
+    # counted 0 everywhere, because `tools/artefacts.py` classed the edge *after* stage i from
+    # `stage[i].signal` while every signalled stage is the last one (`i < n - 1` false) — dead
+    # code. These four assertions make the typing non-optional: it must resolve, it must render,
+    # and it must render on every page whose model asks for it.
+    signals = _model_signals()
+    first_signalled = [t for t, (_n, first) in signals.items() if first]
+    check(not first_signalled,
+          "N3: no artefact model marks its FIRST unit as the signal — the typing is the edge that "
+          "arrives at a unit (a first unit has no arriving edge to type)",
+          f"first-unit signal on: {first_signalled}" if first_signalled else
+          f"{len(signals)} artefact models audited, 0 with a first-unit signal")
+    unresolved, short, total_signals = [], [], 0
+    for page in sorted(docs.rglob("*.html")):
+        svgs = svg_blocks(page.read_text(encoding="utf-8"))
+        if not svgs:
+            continue
+        titles = set()
+        for svg in svgs:
+            m = re.search(r"<title[^>]*>(.*?)</title>", svg, re.S)
+            if m:
+                titles.add(re.sub(r"\s+", " ", html.unescape(m.group(1))).strip())
+        want = 0
+        for title in sorted(titles):
+            if title in signals:
+                want += signals[title][0]
+            else:
+                unresolved.append(f"{page.name}: {title[:48]}")
+        got = sum(svg.count("dg-signal") for svg in svgs)
+        total_signals += got
+        if want and got < want:
+            short.append(f"{page.name}: {got} dg-signal for {want} signalled unit(s)")
+    check(not unresolved,
+          "N3: every published diagram resolves to an artefact model by its own title, so the "
+          "signal audit cannot quietly skip a page",
+          f"unresolved titles: {unresolved[:4]}" if unresolved else
+          f"every <title> in the built tree matched a model ({len(signals)} models)")
+    check(not short,
+          "N3: every signalled unit renders a typed (dg-signal) edge in the built SVG",
+          "; ".join(short) if short else
+          "every page whose model sets signal: true carries >= 1 dg-signal per signalled unit")
+    check(total_signals >= sum(n for n, _f in signals.values()),
+          "N3: the tree-wide count of dg-signal elements is >= the number of signalled units",
+          f"{total_signals} dg-signal elements rendered for "
+          f"{sum(n for n, _f in signals.values())} signalled units")
 
 
 # --------------------------------------------------------------------------- 11. craft regressions
@@ -1020,6 +1115,40 @@ def check_craft_regressions(css: str) -> None:
     check(any(re.search(r"white-space\s*:\s*nowrap", body) for _s, body in rank_rules),
           "D2: .rank cannot wrap its two digits")
 
+    # B2-05b / N1 + N7 — the hero's `Focus`/`Languages` labels broke mid-word (FO / CU / S) because
+    # `overflow-wrap: anywhere` sat on `body` (a one-character min-content width for every text
+    # node) and `.glance-item` is a flex row whose `dt` could then be squeezed to ~2 characters.
+    # Both halves are asserted at the source so the next component cannot meet the same class of
+    # bug: the property must not be on `body`, and the label must not be a shrinkable flex item.
+    body_wrap = [sel for sel, body, at in rules
+                 if "media" not in at
+                 and any(one.strip() == "body" for one in sel.split(","))
+                 and re.search(r"overflow-wrap\s*:\s*(anywhere|break-word)", body)]
+    check(not body_wrap,
+          "N7: `overflow-wrap: anywhere` is not declared on `body` (a one-character min-content "
+          "width is what lets any flex/grid row squeeze a label mid-word — the D2/N1 class)",
+          f"body rules: {body_wrap}" if body_wrap else
+          "the property is scoped to the token-bearing selectors only")
+    scoped_wrap = [sel for sel, body, at in rules
+                   if "media" not in at
+                   and re.search(r"overflow-wrap\s*:\s*(anywhere|break-word)", body)
+                   and not any(one.strip() == "body" for one in sel.split(","))]
+    check(bool(scoped_wrap),
+          "N7: the property is still declared where a long token actually needs it (scoping, not "
+          "deletion)",
+          f"{len(scoped_wrap)} scoped rule(s)")
+    glance_flex = [sel for sel, body, _at in rules
+                   if ".glance-item" in sel and "dt" not in sel and "dd" not in sel
+                   and re.search(r"display\s*:\s*flex", body)]
+    glance_dt = [(sel, body) for sel, body, at in rules
+                 if "media" not in at and ".glance-item dt" in sel]
+    check((not glance_flex) or bool(glance_dt and all(re.search(r"flex\s*:\s*none", b)
+                                                     for _s, b in glance_dt)),
+          "N1: the hero's attribute label cannot be squeezed by its own flex row — the label is a "
+          "token, not a shrinkable flex item (`.glance-item dt` declares flex: none when "
+          "`.glance-item` is a flex row)",
+          f"flex-row rules={glance_flex}; dt rules={[s for s, _b in glance_dt]}")
+
 
 def check_visible_provenance_tokens(docs: Path) -> None:
     """B2-04 / D5: the internal tier taxonomy is not on any page as visible text."""
@@ -1040,7 +1169,44 @@ def check_visible_provenance_tokens(docs: Path) -> None:
 
 # --------------------------------------------------------------------------- 13. the shipped face
 
-def check_shipped_face(docs: Path, css: str) -> None:
+# B2-05b / N6 — the D6b token-name check used to grep the SHIPPED STYLESHEET only, so the canon on
+# paper was unverified: the application kit kept a live `var(--font-human)` in its talk-title
+# specimen (`design-kit/02-talk-title-slide.html:74`), a token that no longer exists, so the
+# speaker's name on the canonical slide silently fell back to the inherited voice. The audit now
+# covers the kit and the DNA documents too. Prose that *names* the retired token is not a use —
+# the kits explain the retirement deliberately — so only a real use (`var(--font-human)` or a
+# `--font-human:` declaration) is a hit.
+DNA_DOCS = ("DESIGN_LANGUAGE.md", "DESIGN_SYSTEM.md", "ART_DIRECTION.md")
+RETIRED_TOKEN_USE = re.compile(r"var\(\s*--font-human\s*\)|--font-human\s*:")
+CANON_SUFFIXES = {".html", ".css", ".md", ".svg", ".txt"}
+
+
+def _canon_targets(company: Path) -> list[Path]:
+    targets: list[Path] = []
+    kit = company / "design-kit"
+    if kit.is_dir():
+        targets += sorted(p for p in kit.rglob("*")
+                          if p.is_file() and p.suffix.lower() in CANON_SUFFIXES)
+    targets += [company / name for name in DNA_DOCS]
+    return targets
+
+
+def _retired_token_uses(company: Path) -> tuple[list[str], int]:
+    """Live `--font-human` uses across the kit and the DNA documents, and how many files were read."""
+    hits: list[str] = []
+    scanned = 0
+    for path in _canon_targets(company):
+        if not path.is_file():
+            hits.append(f"{path}: MISSING — the canon cannot be audited")
+            continue
+        scanned += 1
+        for i, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+            if RETIRED_TOKEN_USE.search(line):
+                hits.append(f"{path.name}:{i}: {line.strip()[:88]}")
+    return hits, scanned
+
+
+def check_shipped_face(docs: Path, css: str, company: Path) -> None:
     """B2-04 / D6: the identity is deliverable — a face is shipped, not borrowed from the OS."""
     print("\n-- 13. the display face is shipped (D6) --")
     faces = re.findall(r"@font-face\s*\{(.*?)\}", css, re.S)
@@ -1071,13 +1237,25 @@ def check_shipped_face(docs: Path, css: str) -> None:
     check(any(f'"{fam}"' in stack for fam in shipped_families),
           "--font-display LEADS with the shipped family (the system stack is a fallback, not the "
           "identity)", stack.strip()[:90])
-    check("<abbr>--font-human</abbr>" not in css and "--font-human" not in css,
-          "D6b: one token name for the display voice (--font-human is retired)")
+    check("--font-human" not in css,
+          "D6b: one token name for the display voice (--font-human is retired in the stylesheet)")
+    canon_hits, canon_scanned = _retired_token_uses(company)
+    check(not canon_hits,
+          "D6b: the retirement holds across the canon too — 0 live `--font-human` uses in the "
+          "application kit and the DNA documents",
+          f"{len(canon_hits)} live use(s): {canon_hits[:3]}" if canon_hits else
+          f"{canon_scanned} kit/DNA files scanned (html, css, md, svg, txt)")
     # the subset must not be the whole face: shipping 300 KB to serve four glyph roles is the
     # performance defect D0 that D6 must not re-introduce
-    biggest = max((docs / u.lstrip("/")).stat().st_size for _f, u, _d in srcs)
-    check(biggest < 120 * 1024, "the shipped face is a subset, not the full font file (D0)",
-          f"largest file {biggest // 1024} KB")
+    if srcs:
+        biggest = max((docs / u.lstrip("/")).stat().st_size for _f, u, _d in srcs)
+        check(biggest < 120 * 1024, "the shipped face is a subset, not the full font file (D0)",
+              f"largest file {biggest // 1024} KB")
+    else:
+        # no face is declared at all: report it here instead of crashing on an empty sequence,
+        # so this file can also be run against a revision that predates the shipped face.
+        check(False, "the shipped face is a subset, not the full font file (D0)",
+              "no @font-face to measure — the stylesheet declares no face")
 
 
 # --------------------------------------------------------------------------- main
@@ -1087,9 +1265,16 @@ def main() -> int:
     ap.add_argument("--docs", default="docs")
     ap.add_argument("--css", default="docs/assets/styles.css")
     ap.add_argument("--ledger", default="/root/company/BENCHMARK_01/FACTS_LEDGER.md")
+    # B2-05b / N6: the canon — the application kit and the DNA documents — is part of the same
+    # audit (token names must be one name everywhere the language is written down). It defaults to
+    # the company directory that holds the ledger, so the check keeps working from any checkout.
+    ap.add_argument("--company", default=None,
+                    help="company directory holding design-kit/ and the DNA documents "
+                         "(default: the ledger's directory)")
     args = ap.parse_args()
 
     docs = Path(args.docs).resolve()
+    company = Path(args.company).resolve() if args.company else Path(args.ledger).resolve().parent
     raw_css = Path(args.css).read_text(encoding="utf-8")
     # Comments are blanked (never deleted) so line numbers stay aligned with the raw file:
     # a `@deviation:` marker is read from the raw lines, everything else from the code.
@@ -1119,7 +1304,7 @@ def main() -> int:
     check_evidence_objects(docs)
     check_craft_regressions(css)
     check_visible_provenance_tokens(docs)
-    check_shipped_face(docs, css)
+    check_shipped_face(docs, css, company)
 
     print("\n" + "=" * 78)
     print(f"checks run: {CHECKS}   failures: {len(FAILURES)}")

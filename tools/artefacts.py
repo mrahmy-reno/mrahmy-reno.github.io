@@ -144,8 +144,12 @@ def rail(units: list[dict], uid: str, title: str, desc: str, tail: str = "") -> 
         c.node(x, y, box_w, box_h, lines, cls)
         centres.append(x + box_w / 2)
         if i < n - 1:
+            # B2-05b / N3: the TYPED edge is the one that ARRIVES at a signalled stage. Classing
+            # the edge after stage `i` from `stages[i].signal` was dead code — every signalled
+            # unit in the model is the last stage of its rail, and `i < n - 1` is false for the
+            # last stage, so `dg-signal` was emitted 0 times in the whole published tree.
             c.line(x + box_w + 2, y + box_h / 2, x + box_w + BOX_GAP - 2, y + box_h / 2,
-                   "dg-signal" if unit.get("signal") else "dg-edge")
+                   "dg-signal" if stages[i + 1].get("signal") else "dg-edge")
         x += box_w + BOX_GAP
     if tail:
         c.text(WIDE_W - PAD, PAD - 4, tail, "dg-label-meta", anchor="end")
@@ -172,7 +176,7 @@ def rail(units: list[dict], uid: str, title: str, desc: str, tail: str = "") -> 
         y += h
         if i < n - 1:
             t.line(TALL_W / 2, y + 2, TALL_W / 2, y + BOX_GAP - 2,
-                   "dg-signal" if unit.get("signal") else "dg-edge")
+                   "dg-signal" if stages[i + 1].get("signal") else "dg-edge")
             y += BOX_GAP
     if notes:
         y += 16
@@ -233,6 +237,42 @@ def hub(centre: str, band: str, band_notes: list[str], bus: str, bus_side: str, 
 
 # --------------------------------------------------------------------------- surfaces
 
+def _vsurfaces_svg(items: list[dict], rail_label: str, uid: str, title: str,
+                   desc: str) -> str:
+    """B2-05b / N2 — the vertical composition of the surfaces object.
+
+    The tall variant used to be handed to `_vrail_svg`, which redrew every surface as a `dg-box`
+    rectangle in a chain — the object type the B2-03 critique retired, and what a phone visitor
+    saw (the suite could not see it: its D3 assertion read the wide variant only). The surfaces
+    are now drawn vertically as the SAME object: a caption line, then the abstract surface panel
+    (`dg-shape`) with its label, then its annotations and the joining rail — `dg-box` = 0.
+    """
+    t = Canvas(TALL_W, 0.0)
+    w = TALL_W - 2 * PAD
+    y = PAD
+    for item in items:
+        lines = wrap(item["label"], TALL_CHARS)
+        h = max(60.0, 2 * PAD + (len(lines) - 1) * LINE_H)
+        t.text(PAD, y + 11.0, item["caption"], "dg-label-meta", anchor="start")
+        y += 20.0
+        t.node(PAD, y, w, h, lines, "dg-shape")
+        y += h + 6.0
+        for extra in item.get("extra", []):
+            t.text(PAD, y + 10.0, extra, "dg-label-meta", anchor="start")
+            y += 18.0
+        if item.get("rule"):
+            t.line(PAD + 12.0, y + 6.0, PAD + w - 12.0, y + 6.0, "dg-boundary")
+            t.line(PAD + w - 12.0, y + 6.0, PAD + w - 12.0, y - 2.0, "dg-boundary")
+            y += 14.0
+        y += 12.0
+    if rail_label:
+        t.line(PAD, y + 8.0, TALL_W - PAD, y + 8.0, "dg-edge")
+        t.text(PAD, y + 26.0, rail_label, "dg-label-meta", anchor="start")
+        y += 36.0
+    t.height = y + PAD
+    return t.svg(uid + "-v", title, desc, "art-tall")
+
+
 def surfaces(items: list[dict], uid: str, title: str, desc: str) -> tuple[str, str]:
     """Two or three abstract surface shapes side by side, plus a connecting rail."""
     c = Canvas(WIDE_W, 340.0)
@@ -261,17 +301,9 @@ def surfaces(items: list[dict], uid: str, title: str, desc: str) -> tuple[str, s
         c.text(WIDE_W / 2, y - 8, rail_label, "dg-label-meta")
     wide = c.svg(uid, title, desc, "art-wide")
 
-    # the vertical rail carries the same labels, in the same reading order:
-    # each surface's caption, its label, its annotations, then the joining rail.
-    units: list[dict] = []
-    for item in items:
-        units.append(_unit(item["caption"], "note"))
-        units.append(_unit(item["label"]))
-        for extra in item.get("extra", []):
-            units.append(_unit(extra, "note"))
-    if rail_label:
-        units.append(_unit(rail_label, "note"))
-    tall = _vrail_svg(units, uid, title, desc)
+    # B2-05b / N2: the vertical composition of the same object (caption, surface panel,
+    # annotations, joining rail) — not a chain of outlined boxes. See _vsurfaces_svg.
+    tall = _vsurfaces_svg(items, rail_label, uid, title, desc)
     return wide, tall
 
 
@@ -287,7 +319,9 @@ def _vrail_svg(units: list[dict], uid: str, title: str, desc: str) -> str:
                "dg-label-meta" if unit["kind"] == "note" else "dg-label")
         y += h
         if i < len(units) - 1:
-            t.line(TALL_W / 2, y + 2, TALL_W / 2, y + BOX_GAP - 2, "dg-edge")
+            # B2-05b / N3: the incoming edge of a signalled unit carries the typing (see rail()).
+            t.line(TALL_W / 2, y + 2, TALL_W / 2, y + BOX_GAP - 2,
+                   "dg-signal" if units[i + 1].get("signal") else "dg-edge")
             y += BOX_GAP
     t.height = y + PAD
     return t.svg(uid + "-v", title, desc, "art-tall")
@@ -415,9 +449,13 @@ def trace(stages: list[dict], uid: str, title: str, desc: str, *, crosscut: dict
         units.append(_unit(unit["label"], unit.get("kind", "node"), unit.get("signal", False)))
         c.node(x0 + i * (box_w + BOX_GAP), y_rail, box_w, box_h, lines, cls)
         if i < n - 1:
+            # B2-05b / N3: the edge that arrives at a signalled stage carries the typing. The old
+            # form read `stage[i].signal`, which is never true for a stage that has an outgoing
+            # edge (every signalled stage in the model is the last one), so no typed edge ever
+            # rendered: `dg-signal` counted 0 across the whole published tree.
             c.line(x0 + i * (box_w + BOX_GAP) + box_w + 2, y_rail + box_h / 2,
                    x0 + (i + 1) * (box_w + BOX_GAP) - 2, y_rail + box_h / 2,
-                   "dg-signal" if unit.get("signal") else "dg-edge")
+                   "dg-signal" if stages[i + 1].get("signal") else "dg-edge")
     y = y_rail + box_h
 
     for i, unit in enumerate(stages):
@@ -481,6 +519,43 @@ def trace(stages: list[dict], uid: str, title: str, desc: str, *, crosscut: dict
 # The field names are the ledger's own nouns; types, values and counts are omitted, which is what
 # the caption says.
 
+def _vcontract_svg(head: str, rows: list[str], notes: list[str], uid: str, title: str,
+                   desc: str) -> str:
+    """B2-05b / N2 — the vertical composition of the typed-contract object.
+
+    The tall variant used to be handed to `_vrail_svg`, which redrew the excerpt as a chain of
+    `dg-box` rectangles — precisely the retired object ("a stack of large outlined boxes each
+    holding one 1-3-word mono label"): measured as `dg-box=5 / dg-shape=0` on the tall variant of
+    the index and SAMA contract excerpts, and as `dg-box=3 / dg-shape=0` for the surfaces objects
+    on email-MCP and HalalBot. A phone visitor saw the object the critique retired. It is now the
+    SAME object, relaid vertically: one panel (`dg-shape`), its header and rule, the stacked field
+    rows with their gutter ticks and row rules, then the annotations — `dg-box` = 0, exactly as in
+    the wide variant.
+    """
+    t = Canvas(TALL_W, 0.0)
+    w = TALL_W - 2 * PAD
+    head_h, row_h, foot = 26.0, 20.0, 14.0
+    panel_h = head_h + row_h * len(rows) + foot
+    t.rect(PAD, PAD, w, panel_h, "dg-shape")
+    t.text(PAD + 20.0, PAD + 17.0, head, "dg-label", anchor="start")
+    t.line(PAD + 14.0, PAD + head_h, PAD + w - 14.0, PAD + head_h, "dg-rule")
+    for i, row in enumerate(rows):
+        ry = PAD + head_h + row_h * (i + 1) - 5.0
+        t.line(PAD + 16.0, ry, PAD + 28.0, ry, "dg-edge")
+        t.text(PAD + 40.0, ry, row, "dg-label-meta", anchor="start")
+        if i < len(rows) - 1:
+            t.line(PAD + 14.0, ry + 9.0, PAD + w - 14.0, ry + 9.0, "dg-rule")
+
+    y = PAD + panel_h + 14.0
+    for note in notes:
+        lines = wrap(note, TALL_CHARS)
+        h = 2 * PAD + (len(lines) - 1) * LINE_H
+        t.node(PAD, y, w, h, lines, "dg-note", "dg-label-meta")
+        y += h + 8.0
+    t.height = y - 8.0 + PAD
+    return t.svg(uid + "-v", title, desc, "art-tall")
+
+
 def contract(uid: str, title: str, desc: str, *, head: str, rows: list[str],
              notes: list[str]) -> tuple[str, str]:
     left_w = 600.0
@@ -508,8 +583,9 @@ def contract(uid: str, title: str, desc: str, *, head: str, rows: list[str],
     c.height = max(PAD + left_h, ny) + PAD
 
     wide = c.svg(uid, title, desc, "art-wide")
-    tall = _vrail_svg([_unit(head)] + [_unit(r) for r in rows]
-                      + [_unit(note, "note") for note in notes], uid, title, desc)
+    # B2-05b / N2: the same object relaid vertically (one panel + header + stacked field rows +
+    # gutter), not a dg-box chain.
+    tall = _vcontract_svg(head, rows, notes, uid, title, desc)
     return wide, tall
 
 

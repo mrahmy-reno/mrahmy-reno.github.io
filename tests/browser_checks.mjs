@@ -169,6 +169,45 @@ function overflowProbe() {
   };
 }
 
+// B2-05b / N1 — a label whose whole text is ONE word must never render on more than one line.
+// The old suite measured this for `.rank` only, which is how the hero's attributes table came to
+// render `Focus` as FO / CU / S and `Languages` as LANGUAGE / S at every desktop width: the body
+// carried `overflow-wrap: anywhere` (every text node's min-content width was one character) and
+// `.glance-item` is a flex row whose `dt` could be squeezed to ~2 characters.
+//
+// The line count is a DOM Range over the element's own contents — the number of line BOXES, not
+// box height / line-height. Box height counts padding and produces false positives on `.chips li`,
+// `.btn` and nav links, which are legitimately taller than one line.
+function midwordProbe() {
+  const hits = [];
+  let scanned = 0;
+  for (const el of document.querySelectorAll("body *")) {
+    if (el.children.length > 0) continue;               // leaf text containers only
+    const text = (el.textContent || "").trim();
+    if (!text || /\s/.test(text) || text.length < 3) continue;   // one word, nothing else
+    const cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden") continue;
+    if ((cs.clipPath || "none") !== "none") continue;   // .visually-hidden is clipped, not laid out for reading
+    const box = el.getBoundingClientRect();
+    if (box.width < 8 || box.height < 6) continue;      // not a real text box on screen
+    scanned += 1;
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const rects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0);
+    if (rects.length > 1) {
+      hits.push({
+        text: text.slice(0, 32),
+        tag: el.tagName,
+        cls: (el.className.toString() || "").slice(0, 40),
+        parent: el.parentElement ? (el.parentElement.className.toString() || "").slice(0, 30) : "",
+        width: Math.round(box.width),
+        lines: rects.length,
+      });
+    }
+  }
+  return { hits, scanned };
+}
+
 async function main() {
   mkdirp(OUT);
   for (const d of ["rendered-text", "axe", "console", "screenshots", "print"]) {
@@ -1033,6 +1072,46 @@ async function main() {
 
     results.craft = craft;
     fs.writeFileSync(path.join(OUT, "craft.json"), JSON.stringify(craft, null, 2));
+  }
+
+  // ------------------------------------------------- B2-05b / N1: no word may break mid-word
+  // The hero's attributes table broke two of its own labels mid-word at every desktop width
+  // (`Focus` -> FO / CU / S, `Languages` -> LANGUAGE / S, in the first screen) and no check could
+  // see it: the suite measured `.rank` only. This measures EVERY page (index, the ten project
+  // pages and 404) at the five shipped breakpoints, counting line boxes with a DOM Range.
+  {
+    const MIDWORD_WIDTHS = [390, 768, 1024, 1366, 1440];
+    const midwordPage = await browser.newPage();
+    const midword = {};
+    let scannedTotal = 0;
+    for (const w of MIDWORD_WIDTHS) {
+      for (const rel of PAGES) {
+        await midwordPage.setViewport({ width: w, height: 900, deviceScaleFactor: 1 });
+        await midwordPage.goto(`${origin}/${rel}`, { waitUntil: "load" });
+        // off-screen sections use content-visibility: auto; render them before measuring
+        await midwordPage.evaluate(async () => {
+          for (let y = 0; y < document.body.scrollHeight; y += 700) {
+            window.scrollTo(0, y);
+            await new Promise((r) => setTimeout(r, 15));
+          }
+          window.scrollTo(0, 0);
+          await new Promise((r) => setTimeout(r, 60));
+        });
+        const res = await midwordPage.evaluate(midwordProbe);
+        scannedTotal += res.scanned;
+        if (res.hits.length) midword[`${rel}@${w}`] = res.hits;
+      }
+    }
+    await midwordPage.close();
+    const places = Object.entries(midword);
+    check(places.length === 0,
+      "N1: no label that is a single word renders on more than one line, on any page at " +
+      `${MIDWORD_WIDTHS.join("/")}px`,
+      places.length ? JSON.stringify(places.slice(0, 3))
+        : `${scannedTotal} single-word elements measured over ` +
+          `${PAGES.length * MIDWORD_WIDTHS.length} page/width combinations, all single-line`);
+    results.midword = midword;
+    fs.writeFileSync(path.join(OUT, "midword.json"), JSON.stringify(midword, null, 2));
   }
 
   // ------------------------------------------------- B2-04 / D6: the displayed face is shipped

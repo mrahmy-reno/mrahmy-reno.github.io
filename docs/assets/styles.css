@@ -347,8 +347,23 @@
     font-size: var(--fs-base);
     line-height: var(--lh-body);
     letter-spacing: var(--ls-body);
-    overflow-wrap: anywhere;   /* no horizontal overflow from a long token */
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* B2-05b / N1 + N7 — `overflow-wrap: anywhere` used to sit on `body`, "so no long token
+     overflows". Its side effect was invisible and worse than the thing it prevented: it gives
+     EVERY text node in the document a min-content width of ONE character, which is exactly what
+     lets a flex row squeeze a label to two characters and break it mid-word. That is the class
+     of bug behind D2 (`.rank` rendered "0" over "1") and behind N1 (the hero's `Focus` rendered
+     `FO`/`CU`/`S` and `Languages` rendered `LANGUAGE`/`S`). The repair fixed the instance and
+     left the mechanism; this scopes the property to the elements that actually carry an
+     unbreakable token and leaves the body default at `normal`, so the next component cannot
+     meet the same bug. The rendered overflow probes (6 widths x 12 pages) are what prove that
+     nothing regressed: the only tokens in the published text longer than 20 characters are the
+     contact URL and "SentenceTransformers", both of which are covered below. */
+  :where(a, dd, code, kbd, samp, pre, figcaption, .scope-caption, .contact-url-url,
+         .print-contact, .chips li) {
+    overflow-wrap: anywhere;
   }
 
   /* D-5 grain: one fixed, non-animated tile, under everything. Decorative, and an
@@ -766,6 +781,12 @@
   }
 
   .glance-item dt {
+    /* B2-05b / N1: the label is a token, not a shrinkable flex item — the same fix D2 applied to
+       `.rank`. With `flex: 0 1 auto` and a one-character min-content width (the body-level
+       `overflow-wrap: anywhere` that N7 records), the flex algorithm handed the space to the
+       longest `dd` and squeezed the label to ~2 characters, so `Focus` rendered `FO` / `CU` / `S`
+       and `Languages` rendered `LANGUAGE` / `S` at 1024-1920 px, in the first screen. */
+    flex: none;
     color: var(--text-meta);
     font-family: var(--font-mono);
     font-size: var(--fs-label);

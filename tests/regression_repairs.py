@@ -17,6 +17,8 @@ Covered:
         hazard) before a dump is trusted downstream.
   D-04  regenerating the site must leave the working tree clean (no tracked bytecode).
   D-06  the suite summary must report the MEDIAN of the kept Lighthouse runs, not one run.
+  N4    (B2-05b) step 08 and the suite summary must resolve ONE median, under a named convention,
+        on a run count that cannot be even — an even count is what let the two halves disagree.
 
 Run: python3 tests/regression_repairs.py        (also step 02b of tests/run_all.sh)
 Exit 0 = every regression test passed.
@@ -242,6 +244,60 @@ def test_d06_summary_reports_the_median_run():
           f"run_all.sh mentions run1.json: {'run1.json' in run_all}")
 
 
+# --------------------------------------------------------------------- N4: one median definition
+def test_n04_one_median_definition():
+    """B2-05b / N4 — one definition of "the median", applied in both places, on an odd run count.
+
+    The defect (B2-05, at 299bfdc): in ONE invocation, step 08 took the lower-middle value for the
+    8 index runs (69,72,84,88,97,98,98,99 -> 88, BELOW THRESHOLD, step FAIL) while the suite
+    summary used statistics.median (92 -> A5 PASS). The run ended `CHECK SUITE RESULT: FAIL` while
+    its own criterion line said PASS, so no acceptance number could be written from it. These
+    assertions are source-level plus one behavioural replay of that exact 8-run set, and need no
+    Lighthouse run.
+    """
+    lh = (REPO / "tests" / "run_lighthouse.sh").read_text()
+    helper = (REPO / "tools" / "lh_median.py").read_text()
+    check("NR==int((n+1)/2)" not in lh,
+          "N4: step 08 no longer computes its own median (the lower-middle awk is gone)",
+          "lower-middle awk still present in run_lighthouse.sh"
+          if "NR==int((n+1)/2)" in lh else "0 ad-hoc median computations in run_lighthouse.sh")
+    check("lh_median.py --median-of" in lh,
+          "N4: step 08 resolves the median through the same helper the suite summary uses",
+          f"run_lighthouse.sh calls the helper: {'lh_median.py --median-of' in lh}")
+    check("--convention" in lh and "MEDIAN_CONVENTION" in helper,
+          "N4: the convention is named once and printed by both halves",
+          f"step log names it: {'--convention' in lh}; helper defines it: "
+          f"{'MEDIAN_CONVENTION' in helper}")
+    check("RUNS % 2" in lh and "RUNS=$((RUNS + 1))" in lh,
+          "N4: the run count cannot be even — an even request is extended by one run, never "
+          "trimmed by dropping a measured run",
+          f"odd-count guard present: {'RUNS % 2' in lh}")
+    default = re.search(r"LIGHTHOUSE_RUNS:-(\d+)", lh)
+    check(bool(default) and int(default.group(1)) % 2 == 1,
+          "N4: the default run count is odd, so the reported median is always a measured run",
+          f"default={default.group(1) if default else 'not found'}")
+    # the exact 8-run set from the defect, through both documented call paths: they must agree
+    even = ["69", "72", "84", "88", "97", "98", "98", "99"]
+    r = run(["python3", "tools/lh_median.py", "--median-of", *even])
+    check(r.stdout.strip() == "92",
+          "N4: the single definition is the standard median — the defect's 8 index runs resolve to "
+          "92 (the standard median), not the lower-middle 88 the step used to print",
+          f"--median-of {' '.join(even)} -> {r.stdout.strip()!r}")
+    d = pathlib.Path(TMP) / "lh-n4"
+    d.mkdir(exist_ok=True)
+    for i, perf in enumerate(even, start=1):
+        (d / f"lighthouse-index-run{i}.json").write_text(_lh_json(int(perf)))
+    files = sorted(str(p) for p in d.glob("lighthouse-index-run*.json"))
+    r2 = run(["python3", "tools/lh_median.py", *files])
+    check("median=92" in r2.stdout and "BELOW THRESHOLD" not in r2.stdout.split("A5 bar")[0],
+          "N4: the suite summary reports the same 92 on the same runs (both halves agree)",
+          r2.stdout.strip().replace("\n", " | ")[:300])
+    check("median = the standard median" in r2.stdout,
+          "N4: the report prints the convention it used, so the acceptance record names it",
+          "convention line present" if "median = the standard median" in r2.stdout
+          else r2.stdout.strip().replace("\n", " | ")[:200])
+
+
 def main():
     global TMP
     TMP = tempfile.mkdtemp(prefix="b1-05-regression.")
@@ -254,6 +310,7 @@ def main():
         test_d03_extractor_asserts_last_section_coverage()
         test_d04_regeneration_leaves_the_tree_clean()
         test_d06_summary_reports_the_median_run()
+        test_n04_one_median_definition()
         test_d02_preflight_reports_missing_tooling()
         test_d02_suite_reports_skipped_steps_and_still_fails()
     finally:
